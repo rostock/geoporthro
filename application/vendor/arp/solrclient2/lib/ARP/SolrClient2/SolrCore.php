@@ -62,6 +62,7 @@ class SolrCore extends CurlBrowser
             'json.nl'   => 'map',
             'start'     => 0,
             'rows'      => 20,
+            'df'        => 'text',
             'q'         => '*:*'
         );
 
