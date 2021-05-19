@@ -1,4 +1,4 @@
-<?xml version="1.0" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <schema name="Rostock" version="1.5">
     <types>
         <fieldType name="int" class="solr.TrieIntField" precisionStep="0" positionIncrementGap="0"/>
@@ -18,7 +18,7 @@
                 <filter class="solr.LowerCaseFilterFactory"/>
             </analyzer>
         </fieldType>
-        <fieldType name="location" units="degrees" spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory" class="solr.SpatialRecursivePrefixTreeFieldType"/>
+        <fieldType name="location" spatialContextFactory="com.spatial4j.core.context.jts.JtsSpatialContextFactory" class="solr.SpatialRecursivePrefixTreeFieldType"/>
     </types>
 
     <fields>
@@ -34,6 +34,6 @@
     </fields>
 
     <uniqueKey>id</uniqueKey>
-    <defaultSearchField>text</defaultSearchField>
-    <solrQueryParser defaultOperator="AND"/>
+    <df>text</df>
+    <solrQueryParser q.op="AND"/>
 </schema>

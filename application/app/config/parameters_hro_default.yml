@@ -76,6 +76,7 @@ parameters:
         url: https://geo.sv.rostock.de/geocodr/query?
         key: 1234567890abcdefghijklmnopqrstuv
         type: search
+        limit: 500
         hits: 25
 
     solr:
@@ -83,7 +84,7 @@ parameters:
         port: port
         path: solr
         core: core
-        version: 5
+        version: 8
         srs: 'EPSG:25833'
         hits: 25
 
@@ -97,5 +98,6 @@ parameters:
     ows_proxy3_password: ~
     ows_proxy3_noproxy:
         - 127.0.0.1
-        - 172.0.0.0/8
         - localhost
+        - 172.0.0.0/8
+        - sv.rostock.de
