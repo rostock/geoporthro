@@ -336,7 +336,7 @@ class ApplicationController extends Controller
     {
         $wmsUrl = $this->container->get('request')->get("wmsUrl", null);
         # Verbindung zur Datenbank von Geolotse.HRO aufbauen
-        $connection = pg_connect("host=dbnode10.sv.rostock.de dbname=geolotse user=admin password=hro62.15;:_");
+        $connection = pg_connect("host=dbs11.sv.rostock.de dbname=geolotse user=admin password=hro62.15;:_");
         # verbundene URLs holen
         pg_prepare("", "SELECT s.link FROM sublinks s, links_sublinks ls, links l WHERE s.target = 'opendata' AND s.id = ls.sublink_id AND (ls.link_id = l.id OR ls.link_id = l.parent_id) AND l.link = '$wmsUrl' LIMIT 1");
         $result = pg_execute("", array());
@@ -360,7 +360,7 @@ class ApplicationController extends Controller
     {
         $wmsUrl = $this->container->get('request')->get("wmsUrl", null);
         # Verbindung zur Datenbank von Geolotse.HRO aufbauen
-        $connection = pg_connect("host=dbnode10.sv.rostock.de dbname=geolotse user=admin password=hro62.15;:_");
+        $connection = pg_connect("host=dbs11.sv.rostock.de dbname=geolotse user=admin password=hro62.15;:_");
         # verbundene URLs holen
         pg_prepare("", "SELECT link FROM links WHERE category = 'geoservice' AND \"group\" = 'WFS' AND parent_id in (SELECT parent_id FROM links WHERE link = '$wmsUrl') LIMIT 1");
         $result = pg_execute("", array());
@@ -384,7 +384,7 @@ class ApplicationController extends Controller
     {
         $wmsUrl = $this->container->get('request')->get("wmsUrl", null);
         # Verbindung zur Datenbank von Geolotse.HRO aufbauen
-        $connection = pg_connect("host=dbnode10.sv.rostock.de dbname=geolotse user=admin password=hro62.15;:_");
+        $connection = pg_connect("host=dbs11.sv.rostock.de dbname=geolotse user=admin password=hro62.15;:_");
         # verbundene URLs holen
         pg_prepare("", "SELECT link FROM links WHERE category = 'geoservice' AND \"group\" = 'WCS' AND parent_id in (SELECT parent_id FROM links WHERE link = '$wmsUrl') LIMIT 1");
         $result = pg_execute("", array());
