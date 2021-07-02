@@ -1,5 +1,5 @@
 <?php
-function footer($gmlid, $link, $append) {
+function footer($gmlid, $link, $append=null) {
 	// Einen Seitenfuss ausgeben.
 	// Den URL-Parameter "&id=j/n" und "&showkey=j/n" in allen Kombinationen umschalten lassen.
 	// Die Parameter &gkz= und &gmlid= kommen in allen Modulen einheitlich vor

@@ -680,7 +680,7 @@ class Application
             $scheme = 'https';
             $httphost = 'geo.sv.rostock.de';
         }
-        else if ($httphost === '172.30.3.158') {
+        else if ($httphost === '172.30.3.163') {
             $httphost = 'support.geoport-hro.de';
         }
         return $scheme . '://' . $httphost . $request->getBasePath();
