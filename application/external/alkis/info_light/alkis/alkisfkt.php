@@ -223,4 +223,35 @@ function dienststellenart($key) {
 	}
 	return $wert;
 }
+
+function werteliste ($bez ,$sqlin) {
+	// Eine oder mehrere Entschlüsselungen in eine Zeile ausgeben.
+	// Dient dazu, Schlüssel-ARRAYs auflösen ohne die Zeile im JOIN mehrfach aufzulisten
+	// Anwendung: FS-Nachweis Bodenschätzung
+	global $debug;
+
+	if ($bez === 'e') {$tabelle = 'ax_entstehungsartoderklimastufewasserverhaeltnisse_bodensc';} 
+	elseif ($bez === 's') {$tabelle = 'ax_sonstigeangaben_bodenschaetzung';}
+
+	$sql="SELECT wert, beschreibung FROM aaa_ogr.".$tabelle." WHERE wert IN (".$sqlin.") ORDER BY wert LIMIT $1 ;";
+	$v = array('9');
+	$res = pg_prepare("", $sql);
+	$res = pg_execute("", $v);
+	if (!$res) {
+		echo "\n<p class='err'>Fehler bei Werteliste.</p>";
+		if ($debug > 2) {echo "\n<p class='dbg'>SQL=<br>".htmlentities($sql, ENT_QUOTES, "UTF-8")."</p>";}
+		return;
+	}
+	$i=0;
+	while($row = pg_fetch_assoc($res)) {
+		echo " ".$row["beschreibung"];
+		$i++;	
+	}
+	pg_free_result($res);
+	if ($i === 0) {
+		echo "(kein Treffer)";
+		if ($debug > 2) {echo "\n<p class='dbg'>SQL=<br>".htmlentities($sql, ENT_QUOTES, "UTF-8")."</p>";}
+	}
+	return;
+}
 ?>
