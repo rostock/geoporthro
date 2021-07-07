@@ -447,6 +447,102 @@ echo "\n<tr>"; // Summenzeile
 	echo "\n\t</td>";
 echo "\n</tr>";
 
+// B o d e n s c h ä t z u n g
+// ---------------------------
+// Tabelle "klas_3x" (norbit-ALB): Dort fehlen Bodenart und Zustandsstufe, es ist aber bereits auf Buchfläche umgerechnet.
+
+// Bodenschätzungs-Abschnitte mit Flurstücken verschneiden, Spalten entschlüsseln
+$sql="SELECT b.kulturart AS kulturartk, kulturart.beschreibung AS kulturartv,
+ b.bodenart AS bodenartk, bodenart.beschreibung AS bodenartv, zustbod.beschreibung AS zustbodv,
+ b.entstehungsartoderklimastufewasserverhaeltnisse AS entsteh, b.sonstigeangaben,
+ b.bodenzahlodergruenlandgrundzahl as bodenzahl, b.ackerzahlodergruenlandzahl AS ackerzahl,
+ b.jahreszahl, st_area(st_intersection(b.wkb_geometry, f.wkb_geometry)) AS schnittflae 
+FROM aaa_ogr.ax_flurstueck f
+JOIN aaa_ogr.ax_bodenschaetzung b ON st_intersects(b.wkb_geometry, f.wkb_geometry) AND st_area(st_intersection(b.wkb_geometry, f.wkb_geometry)) > 0.05
+LEFT JOIN aaa_ogr.ax_bodenart_bodenschaetzung bodenart ON b.bodenart = bodenart.wert
+LEFT JOIN aaa_ogr.ax_kulturart_bodenschaetzung kulturart ON b.kulturart = kulturart.wert
+LEFT JOIN aaa_ogr.ax_zustandsstufeoderbodenstufe_bodenschaetzung zustbod ON b.zustandsstufeoderbodenstufe = zustbod.wert
+WHERE f.gml_id = $1 AND f.endet IS NULL AND b.endet IS NULL ORDER BY schnittflae DESC";
+
+$v = array($gmlid);
+$res = pg_prepare("", $sql);
+$res = pg_execute("", $v);
+if (!$res) {echo "\n<p class='err'>Fehler bei DB-Abfrage zur Klassifizierung Boden</p>\n";}
+$gesertragsmz = 0; // Gesamt-ErtragsMesszahl
+$klasflae = 0; // Summe klassifizierte Fläche
+$j=1;
+if(!empty($res) && pg_num_rows($res) > 0) {
+  echo "\n<tr>";
+  echo "\n\t<td colspan=4 title='Hinweise zur Bodenschätzung'><h6><img src='ico/Landwirt.ico' width='16' height='16' alt=''> ";
+  echo "Bodenschätzung</td></h6>";
+  echo "\n</tr>";
+	while ($row = pg_fetch_assoc($res)) {
+		$kulturartk=$row['kulturartk']; // Key	-
+		$kulturartv=$row['kulturartv']; // - Value		
+		if (substr($kulturartv, 0, 3) === 'Ack') { // A
+			$kbez1="Bodenzahl";
+			$kbez2="Ackerzahl";
+		} else { // Gr
+			$kbez1="Grünlandgrundzahl";
+			$kbez2="Grünlandzahl";
+		}
+		$absflae = $row['schnittflae'];
+		$absbuchflae = $absflae * $the_Xfactor;
+		$klasflae+=$absbuchflae;
+		$ertragszahl = intval($absbuchflae * $row['ackerzahl'] / 100);
+    $ertragszahld=number_format($ertragszahl,0,",",".");
+		$gesertragsmz+=$ertragszahl;
+	//	$absflaedis = number_format($absflae,0,",",".")." m&#178;"; // als Tool-Tip ?
+		$absbuchflaedis = number_format($absbuchflae,0,",",".")." m&#178;";
+		$boedenzahl=ltrim($row['bodenzahl'], '0');
+		$ackerzahl=ltrim($row['ackerzahl'], '0');
+		$jahr=$row['jahreszahl'];
+		$entsteh=$row['entsteh'];
+		$sonst=$row['sonstigeangaben'];
+		echo "\n<tr>\n\t<td>" . $j . ":</td>";
+		echo "\n\t<td class='fla' title='Ertragsmesszahl (EMZ = ".$kbez2." / 100 * Fläche)'>".$ertragszahld."</td>"
+		."\n\t<td class='re' title='Fläche des Bodenschätzungsabschnitts im Flurstück'>".$absbuchflaedis."</td>"
+		."\n\t<td class='lr'><span title='".$kbez1."'>".$boedenzahl."</span>/<span title='".$kbez2."'>".$ackerzahl."</span></td>"
+		."\n\t<td class='lr'>";
+
+			if ($showkey) {echo "\n\t\t<span class='key'>(".$kulturartk.")</span> ";}
+			echo "\n\t\t<span title='Kulturart'>".$kulturartv."</span> ";
+
+			if ($showkey) {echo "\n\t\t<span class='key'>(".$row['bodenartk'].")</span> ";}
+			echo "\n\t\t<span title='Bodenart'>".$row['bodenartv']."</span> ";
+
+			echo "\n\t\t<span title='Zustandsstufe'>".$row['zustbodv']."</span> ";
+
+			// 2 ARRAYs auflösen
+			if (isset($entsteh)) {
+				$ent=trim($entsteh, "{}");
+				echo "\n\t\t <span title='Enststehungsart oder Klimastufe, Wasserverhältnisse'>";
+					if ($showkey) {echo "\n\t\t <span class='key'>(".$ent.")</span> ";}
+					werteliste('e', $ent);
+				echo "</span>";
+			}
+			if (isset($sonst)) {
+				$son=trim($sonst, "{}");
+				echo "\n\t\t <span title='Sonstige Angaben'>";
+					if ($showkey) {echo "\n\t\t <span class='key'>(".$son.")</span> ";}
+					werteliste('s', $son);
+				echo "</span>";
+			}
+			if (isset($jahr)) {
+				echo "\n\t\t<span title='Jahreszahl'>".$jahr."</span>";
+			}
+		echo "\n\t</td>"
+		."\n\t<td>&nbsp;</td>\n</tr>";
+		$j++;
+	}
+	// Summenzeile
+	$klasflaedis = number_format($klasflae,0,",",".")." m&#178;";
+	echo "\n<tr>\n\t<td class='re'>gesamt:</td>" // 1
+	."\n\t<td class='fla sum' title='Summe der Ertragsmesszahlen für dieses Flurstück'>".number_format($gesertragsmz,0,",",".")."</td>" // 2
+	."\n\t<td class='re' title='Gesamtfläche der Bodenschätzungsabschnitte im Flurstück'>".$klasflaedis."</td>" // 3
+	."\n\t<td colspan='3'>&nbsp;</td>\n</tr>"; // 4-6
+}
+
 // gesetzliche Klassifizierung
 if ($flaechedesabschnitts_array[0] != '') {
     echo "\n<tr>\n\t";
