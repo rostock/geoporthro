@@ -172,6 +172,14 @@ div[class^="iconPaging"]:hover {
     color: #006cb7;
 }
 
+tbody.hide {
+    display:none;
+}
+
+thead + tbody {
+    display:table-row-group !important;
+}
+
 .toolBar {
     border-top: 2px solid #006cb7;
     background-color: rgba(0, 108, 183, 0.8);
