@@ -130,7 +130,7 @@
         },
         _findSuccess: function(response, textStatus, jqXHR) {
             var result = JSON.parse(response);
-            if (result) {
+            if (result && (result.properties.id_alkis || result.properties.id_fachsystem)) {
                 if (result.properties.id_alkis && !result.properties.id_fachsystem) {
                     var gmlid = result.properties.id_alkis;
                 } else if (!result.properties.id_alkis && result.properties.id_fachsystem) {

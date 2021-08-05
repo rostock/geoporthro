@@ -198,7 +198,7 @@ class AlkisInfo extends Element
             // Suche durchführen mittels cURL
             $curl = curl_init();
             $term = curl_escape($curl, $term);
-            $url = $conf['url'] . 'key=' . $conf['key'] . '&type=reverse&class=parcel_hro&radius=0&in_epsg=25833&query='. $x . ',' . $y;
+            $url = $conf['url'] . 'key=' . $conf['key'] . '&type=reverse&class=parcel&radius=0&in_epsg=25833&query='. $x . ',' . $y;
             curl_setopt($curl, CURLOPT_URL, $url); 
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
             
@@ -210,7 +210,7 @@ class AlkisInfo extends Element
             // alle Features des Suchresultats durchgehen…
             foreach ($features as $key=>$feature) {
                 // …und erstes passendes Feature als gewünschte Feature speichern
-                if ($feature['properties']['objektgruppe'] === 'Flurstück HRO' && !$feature['properties']['historisch_seit'] && !$feature['properties']['gueltigkeit_bis']) {
+                if ($feature['properties']['objektgruppe'] === 'Flurstück' && !$feature['properties']['historisch_seit'] && !$feature['properties']['gueltigkeit_bis']) {
                     $result = $feature;
                     break;
                 }
