@@ -180,7 +180,7 @@ if ($row = pg_fetch_array($res)) {
 	echo "\n<hr class='thick'>\n<h3><img src='ico/Grundbuch_zu.ico' width='16' height='16' alt=''> Grundbücher</h3>\n";
 	// person <benennt< namensnummer >istBestandteilVon>                Buchungsblatt
 	//                               >bestehtAusRechtsverhaeltnissenZu> namensnummer   (Nebenzweig/Sonderfälle?)
-	$sqlg ="SELECT n.gml_id AS gml_n, n.laufendenummernachdin1421 AS lfd, n.zaehler, n.nenner, g.gml_id AS gml_g, ";
+	$sqlg ="SELECT DISTINCT n.gml_id AS gml_n, n.laufendenummernachdin1421 AS lfd, n.zaehler, n.nenner, g.gml_id AS gml_g, ";
 	$sqlg.="g.bezirk, g.buchungsblattnummermitbuchstabenerweiterung as nr, g.blattart, b.bezeichnung AS beznam ";
     $sqlg.="FROM aaa_ogr.ax_namensnummer n ";
     $sqlg.="JOIN aaa_ogr.ax_buchungsblatt g ON g.gml_id = n.istbestandteilvon ";

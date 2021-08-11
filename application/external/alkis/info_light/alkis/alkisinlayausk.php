@@ -209,7 +209,7 @@ while($rows = pg_fetch_array($ress)) {
 	$lfd=$rows["lfd"]; // BVNR
 
 	// B U C H U N G S B L A T T  zur Buchungsstelle (istBestandteilVon)
-	$sql ="SELECT b.gml_id, b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung as blatt, b.blattart, ";
+	$sql ="SELECT DISTINCT b.gml_id, b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung as blatt, b.blattart, ";
     $sql.="z.bezeichnung ";
     $sql.="FROM aaa_ogr.ax_buchungsblatt b ";
     $sql.="JOIN aaa_ogr.ax_buchungsstelle s ON s.istbestandteilvon = b.gml_id ";
@@ -302,7 +302,7 @@ while($rows = pg_fetch_array($ress)) {
 	}
 
 	// Buchungstelle  >an>  Buchungstelle  >istBestandteilVon>  BLATT  ->  Bezirk
-	$sql ="SELECT sf.gml_id AS s_gml, sf.buchungsart, sf.laufendenummer as lfd, ";
+	$sql ="SELECT DISTINCT sf.gml_id AS s_gml, sf.buchungsart, sf.laufendenummer as lfd, ";
 	$sql.="sf.zaehler, sf.nenner, sf.nummerimaufteilungsplan as nrpl, sf.beschreibungdessondereigentums as sond, ";
 	$sql.="b.gml_id AS g_gml, b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung as blatt, b.blattart, ";
 	$sql.="z.bezeichnung, a.beschreibung AS bart ";

@@ -38,7 +38,7 @@ if (!$con) echo "<p class='err'>Fehler beim Verbinden der DB</p>\n";
 // Direkter JOIN zwischen den "ax_buchungsblattbezirk" und "ax_dienststelle".
 // Ueber Feld "gehoertzu|ax_dienststelle_schluessel|land" und "stelle".
 //	Bei JOIN ueber alkis_beziehungen entgegen Dokumentation keine Verbindung gefunden.
-$sql ="SELECT g.gml_id, g.bezirk, g.buchungsblattnummermitbuchstabenerweiterung AS nr, g.blattart, "; // GB-Blatt
+$sql ="SELECT DISTINCT g.gml_id, g.bezirk, g.buchungsblattnummermitbuchstabenerweiterung AS nr, g.blattart, "; // GB-Blatt
 $sql.="b.gml_id, b.bezirk, b.bezeichnung AS beznam, "; // Bezirk
 $sql.="a.gml_id, a.land, a.bezeichnung, a.stelle, a.stellenart "; // Amtsgericht
 $sql.="FROM aaa_ogr.ax_buchungsblatt g ";
@@ -204,7 +204,7 @@ while($row = pg_fetch_array($res)) {
 
 			// a n d e r e s   B l a t t  (an dem das aktuelle Blatt Rechte hat)
 			// dienendes Grundbuch
-            $sql ="SELECT b.gml_id, b.land, b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung AS blatt, b.blattart, z.bezeichnung AS beznam ";
+            $sql ="SELECT DISTINCT b.gml_id, b.land, b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung AS blatt, b.blattart, z.bezeichnung AS beznam ";
             $sql.="FROM aaa_ogr.ax_buchungsblatt b ";
             $sql.="JOIN aaa_ogr.ax_buchungsstelle s ON s.istbestandteilvon = b.gml_id ";
             $sql.="LEFT JOIN aaa_ogr.ax_buchungsblattbezirk z ON z.bezirk = b.bezirk ";
@@ -341,7 +341,7 @@ if ($i == 0) {
 	// bf              vf          sf       vs   sb                 vb            bb
 	// Blatt   <istBestandteilVon< Stelle  <an<  Stelle      >istBestandteilVon>  Blatt
 	// Fiktiv                      Fiktiv  <zu<  Berechtigt                       Berechtigt
-	$sql ="SELECT bb.gml_id, bb.land, bb.bezirk, bb.buchungsblattnummermitbuchstabenerweiterung AS blatt, bb.blattart, ";
+	$sql ="SELECT DISTINCT bb.gml_id, bb.land, bb.bezirk, bb.buchungsblattnummermitbuchstabenerweiterung AS blatt, bb.blattart, ";
     $sql.="CASE WHEN sf.gml_id = ANY(sb.an) THEN 'an' WHEN sf.gml_id = ANY(sb.zu) THEN 'zu' WHEN sf.gml_id = ANY(sb.durch) THEN 'durch' END AS beziehungsart, ";
     $sql.="sf.gml_id AS gml_s, sf.laufendenummer AS lfdnr, sf.buchungsart, ba.beschreibung AS bart, ";
     $sql.="bz.bezeichnung AS beznam, ag.bezeichnung, ag.stelle, ag.stellenart ";

@@ -147,7 +147,7 @@ echo "\n<p class='fsd'>Flurstücksfläche: <b>".$amtlicheflaeched." m²</b></p>\
 // *** G R U N D B U C H ***
 echo "\n<h2><img src='ico/Grundbuch_zu.ico' width='16' height='16' alt=''> Grundbuch</h2>";
 // ALKIS: FS --> bfs --> GS --> bsb --> GB.
-$sql ="SELECT b.gml_id, b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung as blatt, b.blattart, ";
+$sql ="SELECT DISTINCT b.gml_id, b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung as blatt, b.blattart, ";
 $sql.="s.gml_id AS s_gml, s.buchungsart, s.laufendenummer, s.zaehler, s.nenner, ";
 $sql.="z.bezeichnung, a.beschreibung AS bart ";
 $sql.="FROM aaa_ogr.ax_buchungsblatt b ";
