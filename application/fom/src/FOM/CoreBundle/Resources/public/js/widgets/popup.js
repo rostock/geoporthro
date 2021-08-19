@@ -214,6 +214,10 @@ var Mapbender = (function($, Mapbender) {
                 this.content(content);
             }
 
+          selfElement.css("z-index", ++currentZindex);
+          selfElement.css("position", "fixed");
+          selfElement.css("top", "50%");
+          selfElement.css("left", "50%");
             selfElement.trigger('open');
             if(!this.options.detachOnClose || !$.contains(document, selfElement[0])) {
                 selfElement.appendTo(this.$container);
@@ -235,7 +239,6 @@ var Mapbender = (function($, Mapbender) {
         focus: function (event) {
           var self = this;
           var selfElement = this.$element;
-          selfElement.css("z-index",++currentZindex);
           if(!event) {
             // Only trigger event this method was called programmatically.
             selfElement.trigger('focus');
@@ -592,6 +595,7 @@ var Mapbender = (function($, Mapbender) {
             }
 
             popup.css('width', (null === width ? '' : width));
+            popup.css('margin-left', (0 - (width / 2)) + 'px');
         },
 
         /**
@@ -606,6 +610,7 @@ var Mapbender = (function($, Mapbender) {
             }
 
             popup.css('height', (null === height ? '' : height));
+            popup.css('margin-top', (0 - (height / 2)) + 'px');
         },
 
         /**

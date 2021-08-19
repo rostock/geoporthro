@@ -36,6 +36,7 @@
                     closeButton: false,
                     closeOnESC: false,
                     content: self.element,
+                    height: 250,
                     width: 250,
                     buttons: {
                         'cancel': {

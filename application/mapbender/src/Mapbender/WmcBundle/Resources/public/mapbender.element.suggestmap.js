@@ -140,6 +140,7 @@
                                 $('ul li', self.popup.$element).ready($.proxy(self._suggestMap, self));
                             }})],
                     destroyOnClose: true,
+                    height: 250,
                     width: 550,
                     buttons: {
                         'ok': {
