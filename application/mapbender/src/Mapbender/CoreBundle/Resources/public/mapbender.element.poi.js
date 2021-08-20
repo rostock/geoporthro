@@ -97,6 +97,8 @@ $.widget('mapbender.mbPOI', {
             modal: false,
             title: this.element.attr('title'),
             content: $('.input', this.element).html(),
+            height: 300,
+            width: 300,
             buttons: {
                 'cancel': {
                     label: Mapbender.trans('mb.core.poi.popup.btn.cancel'),

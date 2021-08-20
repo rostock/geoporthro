@@ -214,16 +214,21 @@ var Mapbender = (function($, Mapbender) {
                 this.content(content);
             }
 
-          selfElement.css("z-index", ++currentZindex);
-          selfElement.css("position", "fixed");
-          selfElement.css("top", "50%");
-          selfElement.css("left", "50%");
+            selfElement.css('z-index', ++currentZindex);
+
+            if(!selfElement.hasClass('waltraudWankt')) {
+                selfElement.css('position', 'fixed');
+                selfElement.css('top', '50%');
+                selfElement.css('left', '50%');
+                selfElement.addClass('waltraudWankt');
+            }
+
             selfElement.trigger('open');
             if(!this.options.detachOnClose || !$.contains(document, selfElement[0])) {
                 selfElement.appendTo(this.$container);
             }
             window.setTimeout(function() {
-                selfElement.addClass("show");
+                selfElement.addClass('show');
                 self.focus();
             }, 100);
 
