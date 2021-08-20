@@ -676,7 +676,7 @@ class Application
         $request = $container->get('request');
         $scheme = $request->getScheme();
         $httphost = $request->getHttpHost();
-        if ($httphost === '172.30.3.151') {
+        if ($httphost === '172.30.3.168') {
             $scheme = 'https';
             $httphost = 'geo.sv.rostock.de';
         }
