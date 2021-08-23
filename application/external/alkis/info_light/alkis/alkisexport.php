@@ -43,7 +43,7 @@ include("alkisfkt.php");
 echo "Flurstückskennzeichen;Gemarkungsschlüssel;Gemarkungsname;Flurnummer;Flurstücksnummer;Buchfläche in m²;Adresse(n);Grundbuchbezirksschlüssel;Grundbuchbezirk;Grundbuchblattnummer;Bestandsverzeichnisnummer (laufende Nummer);Anteil am Flurstück;Buchungsart";
 
 // Datenbank-Verbindung
-$con = pg_connect("host=".$dbhost." port=" .$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass);#." sslmode=".$sslmode);
+$con = pg_connect("host=".$dbhost." port=" .$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass." sslmode=require");
 if (!$con) {
 	exit("Fehler beim Verbinden der DB");
 }

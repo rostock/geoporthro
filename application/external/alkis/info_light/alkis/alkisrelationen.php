@@ -31,7 +31,7 @@ $otyp=htmlentities($otyp, ENT_QUOTES, "UTF-8");
 </head>
 <body>
 <?php
-$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass);#." sslmode=".$sslmode);
+$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass." sslmode=require");
 echo "\n<p class='bezieh'>Beziehungen ".$gmlid."</p>"; // Balken
 
 echo "\n\n<h2><img src='ico/Beziehung.ico' width='16' height='16' alt=''> Beziehungen</h2>";

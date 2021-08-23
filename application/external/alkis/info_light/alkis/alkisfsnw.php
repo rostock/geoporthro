@@ -34,7 +34,7 @@ if ($keys == "j") {$showkey=true;} else {$showkey=false;}
     <body>
 
 <?php
-$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass);#." sslmode=".$sslmode);
+$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass." sslmode=require");
 if (!$con) echo "<p class='err'>Fehler beim Verbinden der DB</p>\n";
 
 // Flurstückskennzeichen wurde alternativ zur gml_id übermittelt
@@ -137,7 +137,7 @@ pg_free_result($res);
 
 // Balken
 echo "<p class='fskennz'>Flurstück <span title='Flurstückskennzeichen in der offiziellen ALKIS-Notation'>".$flurstueckskennzeichen."</span>&nbsp;</p>\n";
-echo "\n<h2><img src='ico/Flurstueck.ico' width='16' height='16' alt=''> Flurstücksnachweis</h2>\n";
+echo "\n<h2><img src='ico/Flurstueck.ico' width='16' height='16' alt=''> FlurstücksnachweisHEHO</h2>\n";
 echo "\n<table class='outer'>\n<tr>\n\t<td>"; // linke Seite
 	// darin Tabelle Kennzeichen
 	echo "\n\t<table class='kennzfs'>\n\t<tr>";

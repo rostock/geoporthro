@@ -34,7 +34,7 @@ if ($keys == "j") {$showkey=true;} else {$showkey=false;}
     <body>
 
 <?php
-$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass);#." sslmode=".$sslmode);
+$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass." sslmode=require");
 if (!$con) echo "<p class='err'>Fehler beim Verbinden der DB</p>\n";
 
 // Flurstückskennzeichen wurde alternativ zur gml_id übermittelt

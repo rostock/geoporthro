@@ -32,7 +32,7 @@ if ($keys == "j") {$showkey=true;} else {$showkey=false;}
 <body>
 
 <?php
-$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass);#." sslmode=".$sslmode);
+$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass." sslmode=require");
 // Balken
 echo "<p class='nakennz'>Eigentümer&nbsp;</p>\n";
 

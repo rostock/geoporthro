@@ -263,7 +263,6 @@ class AlkisInfo extends Element
         
         // Verbindung zur Datenbank für das Logging der ALKIS-Auskunft öffnen
         $conn = $this->container->get('doctrine.dbal.hro_log_data_connection');
-        $queryBuilder = $conn->createQueryBuilder();
         
         // für Log-Eintrag: Benutzer identifizieren
         $user = $this->container->get('security.context')->getUser()->getUsername();
@@ -308,8 +307,6 @@ class AlkisInfo extends Element
         $dbname = $this->container->getParameter('hro_database_name');
         $dbuser = $this->container->getParameter('hro_database_user');
         $dbpass = $this->container->getParameter('hro_database_password');
-        $dbpre = $this->container->getParameter('hro_database_pre');
-        $dbvers = $this->container->getParameter('hro_database_vers');
 
         $user = $this->container->get('security.context')->getUser();
 

@@ -25,7 +25,7 @@ echo <<<END
 </head>
 <body>
 END;
-$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass);#." sslmode=".$sslmode);
+$con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass." sslmode=require");
 if (!$con) {echo "<br>Fehler beim Verbinden der DB.\n<br>";}
 
 // *** F L U R S T U E C K ***

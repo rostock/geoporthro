@@ -36,7 +36,7 @@ if ($keys == "j") {$showkey=true;} else {$showkey=false;}
 </head>
 <body>
 <?php
-$con = pg_connect("host=".$dbhost." port=" .$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass);#." sslmode=".$sslmode);
+$con = pg_connect("host=".$dbhost." port=" .$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass." sslmode=require");
 if (!$con) echo "<p class='err'>Fehler beim Verbinden der DB</p>\n";
 
 // L a g e b e z e i c h n u n g
