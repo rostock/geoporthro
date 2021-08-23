@@ -247,7 +247,8 @@ class AlkisInfo extends Element
         $options = $this->getConfiguration();
         if (isset($options['secured']) && $options['secured']) {
             $alkisLocation = $this->container->get('kernel')->getRootDir() . '/../external/alkis/info/alkis/';
-            $this->addInfoSecured($alkisLocation, $scriptName);
+            //$this->addInfoSecured($alkisLocation, $scriptName);
+            $this->addInfoContent($alkisLocation, $scriptName);
         } else {
             $alkisLocation = $this->container->get('kernel')->getRootDir() . '/../external/alkis/info_light/alkis/';
             $this->addInfoContent($alkisLocation, $scriptName);
