@@ -180,8 +180,6 @@
                             }
                         }
                     });
-                    //this.popup.css('margin-top', '270px');
-                    //this.popup.css('margin-left', '350px');
                     this.popup.$element.on('close', function() {
                         self.state = 'closed';
                         if (self.options.deactivateOnClose) {
