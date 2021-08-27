@@ -160,6 +160,7 @@ $.widget('mapbender.mbPOI', {
                 modal: true,
                 title: this.element.attr('title'),
                 height: 300,
+                width: 800,
                 content: ta,
                 buttons: {}
             });
