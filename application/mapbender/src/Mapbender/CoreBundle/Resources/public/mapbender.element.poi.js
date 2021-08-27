@@ -159,7 +159,7 @@ $.widget('mapbender.mbPOI', {
                 destroyOnClose: true,
                 modal: true,
                 title: this.element.attr('title'),
-                height: 350,
+                height: 300,
                 content: ta,
                 buttons: {}
             });
