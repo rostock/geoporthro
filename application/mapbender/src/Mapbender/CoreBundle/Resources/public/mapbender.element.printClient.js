@@ -457,37 +457,40 @@
             // wms layer
             var sources = this.map.getSourceTree(), lyrCount = 0;
 
-            function _getLegends(layer, sourceUrl) {
-                var legend = null;
-                if (layer.options.legend && layer.options.legend.url && layer.options.treeOptions.selected == true) {
-                    legend = {};
-                    legend[layer.options.title] = layer.options.legend.url;
-                }
-                else if (layer.options.treeOptions.selected == true && sourceUrl) {
-                    legend = {};
-                    legend[layer.options.title] = sourceUrl + 'service=WMS&version=1.3.0&request=GetLegendGraphic&format=image/png&sld_version=1.1.0&layer=' + layer.options.name;
-                }
-                if (layer.children) {
-                    for (var i = 0; i < layer.children.length; i++) {
-                        var help = _getLegends(layer.children[i]);
-                        if (help) {
-                            legend = legend ? legend : {};
-                            for (key in help) {
-                                legend[key] = help[key];
-                            }
-                        }
-                    }
-                }
-                return legend;
-            } 
             var legends = [];
+
+            function _getLegends(layer, sourceUrl) {
+              var legend = null;
+              if (layer.children) {
+                for (var i = 0; i < layer.children.length; i++) {
+                  var help = _getLegends(layer.children[i]);
+                  if (help) {
+                    legend = legend ? legend : {};
+                    for (key in help) {
+                      legend[key] = help[key];
+                    }
+                  }
+                }
+              } else {
+                if (layer.options.treeOptions.selected == true) {
+                  legend = {};
+                  if (layer.options.legend && layer.options.legend.url) {
+                    legend[layer.options.title] = layer.options.legend.url;
+                  }
+                  else {
+                    legend[layer.options.title] = sourceUrl + 'service=WMS&version=1.3.0&request=GetLegendGraphic&format=image/png&sld_version=1.1.0&layer=' + layer.options.name;
+                  }
+                  legends.push(legend);
+                }
+              }
+            }
             
             // Array anlegen zur Sicherstellung der korrekten Layer-Reihenfolge im Druck
             var lyrConfsWithCalculatedWeights = [];
 
             for (var i = 0; i < sources.length; i++) {
                 var layer = this.map.map.layersList[sources[i].mqlid],
-                        type = layer.olLayer.CLASS_NAME;
+                    type = layer.olLayer.CLASS_NAME;
 
                 if (0 !== type.indexOf('OpenLayers.Layer.')) {
                     continue;
@@ -530,88 +533,12 @@
 
                         layer.olLayer.params.LAYERS = prevLayers;
 
-                        if (sources[i].configuration.isBaseSource === false && sources[i].type === 'wms') {
-                            var ll = _getLegends(sources[i].configuration.children[0], source.configuration.options.url.replace(/\?.*/i, '?'));
-                            // verhindern, dass bei aktivierten Layern innerhalb von Layergruppen die komplette Legende der Layergruppe mitausgegeben wird
-                            if (Object.keys(ll).length > 1) {
-                              // in IE11 existiert Object.entries nicht, daher dann quasi selber schreiben (siehe https://stackoverflow.com/a/45851440)
-                              if (!Object.entries) {
-                                Object.entries = function (obj) {
-                                  var ownProps = Object.keys(obj),
-                                             i = ownProps.length,
-                                      resArray = new Array(i);
-                                  while (i--)
-                                    resArray[i] = [ownProps[i], obj[ownProps[i]]];
-                                  return resArray;
-                                };
-                              }
-                              var ll_as_array = Object.entries(ll);
-                              var new_ll = [];
-                              var is_group_of_layers = false;
-                              ll_as_array.forEach(function(element, index) {
-                                var getlegend_layer = element[1].split('layer=').pop();
-                                getlegend_layer = getlegend_layer.split('&')[0];
-                                var number_of_dots = getlegend_layer.split('.').length;
-                                if (getlegend_layer.indexOf('hro.') !== -1 && number_of_dots - 1 >= 2) {
-                                  new_ll.push(element);
-                                  if (number_of_dots - 1 > 2) {
-                                    is_group_of_layers = true;
-                                  }
-                                }
-                              });
-                              if (is_group_of_layers == true) {
-                                new_ll = [];
-                                ll_as_array.forEach(function(element, index) {
-                                  var getlegend_layer = element[1].split('layer=').pop();
-                                  getlegend_layer = getlegend_layer.split('&')[0];
-                                  var number_of_dots = getlegend_layer.split('.').length;
-                                  if (number_of_dots - 1 >= 3) {
-                                    new_ll.push(element);
-                                  }
-                                });
-                              }
-                              // in IE11 existiert Object.fromEntries nicht, daher dann quasi selber schreiben (siehe https://github.com/ungap/from-entries)
-                              if (!Object.fromEntries) {
-                                Object.fromEntries = function (iterable) {
-                                  var entries = Array.isArray(iterable) ?
-                                    createEntries(iterable) :
-                                    ('entries' in iterable ? iterable.entries() : iterable);
-                                  var object = {};
-                                  var entry;
-                                  while ((entry = entries.next()) && !entry.done) {
-                                    var pair = entry.value;
-                                    Object.defineProperty(object, pair[0], {
-                                      configurable: true,
-                                      enumerable: true,
-                                      writable: true,
-                                      value: pair[1]
-                                    });
-                                  }
-                                  return object;
-                                };
-                                function createEntries(array) {
-                                  var i = -1;
-                                  return {
-                                    next: function () {
-                                      var done = array.length <= ++i;
-                                      return {
-                                        done: done,
-                                        value: done ? void 0 : array[i]
-                                      };
-                                    }
-                                  };
-                                }
-                              }
-                              ll = Object.fromEntries(new_ll);
-                            }
-                            if (ll) {
-                                legends.push(ll);
-                            }
-                        }
+                        if (sources[i].configuration.isBaseSource === false && sources[i].type === 'wms')
+                          _getLegends(sources[i].configuration.children[0], source.configuration.options.url.replace(/\?.*/i, '?'));
                     }
                 }
             }
-            
+
             // falls Array zur Sicherstellung der korrekten Layer-Reihenfolge im Druck nicht immer noch leer ist...
             if (lyrConfsWithCalculatedWeights.length > 0) {
             
