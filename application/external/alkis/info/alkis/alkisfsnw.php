@@ -262,7 +262,7 @@ if (min($dienststelle_array) >= 2000 AND min($dienststelle_array) < 3000) {
 $sql ="SELECT DISTINCT l.gml_id, l.gemeinde, l.lage, l.hausnummer, k.bezeichnung ";
 $sql.="FROM aaa_ogr.ax_flurstueck f ";
 $sql.="JOIN aaa_ogr.ax_lagebezeichnungmithausnummer l ON l.gml_id = ANY(f.weistauf) ";
-$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag k ON l.lage = k.lage AND l.gemeinde = k.gemeinde ";
+$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag k ON l.kreis = k.kreis AND l.gemeinde = k.gemeinde AND l.lage = k.lage ";
 $sql.="WHERE f.gml_id = $1 ";
 $sql.="AND f.endet IS NULL AND l.endet IS NULL AND k.endet IS NULL ";
 $sql.="ORDER BY l.gemeinde, l.lage, l.hausnummer;";
@@ -310,7 +310,7 @@ pg_free_result($res);
 $sql ="SELECT l.gml_id, l.unverschluesselt, l.gemeinde, l.lage, k.bezeichnung ";
 $sql.="FROM aaa_ogr.ax_flurstueck f ";
 $sql.="JOIN aaa_ogr.ax_lagebezeichnungohnehausnummer l ON l.gml_id = ANY(f.zeigtauf) ";
-$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag k ON l.lage = k.lage ";
+$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag k ON l.kreis = k.kreis AND l.gemeinde = k.gemeinde AND l.lage = k.lage ";
 $sql.="WHERE f.gml_id = $1 ";
 $sql.="AND f.endet IS NULL AND l.endet IS NULL AND k.endet IS NULL ";
 $v = array($gmlid);

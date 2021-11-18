@@ -110,14 +110,14 @@ while($rowg = pg_fetch_array($resg)) { // Als Schleife, kann aber nur EIN Haus s
 	$sqll ="SELECT 'm' AS ltyp, l.gml_id, s.lage, s.bezeichnung, l.hausnummer, '' AS laufendenummer ";
 	$sqll.="FROM aaa_ogr.ax_gebaeude g "; 
 	$sqll.="JOIN aaa_ogr.ax_lagebezeichnungmithausnummer l ON l.gml_id = ANY(g.zeigtauf) ";
-	$sqll.="JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag s ON l.kreis=s.kreis AND l.gemeinde=s.gemeinde AND l.lage=s.lage ";
+	$sqll.="JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag s ON l.kreis = s.kreis AND l.gemeinde = s.gemeinde AND l.lage = s.lage ";
 	$sqll.="WHERE g.gml_id = $1 AND g.endet IS NULL AND l.endet IS NULL AND s.endet IS NULL ";
 	$sqll.="UNION ";
 	// oder NEBENgebäude
 	$sqll.="SELECT 'p' AS ltyp, l.gml_id, s.lage, s.bezeichnung, l.pseudonummer AS hausnummer, l.laufendenummer ";
 	$sqll.="FROM aaa_ogr.ax_gebaeude g "; 
 	$sqll.="JOIN aaa_ogr.ax_lagebezeichnungmitpseudonummer l ON l.gml_id = g.hat ";
-	$sqll.="JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag s ON l.kreis=s.kreis AND l.gemeinde=s.gemeinde AND l.lage=s.lage ";
+	$sqll.="JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag s ON l.kreis = s.kreis AND l.gemeinde = s.gemeinde AND l.lage = s.lage ";
 	$sqll.="WHERE g.gml_id = $1 AND g.endet IS NULL AND l.endet IS NULL AND s.endet IS NULL ";
 	$sqll.="ORDER BY bezeichnung, hausnummer ";
 

@@ -137,7 +137,7 @@ pg_free_result($res);
 
 // Balken
 echo "<p class='fskennz'>Flurstück <span title='Flurstückskennzeichen in der offiziellen ALKIS-Notation'>".$flurstueckskennzeichen."</span>&nbsp;</p>\n";
-echo "\n<h2><img src='ico/Flurstueck.ico' width='16' height='16' alt=''> FlurstücksnachweisHEHO</h2>\n";
+echo "\n<h2><img src='ico/Flurstueck.ico' width='16' height='16' alt=''> Flurstücksnachweis</h2>\n";
 echo "\n<table class='outer'>\n<tr>\n\t<td>"; // linke Seite
 	// darin Tabelle Kennzeichen
 	echo "\n\t<table class='kennzfs'>\n\t<tr>";
@@ -262,7 +262,7 @@ if (min($dienststelle_array) >= 2000 AND min($dienststelle_array) < 3000) {
 $sql ="SELECT DISTINCT l.gml_id, l.gemeinde, l.lage, l.hausnummer, k.bezeichnung ";
 $sql.="FROM aaa_ogr.ax_flurstueck f ";
 $sql.="JOIN aaa_ogr.ax_lagebezeichnungmithausnummer l ON l.gml_id = ANY(f.weistauf) ";
-$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag k ON l.lage = k.lage AND l.gemeinde = k.gemeinde ";
+$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag k ON l.kreis = k.kreis AND l.gemeinde = k.gemeinde AND l.lage = k.lage ";
 $sql.="WHERE f.gml_id = $1 ";
 $sql.="AND f.endet IS NULL AND l.endet IS NULL AND k.endet IS NULL ";
 $sql.="ORDER BY l.gemeinde, l.lage, l.hausnummer;";
@@ -310,7 +310,7 @@ pg_free_result($res);
 $sql ="SELECT l.gml_id, l.unverschluesselt, l.gemeinde, l.lage, k.bezeichnung ";
 $sql.="FROM aaa_ogr.ax_flurstueck f ";
 $sql.="JOIN aaa_ogr.ax_lagebezeichnungohnehausnummer l ON l.gml_id = ANY(f.zeigtauf) ";
-$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag k ON l.lage = k.lage ";
+$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag k ON l.kreis = k.kreis AND l.gemeinde = k.gemeinde AND l.lage = k.lage ";
 $sql.="WHERE f.gml_id = $1 ";
 $sql.="AND f.endet IS NULL AND l.endet IS NULL AND k.endet IS NULL ";
 $v = array($gmlid);

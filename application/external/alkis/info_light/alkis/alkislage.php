@@ -57,7 +57,7 @@ $sql.="LEFT JOIN aaa_ogr.ax_gemeinde g ON l.land=g.gemeindekennzeichen_land AND 
 $sql.="LEFT JOIN aaa_ogr.ax_kreisregion k ON l.land=k.schluessel_land AND l.regierungsbezirk=k.regierungsbezirk AND l.kreis=k.kreis ";
 $sql.="LEFT JOIN aaa_ogr.ax_regierungsbezirk r ON l.land=r.land AND l.regierungsbezirk=r.regierungsbezirk ";
 $sql.="LEFT JOIN aaa_ogr.ax_bundesland b ON l.land=b.schluessel_land ";
-$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag s ON l.land=s.land AND l.regierungsbezirk=s.regierungsbezirk AND l.kreis=s.kreis AND l.gemeinde=s.gemeinde AND l.lage=s.lage ";
+$sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungkatalogeintrag s ON l.land=s.land AND l.regierungsbezirk=s.regierungsbezirk AND l.kreis = s.kreis AND l.gemeinde = s.gemeinde AND l.lage = s.lage ";
 $sql.="WHERE l.gml_id= $1 AND l.endet IS NULL AND g.endet IS NULL AND k.endet IS NULL AND r.endet IS NULL AND b.endet IS NULL AND s.endet IS NULL;";
 $v = array($gmlid);
 $res = pg_prepare("", $sql);
