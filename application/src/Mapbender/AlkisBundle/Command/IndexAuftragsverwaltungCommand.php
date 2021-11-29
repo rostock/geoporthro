@@ -71,6 +71,20 @@ class IndexAuftragsverwaltungCommand extends ContainerAwareCommand
                   FROM fachdaten.auftragsverwaltung_regis_hro
                    WHERE auftrag_art IN ('A', 'E', 'G', 'K', 'M', 'V')
                 UNION SELECT
+                 a.uuid,
+                 0,
+                 'K',
+                 substring(a.auftrag_nummer from 3),
+                 a.auftrag_nummer,
+                 substring(a.auftrag_nummer for 4) || lpad(regexp_replace(a.auftrag_nummer, '^.*[A-Z]+', ''), 5, '0'),
+                 array_to_string(a.dokumente, ','),
+                 ST_AsText(ST_Centroid(ST_PointOnSurface(ST_Union(ST_MakeValid(r.geometrie))))) AS geom,
+                 ST_AsText(ST_PointOnSurface(ST_Union(ST_MakeValid(r.geometrie)))) AS wktgeom
+                  FROM fachdaten.altauftraege_hro a
+                  LEFT JOIN fachdaten.risse_hro r ON replace(dokumente[1], '.pdf', '') = r.rissnummer
+                   WHERE array_length(dokumente, 1) = 1
+                    GROUP BY a.uuid, a.auftrag_nummer, a.dokumente
+                UNION SELECT
                  uuid,
                  0,
                  'K',
@@ -81,7 +95,8 @@ class IndexAuftragsverwaltungCommand extends ContainerAwareCommand
                  NULL AS geom,
                  NULL AS wktgeom
                   FROM fachdaten.altauftraege_hro
-                    ORDER BY uuid
+                   WHERE array_length(dokumente, 1) > 1
+                     ORDER BY uuid
                      LIMIT " . $limit . " OFFSET " . $offset);
 
             while ($row = $stmt->fetch()) {
