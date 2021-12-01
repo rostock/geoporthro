@@ -564,7 +564,7 @@ if ($flaechedesabschnitts_array[0] != '') {
 
 // BEGINN Hinweise zur gesetzlichen Klassifizierung des Flurstücks
 // Bau-, Raum- oder Bodenordnungsrecht
-$sql_boden ="SELECT a.wert, a.beschreibung AS art_verf, b.gml_id AS verf_gml, b.bezeichnung AS verf_bez, b.name AS verf_name, d.bezeichnung AS stelle_bez, d.stelle AS stelle_key ";
+$sql_boden ="SELECT DISTINCT a.wert, a.beschreibung AS art_verf, b.gml_id AS verf_gml, b.bezeichnung AS verf_bez, b.name AS verf_name, d.bezeichnung AS stelle_bez, d.stelle AS stelle_key ";
 $sql_boden.="FROM aaa_ogr.ax_bauraumoderbodenordnungsrecht b JOIN aaa_ogr.ax_artderfestlegung_bauraumoderbodenordnungsrecht a ON a.wert = b.artderfestlegung ";
 $sql_boden.="LEFT JOIN aaa_ogr.ax_dienststelle d ON b.stelle = d.stelle ";
 $sql_boden.="WHERE b.endet IS NULL AND d.endet IS NULL AND ST_Within((SELECT wkb_geometry FROM aaa_ogr.ax_flurstueck WHERE gml_id = $1 AND endet IS NULL), b.wkb_geometry)";
