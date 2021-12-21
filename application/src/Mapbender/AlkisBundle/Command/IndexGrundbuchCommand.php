@@ -53,7 +53,7 @@ class IndexGrundbuchCommand extends ContainerAwareCommand
         $output->writeln('Indiziere Grundbuchblaetter fuer HRO-Grundbuchblaettersuche ... ');
 
 
-        $stmt = $conn->query("SELECT count(*) AS count FROM aaa_ogr.ax_buchungsblatt WHERE endet IS NULL");
+        $stmt = $conn->query("SELECT count(*) AS count FROM aaa_ogr.ax_buchungsblatt WHERE endet IS NULL AND gml_id ~ '^DEMVAL03'");
         $result = $stmt->fetch();
 
         while ($offset < $result['count']) {
@@ -70,6 +70,8 @@ class IndexGrundbuchCommand extends ContainerAwareCommand
                    WHERE bl.bezirk = bz.bezirk
                    AND bl.endet IS NULL
                    AND bz.endet IS NULL
+                   AND bl.gml_id ~ '^DEMVAL03'
+                   AND bz.gml_id ~ '^DEMVAL03'
                     ORDER BY bl.ogc_fid
                      LIMIT " . $limit . " OFFSET " . $offset);
 
