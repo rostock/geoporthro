@@ -68,24 +68,109 @@ $con = pg_connect("host=".$dbhost." port=" .$dbport." dbname=".$dbname." user=".
 if (!$con) echo "<p class='err'>Fehler beim Verbinden der DB</p>\n";
 // if ($debug > 1) {echo "<p class='err'>DB=".$dbname.", user=".$dbuser."</p>";}
 
-function vorgaenger($gmlid, $con) {
+function vorgaenger($fskennz, $gmlid, $con) {
+    $gefunden = false;
     // Vorgänger bestimmen
     $sql_vorgaenger = "
      SELECT
       array_agg(flurstueckskennzeichen) AS flurstueckskennzeichen
-       FROM
-       (SELECT DISTINCT unnest(zeigtaufaltesflurstueck) AS flurstueckskennzeichen FROM aaa_ogr.ax_fortfuehrungsfall WHERE zeigtaufaltesflurstueck != zeigtaufneuesflurstueck AND (SELECT flurstueckskennzeichen FROM aaa_ogr.ax_flurstueck WHERE endet IS NULL AND gml_id = $1) = ANY (zeigtaufneuesflurstueck)
-        UNION SELECT flurstueckskennzeichen FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE (SELECT flurstueckskennzeichen FROM aaa_ogr.ax_flurstueck WHERE endet IS NULL AND gml_id = $1) = ANY (nachfolgerflurstueckskennzeichen)
-        UNION SELECT flurstueckskennzeichen FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE (SELECT flurstueckskennzeichen FROM aaa_ogr.ax_flurstueck WHERE endet IS NOT NULL AND gml_id = $1 ORDER BY endet DESC LIMIT 1) = ANY (nachfolgerflurstueckskennzeichen)
-        UNION SELECT flurstueckskennzeichen FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE (SELECT flurstueckskennzeichen FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE gml_id = $1) = ANY (nachfolgerflurstueckskennzeichen))
-         AS tabelle";
+       FROM (
+        SELECT
+         flurstueckskennzeichen
+          FROM aaa_ogr.ax_historischesflurstueckohneraumbezug
+          WHERE (
+           SELECT
+            flurstueckskennzeichen
+             FROM aaa_ogr.ax_flurstueck
+              WHERE endet IS NULL
+              AND gml_id = $1
+          ) = ANY (nachfolgerflurstueckskennzeichen)
+        UNION SELECT
+         flurstueckskennzeichen
+          FROM aaa_ogr.ax_historischesflurstueckohneraumbezug
+           WHERE (
+            SELECT
+             flurstueckskennzeichen
+              FROM aaa_ogr.ax_flurstueck
+               WHERE endet IS NOT NULL
+               AND gml_id = $1
+                ORDER BY endet DESC
+                 LIMIT 1
+           ) = ANY (nachfolgerflurstueckskennzeichen)
+        UNION SELECT
+         flurstueckskennzeichen
+          FROM aaa_ogr.ax_historischesflurstueckohneraumbezug
+           WHERE (
+            SELECT
+             flurstueckskennzeichen
+              FROM aaa_ogr.ax_historischesflurstueckohneraumbezug
+               WHERE gml_id = $1
+           ) = ANY (nachfolgerflurstueckskennzeichen)
+       ) AS tabelle";
     pg_prepare($con, "", $sql_vorgaenger);
     $res_vorgaenger = pg_execute($con, "", array($gmlid));
     if ($resultate = pg_fetch_array($res_vorgaenger)) {
         $stri = trim($resultate[0], "{}");
+        if (!empty($stri)) {
+          $gefunden = true;
+        }
         $vorgaenger[0] = explode(",", $stri);
     }
     pg_free_result($res_vorgaenger);
+    if ($gefunden === false) {
+        $sql_vorgaenger = "
+         SELECT
+          array_agg(flurstueckskennzeichen) AS flurstueckskennzeichen
+           FROM (
+            SELECT DISTINCT
+             unnest(zeigtaufaltesflurstueck) AS flurstueckskennzeichen
+              FROM aaa_ogr.ax_fortfuehrungsfall
+               WHERE zeigtaufaltesflurstueck != zeigtaufneuesflurstueck
+               AND (
+                SELECT
+                 flurstueckskennzeichen
+                  FROM aaa_ogr.ax_flurstueck
+                   WHERE endet IS NULL 
+                   AND gml_id = $1
+               ) = ANY (zeigtaufneuesflurstueck)
+           ) AS tabelle";
+        pg_prepare($con, "", $sql_vorgaenger);
+        $res_vorgaenger = pg_execute($con, "", array($gmlid));
+        if ($resultate = pg_fetch_array($res_vorgaenger)) {
+            $stri = trim($resultate[0], "{}");
+            if (!empty($stri)) {
+              $gefunden = true;
+            }
+            $vorgaenger[0] = explode(",", $stri);
+        }
+        pg_free_result($res_vorgaenger);
+    }
+    if ($gefunden === false) {
+        $sql_vorgaenger = "
+         SELECT
+          array_agg(flurstueckskennzeichen) AS flurstueckskennzeichen
+           FROM (
+            SELECT
+             unnest(vorgaengerflurstueckskennzeichen) AS flurstueckskennzeichen
+              FROM aaa_ogr.ax_historischesflurstueckohneraumbezug
+               WHERE flurstueckskennzeichen = $1
+            UNION SELECT DISTINCT
+             unnest(zeigtaufaltesflurstueck) AS flurstueckskennzeichen
+              FROM aaa_ogr.ax_fortfuehrungsfall
+               WHERE zeigtaufaltesflurstueck != zeigtaufneuesflurstueck
+               AND $1 = ANY (zeigtaufneuesflurstueck)
+           ) AS tabelle";
+        pg_prepare($con, "", $sql_vorgaenger);
+        $res_vorgaenger = pg_execute($con, "", array($fskennz));
+        if ($resultate = pg_fetch_array($res_vorgaenger)) {
+            $stri = trim($resultate[0], "{}");
+            if (!empty($stri)) {
+              $gefunden = true;
+            }
+            $vorgaenger[0] = explode(",", $stri);
+        }
+        pg_free_result($res_vorgaenger);
+    }
     
     // Vorgänger von Duplikaten befreien und sortieren
     $vorgaenger[0] = array_unique($vorgaenger[0]);
@@ -99,12 +184,17 @@ function nachfolger($fskennz, $con) {
     $sql_nachfolger = "
      SELECT
       array_agg(flurstueckskennzeichen) AS flurstueckskennzeichen
-       FROM
-       (SELECT unnest(nachfolgerflurstueckskennzeichen) AS flurstueckskennzeichen FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE flurstueckskennzeichen = $1
-        UNION SELECT DISTINCT unnest(zeigtaufneuesflurstueck) AS flurstueckskennzeichen FROM aaa_ogr.ax_fortfuehrungsfall WHERE zeigtaufaltesflurstueck != zeigtaufneuesflurstueck AND (SELECT flurstueckskennzeichen FROM aaa_ogr.ax_flurstueck WHERE endet IS NULL AND flurstueckskennzeichen = $1) = ANY (zeigtaufaltesflurstueck)
-        UNION SELECT DISTINCT unnest(zeigtaufneuesflurstueck) AS flurstueckskennzeichen FROM aaa_ogr.ax_fortfuehrungsfall WHERE zeigtaufaltesflurstueck != zeigtaufneuesflurstueck AND (SELECT flurstueckskennzeichen FROM aaa_ogr.ax_flurstueck WHERE endet IS NOT NULL AND flurstueckskennzeichen = $1 ORDER BY endet DESC LIMIT 1) = ANY (zeigtaufaltesflurstueck)
-        UNION SELECT DISTINCT unnest(zeigtaufneuesflurstueck) AS flurstueckskennzeichen FROM aaa_ogr.ax_fortfuehrungsfall WHERE zeigtaufaltesflurstueck != zeigtaufneuesflurstueck AND (SELECT flurstueckskennzeichen FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE flurstueckskennzeichen = $1) = ANY (zeigtaufaltesflurstueck))
-         AS tabelle";
+       FROM (
+        SELECT
+         unnest(nachfolgerflurstueckskennzeichen) AS flurstueckskennzeichen
+          FROM aaa_ogr.ax_historischesflurstueckohneraumbezug
+           WHERE flurstueckskennzeichen = $1
+        UNION SELECT DISTINCT
+         unnest(zeigtaufneuesflurstueck) AS flurstueckskennzeichen
+          FROM aaa_ogr.ax_fortfuehrungsfall
+           WHERE zeigtaufaltesflurstueck != zeigtaufneuesflurstueck
+           AND $1 = ANY (zeigtaufaltesflurstueck)
+       ) AS tabelle";
     pg_prepare($con, "", $sql_nachfolger);
     $res_nachfolger = pg_execute($con, "", array($fskennz));
     if ($resultate = pg_fetch_array($res_nachfolger)) {
@@ -258,7 +348,7 @@ echo "<table class='outer'>";
 	echo "</td>";
 
 	// Spalte 2: V o r g ä n g e r
-    $vorgaenger = vorgaenger($gmlid, $con);
+    $vorgaenger = vorgaenger($fskennz, $gmlid, $con);
     echo "\n\t<td>";
     $i = 0;
     if (isset($vorgaenger[$i]) === true && strlen($vorgaenger[$i][0]) > 0) {
