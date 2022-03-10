@@ -2,17 +2,17 @@ parameters:
     database_driver:   driver
     database_host:     host
     database_port:     port
-    database_name:     name
+    database_name:     dbname
     database_path:     ~
-    database_user:     user
+    database_user:     username
     database_password: passwd_
 
     hro_database_driver:   driver
     hro_database_host:     host
     hro_database_port:     port
-    hro_database_name:     name
+    hro_database_name:     dbname
     hro_database_path:     ~
-    hro_database_user:     user
+    hro_database_user:     username
     hro_database_password: passwd_
     hro_database_pre:      public
     hro_database_vers:     '09'
@@ -20,20 +20,30 @@ parameters:
     hro_search_database_driver:   driver
     hro_search_database_host:     host
     hro_search_database_port:     port
-    hro_search_database_name:     name
+    hro_search_database_name:     dbname
     hro_search_database_path:     ~
-    hro_search_database_user:     user
-    hro_search_database_password: passwd
+    hro_search_database_user:     username
+    hro_search_database_password: passwd_
 
     hro_log_database_driver:   driver
     hro_log_database_host:     host
     hro_log_database_port:     port
-    hro_log_database_name:     name
+    hro_log_database_name:     dbname
     hro_log_database_path:     ~
-    hro_log_database_user:     user
-    hro_log_database_password: passwd
+    hro_log_database_user:     username
+    hro_log_database_password: passwd_
     hro_log_database_schema:   schema
     hro_log_database_table:    table
+
+    metadata_host:     host
+    metadata_dbname:   dbname
+    metadata_user:     username
+    metadata_password: passwd_
+
+    more_metadata_host:     host
+    more_metadata_dbname:   dbname
+    more_metadata_user:     username
+    more_metadata_password: passwd_
 
     mailer_transport:  smtp
     mailer_host:       localhost

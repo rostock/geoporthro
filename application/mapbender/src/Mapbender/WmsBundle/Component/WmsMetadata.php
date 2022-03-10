@@ -11,6 +11,7 @@ namespace Mapbender\WmsBundle\Component;
 use Mapbender\CoreBundle\Component\SourceMetadata;
 use Mapbender\WmsBundle\Entity\WmsInstance;
 use Mapbender\WmsBundle\Entity\WmsLayerSource;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * 
@@ -45,7 +46,12 @@ class WmsMetadata extends SourceMetadata
                 $originUrl = SourceMetadata::getNotNull($src->getOriginUrl());
             }
             # Verbindung zur Datenbank von Geolotse.HRO aufbauen
-            $connection = pg_connect("host=dbs11.sv.rostock.de dbname=geolotse user=admin password=hro62.15;:_");
+            $yaml = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../app/config/parameters.yml'));
+            $connection_host = $yaml['parameters']['metadata_host'];
+            $connection_dbname = $yaml['parameters']['metadata_dbname'];
+            $connection_user = $yaml['parameters']['metadata_user'];
+            $connection_password = $yaml['parameters']['metadata_password'];
+            $connection = pg_connect("host=" . $connection_host . " dbname=" . $connection_dbname . " user=" . $connection_user . " password=" . $connection_password);
             # verbundene URLs holen
             pg_prepare("", "SELECT CASE WHEN \"group\" = 'WMS' THEN '1' || \"group\" WHEN \"group\" = 'WFS' THEN '3' || \"group\" WHEN \"group\" = 'INSPIRE View Service' THEN '5' || \"group\" WHEN \"group\" = 'INSPIRE Download Service' THEN '7' || \"group\" ELSE \"group\" END AS typ, link FROM links WHERE category = 'geoservice' AND parent_id in (SELECT parent_id FROM links WHERE link = '$originUrl') UNION SELECT DISTINCT CASE WHEN s.target = 'metadata' AND l1.\"group\" = 'INSPIRE Download Service' THEN '8metadata_dls' WHEN s.target = 'metadata' AND l1.\"group\" = 'INSPIRE View Service' THEN '6metadata_vs' WHEN s.target = 'metadata' AND l1.\"group\" = 'WFS' THEN '4metadata_wfs' WHEN s.target = 'metadata' AND l1.\"group\" = 'WMS' THEN '2metadata_wms' ELSE s.target END AS typ, s.link FROM sublinks s, links_sublinks ls, links l1, links l2 WHERE s.target IN ('metadata', 'opendata') AND s.id = ls.sublink_id AND (ls.link_id = l1.id OR ls.link_id = l1.parent_id) AND l1.parent_id = l2.parent_id AND l2.link = '$originUrl' ORDER BY 1, 2");
             $result = pg_execute("", array());
@@ -182,7 +188,12 @@ class WmsMetadata extends SourceMetadata
         $name = SourceMetadata::getNotNull($layer->getSourceItem()->getName());
 
         # Metadatenbank
-        $connection = pg_connect("host=dbs11.sv.rostock.de dbname=geodaten user=lesen password=selen");
+        $yaml = Yaml::parse(file_get_contents(__DIR__ . '/../../../../../app/config/parameters.yml'));
+        $connection_host = $yaml['parameters']['more_metadata_host'];
+        $connection_dbname = $yaml['parameters']['more_metadata_dbname'];
+        $connection_user = $yaml['parameters']['more_metadata_user'];
+        $connection_password = $yaml['parameters']['more_metadata_password'];
+        $connection = pg_connect("host=" . $connection_host . " dbname=" . $connection_dbname . " user=" . $connection_user . " password=" . $connection_password);
         $src = $this->instance->getSource();
         $title = SourceMetadata::getNotNull($src->getTitle());
         $title = str_replace("Hansestadt Rostock", "Hanse- und Universitätsstadt Rostock", $title);
