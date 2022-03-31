@@ -219,7 +219,9 @@ var Mapbender = (function($, Mapbender) {
             if(!this.options.modal) {
               if(!selfElement.hasClass('waltraudWankt')) {
                   selfElement.css('position', 'fixed');
-                  selfElement.css('top', '50%');
+                  //selfElement.css('top', '50%');
+                  selfElement.css('top', '38px');
+                  //selfElement.css('left', '50%');
                   selfElement.css('left', '50%');
                   selfElement.addClass('waltraudWankt');
               }
@@ -602,8 +604,8 @@ var Mapbender = (function($, Mapbender) {
             }
 
             popup.css('width', (null === width ? '' : width));
-            if(!this.options.modal)
-              popup.css('margin-left', (0 - (width / 2)) + 'px');
+            /* if(!this.options.modal)
+              popup.css('margin-left', (0 - (width / 2)) + 'px'); */
         },
 
         /**
@@ -618,8 +620,8 @@ var Mapbender = (function($, Mapbender) {
             }
 
             popup.css('height', (null === height ? '' : height));
-            if(!this.options.modal)
-              popup.css('margin-top', (0 - (height / 2)) + 'px');
+            /* if(!this.options.modal)
+              popup.css('margin-top', (0 - (height / 2)) + 'px'); */
         },
 
         /**
