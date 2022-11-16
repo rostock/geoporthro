@@ -50,6 +50,7 @@ class ThematicSearchOneAdminType extends AbstractType
                     "bebauungsplaene" => "Bebauungspläne",
                     "bebauungsplaene_nur_rk" => "Bebauungspläne",
                     "betriebegewerblicherart" => "Betriebe gewerblicher Art",
+                    "grundsteuerobjekte" => "Grundsteuerobjekte",
                     "grundvermoegen" => "Grundvermögen",
                     "gruenfriedhofsflaechen" => "Grünflächen und Friedhofsbegleitflächen",
                     "gruenpflegeobjekte" => "Grünpflegeobjekte",

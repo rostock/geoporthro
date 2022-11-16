@@ -157,6 +157,8 @@ class ThematicSearchOne extends Element
                 // ohne Phonetik
                 ->find(null, $this->withoutPhonetic($term));
         } else {
+            if ($type === 'grundsteuerobjekte')
+                $term = str_replace('/', '', $term);
             $result = $solr
                 ->numericWildcard(true)
                 ->wildcardMinStrlen(0)
