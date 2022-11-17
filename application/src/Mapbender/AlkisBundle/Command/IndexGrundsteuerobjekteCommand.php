@@ -55,22 +55,38 @@ class IndexGrundsteuerobjekteCommand extends ContainerAwareCommand
         $output->writeln('Indiziere Grundsteuerobjekte fuer HRO-Grundsteuerobjektesuche ... ');
 
 
-        $stmt = $conn->query("SELECT count(*) FROM fachdaten.grundsteuerobjekte_regis_hro");
+        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten.grundsteuerobjekte_regis_hro');
         $result = $stmt->fetch();
+        $count = intval($result['count']);
+        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten.grundsteuerobjekte_teilflaechen_regis_hro');
+        $result = $stmt->fetch();
+        $count = $count + intval($result['count']);
 
-        while ($offset < $result['count']) {
+        while ($offset < $count) {
             $stmt = $conn->query("
                 SELECT
-                 uuid,
+                 flurstueckskennzeichen,
                  we_nummer,
                  lpad(regexp_replace(we_nummer, '\D', '', 'g'), 6, '0') AS we_nummer_sort,
                  steuernummer,
                  regexp_replace(steuernummer, '\/', '', 'g') AS steuernummer_clean,
                  lagebezeichnung,
+                 flaeche_im_flurstueck_formatiert AS flaeche,
+                 ST_AsText(ST_Centroid(geometrie)) AS geom,
+                 ST_AsText(geometrie) AS wktgeom
+                  FROM fachdaten.grundsteuerobjekte_teilflaechen_regis_hro
+                UNION SELECT
+                 NULL AS flurstueckskennzeichen,
+                 we_nummer,
+                 lpad(regexp_replace(we_nummer, '\D', '', 'g'), 6, '0') AS we_nummer_sort,
+                 steuernummer,
+                 regexp_replace(steuernummer, '\/', '', 'g') AS steuernummer_clean,
+                 lagebezeichnung,
+                 flaeche_formatiert AS flaeche,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
                   FROM fachdaten.grundsteuerobjekte_regis_hro
-                   ORDER BY we_nummer_sort
+                   ORDER BY we_nummer_sort, flurstueckskennzeichen DESC
                     LIMIT " . $limit . " OFFSET " . $offset);
 
             while ($row = $stmt->fetch()) {
@@ -93,15 +109,17 @@ class IndexGrundsteuerobjekteCommand extends ContainerAwareCommand
                     $row['lagebezeichnung']
                 ));
 
-                $doc->label = $row['we_nummer_sort'];
+                $doc->label = $row['we_nummer_sort'].$row['flurstueckskennzeichen'];
 
                 $doc->json = json_encode(array(
                     'data'   => array(
-                        'type'                => $type,
-                        'we_nummer'           => $row['we_nummer'],
-                        'steuernummer'        => $row['steuernummer'],
-                        'steuernummer_clean'  => $row['steuernummer_clean'],
-                        'lagebezeichnung'     => $row['lagebezeichnung']
+                        'type'                    => $type,
+                        'flurstueckskennzeichen'  => $row['flurstueckskennzeichen'],
+                        'we_nummer'               => $row['we_nummer'],
+                        'steuernummer'            => $row['steuernummer'],
+                        'steuernummer_clean'      => $row['steuernummer_clean'],
+                        'lagebezeichnung'         => $row['lagebezeichnung'],
+                        'flaeche'                 => $row['flaeche']
                     ),
                     'x'      => $x,
                     'y'      => $y,
@@ -116,8 +134,8 @@ class IndexGrundsteuerobjekteCommand extends ContainerAwareCommand
             $offset += $limit;
 
             $output->writeln("\t" . (
-                $offset > $result['count'] ? $result['count'] : $offset
-            ) . " von " . $result['count'] . " indiziert.");
+                $offset > $count ? $count : $offset
+            ) . " von " . $count . " indiziert.");
         }
 
         $solr->commit();
