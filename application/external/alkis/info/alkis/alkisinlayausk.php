@@ -288,7 +288,7 @@ while($rows = pg_fetch_array($ress)) {
         
         // +++ Weitere Felder ausgeben? BeschreibungDesUmfangsDerBuchung
 		if ($rows["sond"] != "") {
-			echo "<p class='sond' title='Sondereigentum'>Verbunden mit dem Sondereigentum…<br>…".$rows["sond"]."</p>";
+			echo "<p class='sond' title='Sondereigentum'>Verbunden mit dem Sondereigentum an:<br>".$rows["sond"]."</p>";
 		}
 		if ($rows["nrpl"] != "") {
 			echo "<p class='nrap' title='Nummer im Aufteilungsplan'>Nummer <span class='wichtig'>".$rows["nrpl"]."</span> im Aufteilungsplan.</p>";
@@ -302,7 +302,7 @@ while($rows = pg_fetch_array($ress)) {
                 echo "\n<p class='err'>Keine Eigentümer gefunden!</p>";
                 linkgml($gkz, $gmlg, "Buchungsblatt");
             } else {
-                echo "<hr style='height: 1px; color: #fff; background-color: #fff; border-top: 1px dotted #ffbbbb;'>";
+                echo "<hr style='height: 2px; color: #fff; background-color: #fff; border-top: 2px dotted #f00;'>";
                 echo "\nBei fiktiven Blättern werden hier keine Namensnummern und Namen angezeigt!";
             }
         }
@@ -338,6 +338,12 @@ while($rows = pg_fetch_array($ress)) {
 		$beznam=$rowan["bezeichnung"];
 		$blattkeyan=$rowan["blattart"]; // Schluessel von Blattart
 		$blattartan=blattart($blattkeyan);
+    if ($an > 0) {
+      echo "<br><hr style='height: 1px; color: #fff; background-color: #fff; border-top: 1px solid #00f;'>";
+      echo "<hr style='height: 1px; color: #fff; background-color: #fff; border-top: 1px solid #00f;'>";
+    } else {
+      echo "\n<br>";
+    }
 		echo "\n<table class='outer'>";
 		echo "\n<tr>"; // 1 row only
 			echo "\n<td>"; // outer linke Spalte
@@ -394,7 +400,7 @@ while($rows = pg_fetch_array($ress)) {
 			echo "<p class='nrap' title='Nummer im Aufteilungsplan'>Nummer <span class='wichtig'>".$rowan["nrpl"]."</span> im Aufteilungsplan.</p>";
 		}
 		if ($rowan["sond"] != "") {
-			echo "<p class='sond' title='Sondereigentum'>Verbunden mit dem Sondereigentum…<br>…".$rowan["sond"]."</p>";
+			echo "<p class='sond' title='Sondereigentum'>Verbunden mit dem Sondereigentum an:<br>".$rowan["sond"]."</p>";
 		}
 		$an++;	
 	}
