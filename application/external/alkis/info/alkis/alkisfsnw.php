@@ -368,7 +368,7 @@ $sql ="SELECT n.id, n.klasse, nk.mv, nk.nutzungsartenbereich, nk.nutzungsart, nk
 $sql.="ST_Area(ST_Intersection(n.wkb_geometry, f.wkb_geometry)) AS schnittflaeche ";
 $sql.="FROM aaa_ogr.ax_flurstueck f, prozessiert.nutzung n ";
 $sql.="JOIN prozessiert.nutzungsarten na ON na.id = n.id ";
-$sql.="LEFT JOIN prozessiert.nutzungsartenkatalog nk ON na.quelltabelle = nk.quelltabelle ";
+$sql.="LEFT JOIN prozessiert.nutzungsartenkatalog_gid7 nk ON na.quelltabelle = nk.quelltabelle ";
 $sql.="WHERE f.endet IS NULL AND f.gml_id= $1 AND n.wkb_geometry && f.wkb_geometry AND ST_Intersects(n.wkb_geometry, f.wkb_geometry) = TRUE ";
 $sql.="AND ST_Area(ST_Intersection(n.wkb_geometry, f.wkb_geometry)) > 0.05 ";
 $sql.="AND COALESCE(n.agt, 0) = COALESCE(nk.agt, 0) AND COALESCE(n.art, 0) = COALESCE(nk.art, 0) ";
