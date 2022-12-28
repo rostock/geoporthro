@@ -52,7 +52,7 @@
       </trans-unit>
       <trans-unit id="5f3373b188a1895395a23aa46eb3e242" resname="mb.maptool.clickcoordinate.intern.coords.title">
         <source>mb.maptool.clickcoordinate.intern.coords.title</source>
-        <target>ermittelte Koordinaten im Basissystem der Karte</target>
+        <target>Koordinaten im Standardsystem ETRS89/UTM-33N</target>
       </trans-unit>
       <trans-unit id="c76979bab98d9f4b783ec9c08144d09f" resname="mb.maptool.clickcoordinate.button.reset">
         <source>mb.maptool.clickcoordinate.button.reset</source>
@@ -80,7 +80,7 @@
       </trans-unit>
       <trans-unit id="afe537c126213611fff8222b5a3083ae" resname="mb.maptool.searchcoordinate.intern.coords.title">
         <source>mb.maptool.searchcoordinate.intern.coords.title</source>
-        <target>Koordinaten im Basissystem der Karte</target>
+        <target>Koordinaten im Standardsystem ETRS89/UTM-33N</target>
       </trans-unit>
       <trans-unit id="bb17fe6555de6b1cc688608c270963c4" resname="mb.maptool.searchcoordinate.button.reset">
         <source>mb.maptool.searchcoordinate.button.reset</source>

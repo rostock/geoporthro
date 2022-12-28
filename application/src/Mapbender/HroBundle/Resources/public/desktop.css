@@ -637,30 +637,39 @@ progress {
 
 
 .modal-progress {
-    margin-bottom: 0 !important;
+  margin-bottom: 0 !important;
 }
 
 .modal-progress-bar {
-    width: 100% !important;
+  width: 100% !important;
 }
 
 .loading-modal {
-    padding-top: 15% !important;
-    overflow-y: visible !important;
+  padding-top: 15% !important;
+  overflow-y: visible !important;
 }
 
 ul.flipped-list {
-    transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 ul.flipped-list > li {
-    transform: rotate(-180deg);
+  transform: rotate(-180deg);
+}
+
+.coords-hint {
+  margin-top: 10px;
+}
+
+.coords-hint ol {
+  padding-left: 0;
+  list-style: inside decimal !important;
 }
 
 .coords-hint span {
-    font-family: monospace;
+  font-family: monospace;
 }
 
 .olc-coords-hint {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
 }
