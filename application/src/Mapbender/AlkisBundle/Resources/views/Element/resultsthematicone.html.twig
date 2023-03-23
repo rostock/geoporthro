@@ -37,7 +37,11 @@
 
              >
             {% if type == 'anundverkauf' and json.data.type == 'anundverkauf' %}
-                {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != null%}{{ json.data.flurstueckskennzeichen }}, {% endif %}{% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}, {% endif %}Status {{ json.data.realnutzungsarten }}{% if json.data.bemerkungen is defined and json.data.bemerkungen != null%}, {{ json.data.bemerkungen }}{% endif %}
+                {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != '' %}
+                    <i class="fa fa-circle-o" title="Teilfläche"></i> {{ json.data.aktenzeichen }} – {{ json.data.vorgangsart }} – {{ json.data.flurstueckskennzeichen }} ({{ json.data.flaeche }})
+                {% else %}
+                    <i class="fa fa-circle" title="Gesamtfläche"></i> {{ json.data.aktenzeichen }} – {{ json.data.vorgangsart }} – Gesamtfläche ({{ json.data.flaeche }})
+                {% endif %}
             {% elseif type == 'anlagevermoegendereigenbetriebe' and json.data.type == 'anlagevermoegendereigenbetriebe' %}
                 {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != null%}{{ json.data.flurstueckskennzeichen }}, {% endif %}{% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}, {% endif %}Status {{ json.data.realnutzungsarten }}{% if json.data.wirtschaftseinheit_betriebsvermoegen is defined and json.data.wirtschaftseinheit_betriebsvermoegen != null%}, {{ json.data.wirtschaftseinheit_betriebsvermoegen }}{% endif %}
             {% elseif type == 'baumkataster' and json.data.type == 'baum' %}

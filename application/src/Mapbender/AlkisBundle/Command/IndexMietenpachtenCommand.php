@@ -79,7 +79,7 @@ class IndexMietenpachtenCommand extends ContainerAwareCommand
                  ST_AsText(ST_Union(ST_MakeValid(geometrie))) AS wktgeom
                   FROM fachdaten_flurstuecksbezug.mieten_und_pachten_regis_hro
                    GROUP BY aktenzeichen, flaeche_formatiert
-                     ORDER BY geom
+                     ORDER BY aktenzeichen, flurstueckskennzeichen DESC
                       LIMIT " . $limit . " OFFSET " . $offset);
 
             while ($row = $stmt->fetch()) {

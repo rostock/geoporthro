@@ -48,64 +48,41 @@ class IndexAnundverkaufCommand extends ContainerAwareCommand
 
         $conn = $this->getContainer()->get('doctrine.dbal.hro_search_data_connection');
 
-        $limit = 10;
+        $limit = 50;
         $offset = 0;
         $id = 0;
 
         $output->writeln('Indiziere An- und Verkauf fuer HRO-Suche nach An- und Verkauf ... ');
 
 
-        $stmt = $conn->query("SELECT count(*) FROM (SELECT uuid FROM fachdaten_flurstuecksbezug.realnutzungsarten_regis_hro WHERE realnutzungsarten ~ 'Ankauf' OR realnutzungsarten ~ 'ED' OR realnutzungsarten = 'KG' OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ '\,KG$' OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ 'KG\,' OR realnutzungsarten ~ 'UV' UNION SELECT uuid FROM fachdaten_flurstuecksbezug.an_und_verkauf_regis_hro WHERE realnutzungsarten ~ 'Ankauf' OR realnutzungsarten = 'KG' OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ '\,KG$' OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ 'KG\,' OR realnutzungsarten = 'SO' OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ '\,SO$' OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ 'SO\,') AS tabelle");
+        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.an_und_verkauf_regis_hro');
         $result = $stmt->fetch();
+        $count = intval($result['count']);
+        $stmt = $conn->query('SELECT count(*) AS count FROM (SELECT uuid FROM fachdaten_flurstuecksbezug.an_und_verkauf_regis_hro GROUP BY uuid) AS tabelle');
+        $result = $stmt->fetch();
+        $count = $count + intval($result['count']);
 
-        while ($offset < $result['count']) {
+        while ($offset < $count) {
             $stmt = $conn->query("
                 SELECT
-                 uuid,
-                 gemarkung_name,
-                 gemarkung_schluessel,
-                 substring(gemarkung_schluessel from 1 for 2) AS land_schluessel,
-                 substring(gemarkung_schluessel from 3) AS gemarkung_schluessel_kurz,
-                 flur::int AS flur_kurz,
-                 zaehler::int AS zaehler_kurz,
-                 nenner::int AS nenner_kurz,
-                 flurstueckskennzeichen,
-                 aktenzeichen_anundverkauf AS aktenzeichen,
-                 bemerkungen_anundverkauf AS bemerkungen,
-                 realnutzungsarten,
-                 ST_AsText(ST_Centroid(geometrie)) AS geom,
-                 ST_AsText(geometrie) AS wktgeom
-                  FROM fachdaten_flurstuecksbezug.realnutzungsarten_regis_hro
-                   WHERE realnutzungsarten ~ 'Ankauf'
-                   OR realnutzungsarten ~ 'ED'
-                   OR realnutzungsarten = 'KG'
-                   OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ '\,KG$'
-                   OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ 'KG\,'
-                   OR realnutzungsarten ~ 'UV'
-                UNION SELECT
-                 uuid,
-                 gemarkung_name,
-                 gemarkung_schluessel,
-                 substring(gemarkung_schluessel from 1 for 2) AS land_schluessel,
-                 substring(gemarkung_schluessel from 3) AS gemarkung_schluessel_kurz,
-                 flur::int AS flur_kurz,
-                 zaehler::int AS zaehler_kurz,
-                 nenner::int AS nenner_kurz,
                  flurstueckskennzeichen,
                  aktenzeichen,
-                 bemerkungen,
-                 realnutzungsarten,
+                 vorgangsart,
+                 flaeche_im_flurstueck_formatiert AS flaeche,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
                   FROM fachdaten_flurstuecksbezug.an_und_verkauf_regis_hro
-                   WHERE realnutzungsarten ~ 'Ankauf'
-                   OR realnutzungsarten = 'KG'
-                   OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ '\,KG$'
-                   OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ 'KG\,'
-                   OR realnutzungsarten = 'SO'
-                   OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ '\,SO$' OR regexp_replace(realnutzungsarten, ' ', '', 'g') ~ 'SO\,'
-                    ORDER BY uuid
-                     LIMIT " . $limit . " OFFSET " . $offset);
+                UNION SELECT
+                 NULL AS flurstueckskennzeichen,
+                 aktenzeichen,
+                 vorgangsart,
+                 flaeche_formatiert AS flaeche,
+                 ST_AsText(ST_Centroid(ST_Union(ST_MakeValid(geometrie)))) AS geom,
+                 ST_AsText(ST_Union(ST_MakeValid(geometrie))) AS wktgeom
+                  FROM fachdaten_flurstuecksbezug.an_und_verkauf_regis_hro
+                   GROUP BY uuid, aktenzeichen, vorgangsart, flaeche_formatiert
+                     ORDER BY aktenzeichen, flurstueckskennzeichen DESC
+                      LIMIT " . $limit . " OFFSET " . $offset);
 
             while ($row = $stmt->fetch()) {
                 list($x, $y) = $this->prepairPoint($row['geom']);
@@ -113,28 +90,26 @@ class IndexAnundverkaufCommand extends ContainerAwareCommand
                 $doc = $solr->newDocument();
                 $doc->id = $type . '_' . ++$id;
                 $doc->text = $this->concat(
-                    $row['nenner_kurz'] . ' ' . $row['zaehler_kurz'] . ' ' . $row['flur_kurz'] . ' ' . $row['gemarkung_schluessel_kurz'] . ' ' . $row['gemarkung_schluessel'] . ' ' . $row['gemarkung_name'],
                     $row['aktenzeichen'],
-                    $row['bemerkungen'],
-                    $row['realnutzungsarten']
+                    $row['vorgangsart'],
+                    $row['flurstueckskennzeichen']
                 );
                 
                 $doc->phonetic = $this->addPhonetic($this->concat(
-                    $row['nenner_kurz'] . ' ' . $row['zaehler_kurz'] . ' ' . $row['flur_kurz'] . ' ' . $row['gemarkung_schluessel_kurz'] . ' ' . $row['gemarkung_schluessel'] . ' ' . $row['gemarkung_name'],
                     $row['aktenzeichen'],
-                    $row['bemerkungen'],
-                    $row['realnutzungsarten']
+                    $row['vorgangsart'],
+                    $row['flurstueckskennzeichen']
                 ));
 
-                $doc->label = "1".$row['flurstueckskennzeichen'].$row['aktenzeichen'].$row['bemerkungen'].$row['realnutzungsarten'];
+                $doc->label = "1".$row['aktenzeichen'].$row['vorgangsart'].$row['flurstueckskennzeichen'];
 
                 $doc->json = json_encode(array(
                     'data'   => array(
-                        'type'                   => $type,
-                        'flurstueckskennzeichen' => $row['flurstueckskennzeichen'],
-                        'aktenzeichen'           => $row['aktenzeichen'],
-                        'bemerkungen'            => $row['bemerkungen'],
-                        'realnutzungsarten'      => $row['realnutzungsarten']
+                        'type'                    => $type,
+                        'aktenzeichen'            => $row['aktenzeichen'],
+                        'vorgangsart'             => $row['vorgangsart'],
+                        'flurstueckskennzeichen'  => $row['flurstueckskennzeichen'],
+                        'flaeche'                 => $row['flaeche']
                     ),
                     'x'      => $x,
                     'y'      => $y,
@@ -149,8 +124,8 @@ class IndexAnundverkaufCommand extends ContainerAwareCommand
             $offset += $limit;
 
             $output->writeln("\t" . (
-                $offset > $result['count'] ? $result['count'] : $offset
-            ) . " von " . $result['count'] . " indiziert.");
+                $offset > $count ? $count : $offset
+            ) . " von " . $count . " indiziert.");
         }
 
         $solr->commit();
