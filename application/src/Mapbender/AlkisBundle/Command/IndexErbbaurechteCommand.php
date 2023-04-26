@@ -10,13 +10,13 @@ use Mapbender\AlkisBundle\Component\ColognePhonetic;
 
 use ARP\SolrClient2\SolrClient;
 
-class IndexAnundverkaufCommand extends ContainerAwareCommand
+class IndexErbbaurechteCommand extends ContainerAwareCommand
 {
     protected function configure()
     {
         $this
         ->setDescription('Reset\'s the solr index.')
-        ->setName('hro:index:reset:anundverkauf');
+        ->setName('hro:index:reset:erbbaurechte');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -36,7 +36,7 @@ class IndexAnundverkaufCommand extends ContainerAwareCommand
             ->setSQLLogger(null);
 
         
-        $type = 'anundverkauf';
+        $type = 'erbbaurechte';
         $phonetic = ColognePhonetic::singleton();
         
         $solr = new SolrClient(
@@ -48,43 +48,34 @@ class IndexAnundverkaufCommand extends ContainerAwareCommand
 
         $conn = $this->getContainer()->get('doctrine.dbal.hro_search_data_connection');
 
-        $limit = 50;
+        $limit = 10;
         $offset = 0;
         $id = 0;
 
-        $output->writeln('Indiziere An- und Verkauf fuer HRO-Suche nach An- und Verkauf ... ');
+        $output->writeln('Indiziere Erbbaurechte fuer HRO-Suche nach Erbbaurechten ... ');
 
 
-        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.an_und_verkauf_regis_hro WHERE flaeche_im_flurstueck > 1');
+        $stmt = $conn->query("SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.erbbaurechte_regis_hro");
         $result = $stmt->fetch();
-        $count = intval($result['count']);
-        $stmt = $conn->query('SELECT count(*) AS count FROM (SELECT uuid FROM fachdaten_flurstuecksbezug.an_und_verkauf_regis_hro WHERE flaeche > 1 GROUP BY uuid) AS tabelle');
-        $result = $stmt->fetch();
-        $count = $count + intval($result['count']);
 
-        while ($offset < $count) {
+        while ($offset < $result['count']) {
             $stmt = $conn->query("
                 SELECT
+                 uuid,
+                 gemarkung_name,
+                 gemarkung_schluessel,
+                 substring(gemarkung_schluessel from 1 for 2) AS land_schluessel,
+                 substring(gemarkung_schluessel from 3) AS gemarkung_schluessel_kurz,
+                 flur::int AS flur_kurz,
+                 zaehler::int AS zaehler_kurz,
+                 nenner::int AS nenner_kurz,
                  flurstueckskennzeichen,
-                 aktenzeichen,
-                 vorgangsart,
-                 flaeche_im_flurstueck_formatiert AS flaeche,
+                 aktenzeichen_suche AS aktenzeichen,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
-                  FROM fachdaten_flurstuecksbezug.an_und_verkauf_regis_hro
-                   WHERE flaeche_im_flurstueck > 1
-                UNION SELECT
-                 NULL AS flurstueckskennzeichen,
-                 aktenzeichen,
-                 vorgangsart,
-                 flaeche_formatiert AS flaeche,
-                 ST_AsText(ST_Centroid(ST_Union(ST_MakeValid(geometrie)))) AS geom,
-                 ST_AsText(ST_Union(ST_MakeValid(geometrie))) AS wktgeom
-                  FROM fachdaten_flurstuecksbezug.an_und_verkauf_regis_hro
-                   WHERE flaeche > 1
-                    GROUP BY uuid, aktenzeichen, vorgangsart, flaeche_formatiert
-                     ORDER BY aktenzeichen, flurstueckskennzeichen DESC
-                      LIMIT " . $limit . " OFFSET " . $offset);
+                  FROM fachdaten_flurstuecksbezug.erbbaurechte_regis_hro
+                   ORDER BY uuid
+                    LIMIT " . $limit . " OFFSET " . $offset);
 
             while ($row = $stmt->fetch()) {
                 list($x, $y) = $this->prepairPoint($row['geom']);
@@ -92,26 +83,22 @@ class IndexAnundverkaufCommand extends ContainerAwareCommand
                 $doc = $solr->newDocument();
                 $doc->id = $type . '_' . ++$id;
                 $doc->text = $this->concat(
-                    $row['aktenzeichen'],
-                    $row['vorgangsart'],
-                    $row['flurstueckskennzeichen']
+                    $row['nenner_kurz'] . ' ' . $row['zaehler_kurz'] . ' ' . $row['flur_kurz'] . ' ' . $row['gemarkung_schluessel_kurz'] . ' ' . $row['gemarkung_schluessel'] . ' ' . $row['gemarkung_name'],
+                    $row['aktenzeichen']
                 );
                 
                 $doc->phonetic = $this->addPhonetic($this->concat(
-                    $row['aktenzeichen'],
-                    $row['vorgangsart'],
-                    $row['flurstueckskennzeichen']
+                    $row['nenner_kurz'] . ' ' . $row['zaehler_kurz'] . ' ' . $row['flur_kurz'] . ' ' . $row['gemarkung_schluessel_kurz'] . ' ' . $row['gemarkung_schluessel'] . ' ' . $row['gemarkung_name'],
+                    $row['aktenzeichen']
                 ));
 
-                $doc->label = "1".$row['aktenzeichen'].$row['vorgangsart'].$row['flurstueckskennzeichen'];
+                $doc->label = "1".$row['flurstueckskennzeichen'].$row['aktenzeichen'];
 
                 $doc->json = json_encode(array(
                     'data'   => array(
-                        'type'                    => $type,
-                        'aktenzeichen'            => $row['aktenzeichen'],
-                        'vorgangsart'             => $row['vorgangsart'],
-                        'flurstueckskennzeichen'  => $row['flurstueckskennzeichen'],
-                        'flaeche'                 => $row['flaeche']
+                        'type'                                 => $type,
+                        'flurstueckskennzeichen'               => $row['flurstueckskennzeichen'],
+                        'aktenzeichen'                         => $row['aktenzeichen']
                     ),
                     'x'      => $x,
                     'y'      => $y,
@@ -126,8 +113,8 @@ class IndexAnundverkaufCommand extends ContainerAwareCommand
             $offset += $limit;
 
             $output->writeln("\t" . (
-                $offset > $count ? $count : $offset
-            ) . " von " . $count . " indiziert.");
+                $offset > $result['count'] ? $result['count'] : $offset
+            ) . " von " . $result['count'] . " indiziert.");
         }
 
         $solr->commit();

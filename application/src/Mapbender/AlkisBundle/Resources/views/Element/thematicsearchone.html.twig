@@ -3,7 +3,7 @@
         <select id="search-select-thematic-one" class="hiddenDropdown">
         {% for opt in configuration.options %}
           {% if opt == 'anundverkauf' %}
-            <option value="anundverkauf"{% if loop.first %} selected="true" {% endif %}>{{ 'An- und Verkauf' | trans }}</option>
+            <option value="anundverkauf"{% if loop.first %} selected="true" {% endif %}>{{ 'An- und Verkauf, Erbbaurechtsvergabe' | trans }}</option>
           {% elseif opt == 'anlagevermoegendereigenbetriebe' %}
             <option value="anlagevermoegendereigenbetriebe"{% if loop.first %} selected="true" {% endif %}>{{ 'Anlagevermögen der Eigenbetriebe' | trans }}</option>
           {% elseif opt == 'baumkataster' %}
@@ -14,6 +14,8 @@
             <option value="bebauungsplaene_nur_rk"{% if loop.first %} selected="true" {% endif %}>{{ 'Bebauungspläne' | trans }}</option>
           {% elseif opt == 'betriebegewerblicherart' %}
             <option value="betriebegewerblicherart"{% if loop.first %} selected="true" {% endif %}>{{ 'Betriebe gewerblicher Art' | trans }}</option>
+          {% elseif opt == 'erbbaurechte' %}
+            <option value="erbbaurechte"{% if loop.first %} selected="true" {% endif %}>{{ 'Erbbaurechte' | trans }}</option>
           {% elseif opt == 'grundsteuerobjekte' %}
             <option value="grundsteuerobjekte"{% if loop.first %} selected="true" {% endif %}>{{ 'Grundsteuerobjekte' | trans }}</option>
           {% elseif opt == 'grundvermoegen' %}
