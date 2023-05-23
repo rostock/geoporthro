@@ -69,8 +69,22 @@ if (!$con) echo "<p class='err'>Fehler beim Verbinden der DB</p>\n";
 // if ($debug > 1) {echo "<p class='err'>DB=".$dbname.", user=".$dbuser."</p>";}
 
 function vorgaenger($fskennz, $gmlid, $con) {
-    $gefunden = false;
     // Vorgänger bestimmen
+    $gefunden = false;
+    // unsinnige Fälle abfangen, in denen ein Flurstückskennzeichen mehrfach in der Historie auftritt; Beispiel:
+    // 132218003000040006__ (hier sind die korrekten Nachfolger angegeben)
+    // 13221800300004000601 (verweist auf 13221800300004000602)
+    // 13221800300004000602 (verweist auf 13221800300004000603)
+    // 13221800300004000603 (hier sind die korrekten Vorgänger angegeben)
+    // => 13221800300004000603 statt 132218003000040006__ verwenden
+    $temp_gmlid = $gmlid;
+    $temp_sql = "SELECT gml_id FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE flurstueckskennzeichen = (SELECT max(flurstueckskennzeichen) FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE flurstueckskennzeichen ~ (SELECT replace(flurstueckskennzeichen, '_', '') FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE gml_id = $1));";
+    pg_prepare($con, "", $temp_sql);
+    $temp_res = pg_execute($con, "", array($gmlid));
+    if ($temp_resultate = pg_fetch_array($temp_res)) {
+        $temp_gmlid = $temp_resultate[0];
+    }
+    pg_free_result($temp_res);
     $sql_vorgaenger = "
      SELECT
       array_agg(flurstueckskennzeichen) AS flurstueckskennzeichen
@@ -108,7 +122,7 @@ function vorgaenger($fskennz, $gmlid, $con) {
            ) = ANY (nachfolgerflurstueckskennzeichen)
        ) AS tabelle";
     pg_prepare($con, "", $sql_vorgaenger);
-    $res_vorgaenger = pg_execute($con, "", array($gmlid));
+    $res_vorgaenger = pg_execute($con, "", array($temp_gmlid));
     if ($resultate = pg_fetch_array($res_vorgaenger)) {
         $stri = trim($resultate[0], "{}");
         if (!empty($stri)) {
@@ -146,6 +160,20 @@ function vorgaenger($fskennz, $gmlid, $con) {
         pg_free_result($res_vorgaenger);
     }
     if ($gefunden === false) {
+        // unsinnige Fälle abfangen, in denen ein Flurstückskennzeichen mehrfach in der Historie auftritt; Beispiel:
+        // 132218003000040006__ (hier sind die korrekten Nachfolger angegeben)
+        // 13221800300004000601 (verweist auf 13221800300004000602)
+        // 13221800300004000602 (verweist auf 13221800300004000603)
+        // 13221800300004000603 (hier sind die korrekten Vorgänger angegeben)
+        // => 13221800300004000603 statt 132218003000040006__ verwenden
+        $temp_fskennz = $fskennz;
+        $temp_sql = "SELECT max(flurstueckskennzeichen) FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE flurstueckskennzeichen ~ replace($1, '_', '');";
+        pg_prepare($con, "", $temp_sql);
+        $temp_res = pg_execute($con, "", array($fskennz));
+        if ($temp_resultate = pg_fetch_array($temp_res)) {
+            $temp_fskennz = $temp_resultate[0];
+        }
+        pg_free_result($temp_res);
         $sql_vorgaenger = "
          SELECT
           array_agg(flurstueckskennzeichen) AS flurstueckskennzeichen
@@ -161,7 +189,7 @@ function vorgaenger($fskennz, $gmlid, $con) {
                AND $1 = ANY (zeigtaufneuesflurstueck)
            ) AS tabelle";
         pg_prepare($con, "", $sql_vorgaenger);
-        $res_vorgaenger = pg_execute($con, "", array($fskennz));
+        $res_vorgaenger = pg_execute($con, "", array($temp_fskennz));
         if ($resultate = pg_fetch_array($res_vorgaenger)) {
             $stri = trim($resultate[0], "{}");
             if (!empty($stri)) {
@@ -183,7 +211,7 @@ function nachfolger($fskennz, $con) {
     // Nachfolger bestimmen
     $sql_nachfolger = "
      SELECT
-      array_agg(flurstueckskennzeichen) AS flurstueckskennzeichen
+      array_agg(CASE WHEN flurstueckskennzeichen !~ '__$' THEN regexp_replace(flurstueckskennzeichen, '[0-9]{2}$', '__') ELSE flurstueckskennzeichen END) AS flurstueckskennzeichen
        FROM (
         SELECT
          unnest(nachfolgerflurstueckskennzeichen) AS flurstueckskennzeichen
@@ -344,7 +372,7 @@ echo "<table class='outer'>";
 	// Spalte 1: F l u r s t ü c k
 	echo "\n<tr>\n\t<td>";
 		echo "<img src='ico/".$ico."' width='16' height='16' alt=''> ".$wert;
-		echo "<br><span title='amtliche Fläche (Buchfläche) des Flurstücks'>Fläche</span> <span class='flae'>".$amtlicheflaeched." m²</span>";
+		echo "<br><span title='amtliche Fläche (Buchfläche) des Flurstücks'>Fläche</span> <span class='flae'>".($amtlicheflaeched == '0,' ? "unbekannt" : $amtlicheflaeched." m²")."</span>";
 	echo "</td>";
 
 	// Spalte 2: V o r g ä n g e r
