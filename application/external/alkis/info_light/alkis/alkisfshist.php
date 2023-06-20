@@ -258,7 +258,7 @@ if ($gmlid != "") { // Ja, die GML wurde uebergeben
 
 if ($parmtyp != "") { // einer der beiden erlaubten Fälle
 	// UNION-Abfrage auf 3ähnliche Tabellen, darin aber immer nur 1 Treffer.
-	$felder="endet, array_remove(art, 'urn:adv:fachdatenverbindung:AA_Antrag') AS art, name, gml_id, land, flurnummer, zaehler, nenner, flurstueckskennzeichen, amtlicheflaeche, zeitpunktderentstehung, gemarkungsnummer, angabenzumabschnittflurstueck, ";
+	$felder="endet, array_remove(zeigtaufexternes_art, 'urn:mv:fdv:0901') AS art, zeigtaufexternes_name AS name, gml_id, land, flurnummer, zaehler, nenner, flurstueckskennzeichen, amtlicheflaeche, zeitpunktderentstehung, gemarkungsnummer, angabenzumabschnittflurstueck, ";
 
 	$sqlu = "SELECT 'a' AS ftyp, ".$felder."null::text[] AS nach, null::text[] AS vor ";
 	$sqlu.="FROM aaa_ogr.ax_flurstueck f ".$whereclause." AND f.endet IS NULL ";
