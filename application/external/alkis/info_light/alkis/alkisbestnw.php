@@ -140,12 +140,12 @@ echo "\n</tr>";
 // Blatt ->  B u c h u n g s s t e l l e
 // ax_buchungsblatt <istBestandteilVon< ax_buchungsstelle 
 $sql ="SELECT DISTINCT s.gml_id, s.buchungsart, s.laufendenummer AS lfd, s.beschreibungdesumfangsderbuchung AS udb, ";
-$sql.="s.zaehler, s.nenner, s.nummerimaufteilungsplan AS nrap, s.beschreibungdessondereigentums AS sond, a.beschreibung as bart, s.beginnt ";
+$sql.="s.zaehler, s.nenner, s.nummerimaufteilungsplan AS nrap, s.beschreibungdessondereigentums AS sond, a.beschreibung as bart, s.beginnt, lpad(s.laufendenummer, 4, '0') AS ordering ";
 $sql.="FROM aaa_ogr.ax_buchungsstelle s ";
 $sql.="JOIN aaa_ogr.ax_buchungsblatt b ON b.gml_id = s.istbestandteilvon ";
 $sql.="LEFT JOIN aaa_ogr.ax_buchungsart_buchungsstelle a ON a.wert = s.buchungsart ";
 $sql.="WHERE s.endet IS NULL AND b.endet IS NULL AND b.gml_id = $1";
-$sql.="ORDER BY s.zaehler, lfd;";
+$sql.="ORDER BY s.zaehler, ordering;";
 $v=array($gmlid);
 $res=pg_prepare("", $sql);
 $res=pg_execute("", $v);
@@ -186,7 +186,7 @@ while($row = pg_fetch_array($res)) {
         $sql.="JOIN aaa_ogr.ax_buchungsstelle sf ON sb.gml_id = ANY(sf.an) OR sb.gml_id = ANY(sf.zu) OR sb.gml_id = ANY(sf.durch) ";
         $sql.="LEFT JOIN aaa_ogr.ax_buchungsart_buchungsstelle a ON a.wert = sb.buchungsart ";
         $sql.="WHERE sb.endet IS NULL AND sf.endet IS NULL AND sf.gml_id = $1";
-        $sql.="ORDER BY sb.laufendenummer;";
+        $sql.="ORDER BY lpad(sb.laufendenummer, 4, '0');";
         $v=array($gml_bs);
 		$resan=pg_prepare("", $sql);
 		$resan=pg_execute("", $v);
