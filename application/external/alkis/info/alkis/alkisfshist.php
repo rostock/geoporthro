@@ -258,7 +258,7 @@ if ($gmlid != "") { // Ja, die GML wurde uebergeben
 
 if ($parmtyp != "") { // einer der beiden erlaubten Fälle
 	// UNION-Abfrage auf 3ähnliche Tabellen, darin aber immer nur 1 Treffer.
-	$felder="endet, array_remove(art, 'urn:adv:fachdatenverbindung:AA_Antrag') AS art, name, gml_id, gemarkung_land AS land, flurnummer, zaehler, nenner, flurstueckskennzeichen, amtlicheflaeche, zeitpunktderentstehung, gemarkungsnummer, angabenzumabschnittflurstueck, ";
+	$felder="endet, array_remove(art, 'urn:adv:fachdatenverbindung:AA_Antrag') AS art, name, gml_id, land, flurnummer, zaehler, nenner, flurstueckskennzeichen, amtlicheflaeche, zeitpunktderentstehung, gemarkungsnummer, angabenzumabschnittflurstueck, ";
 
 	$sqlu = "SELECT 'a' AS ftyp, ".$felder."null::text[] AS nach, null::text[] AS vor ";
 	$sqlu.="FROM aaa_ogr.ax_flurstueck f ".$whereclause." AND f.endet IS NULL ";
@@ -416,9 +416,8 @@ echo "\n</table>";
 
 // Entstehung:
 // Abfrage für die Antragsnummer (nach ALKIS)
-$sql ="SELECT DISTINCT a.kennzeichen AS antragsnummer ";
+$sql ="SELECT DISTINCT CASE WHEN f.zeigtaufexternes_name IS NOT NULL THEN f.zeigtaufexternes_name[1] ELSE NULL END AS antragsnummer ";
 $sql.="FROM aaa_ogr.ax_fortfuehrungsfall f ";
-$sql.="LEFT JOIN aaa_ogr.aa_antrag a ON a.identifier = fachdatenobjekt_uri[1] ";
 $sql.="WHERE $1 = ANY (f.zeigtaufneuesflurstueck)";
 $sql.="AND NOT ($1 = ANY (f.zeigtaufaltesflurstueck));";
 $v = array($fskenn);
@@ -491,9 +490,8 @@ pg_free_result($res);
 
 // Fortführungen:
 // Abfrage für Daten und Antragsnummern (nach ALKIS)
-$sql ="SELECT DISTINCT f.gml_id, f.beginnt::date AS datum, a.kennzeichen AS antragsnummer ";
+$sql ="SELECT DISTINCT f.gml_id, f.beginnt::date AS datum, CASE WHEN f.zeigtaufexternes_name IS NOT NULL THEN f.zeigtaufexternes_name[1] ELSE NULL END AS antragsnummer ";
 $sql.="FROM aaa_ogr.ax_fortfuehrungsfall f ";
-$sql.="LEFT JOIN aaa_ogr.aa_antrag a ON a.identifier = fachdatenobjekt_uri[1] ";
 $sql.="WHERE $1 = ANY (f.zeigtaufneuesflurstueck) ";
 $sql.="AND $1 = ANY (f.zeigtaufaltesflurstueck) ";
 $sql.="ORDER BY datum;";

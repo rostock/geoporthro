@@ -82,7 +82,7 @@ if ($gmlid == "" AND $fskennz != "") {
 }
 
 // F L U R S T U E C K
-$sql ="SELECT array_remove(f.art, 'urn:adv:fachdatenverbindung:AA_Antrag') AS art, f.name, f.flurnummer, f.zaehler, f.nenner, f.flurstueckskennzeichen, f.gemarkung_land AS land, f.regierungsbezirk, f.kreis, f.gemeinde, f.amtlicheflaeche, f.realflaeche AS realflaeche, CASE WHEN round(f.realflaeche::numeric, 2)::text ~ '50$' AND round(f.realflaeche::numeric, 2) >= 1 THEN CASE WHEN (trunc(f.realflaeche)::int % 2) = 0 THEN trunc(f.realflaeche) ELSE round(round(f.realflaeche::numeric, 2)::numeric) END WHEN round(f.realflaeche::numeric, 2) < 1 THEN round(f.realflaeche::numeric, 2) ELSE round(f.realflaeche::numeric) END AS realflaeche_geodaetisch_gerundet, ST_Area(f.wkb_geometry) AS geomflaeche, f.zeitpunktderentstehung, f.stelle, f.kennungschluessel, f.angabenzumabschnittflurstueck, f.flaechedesabschnitts, ";
+$sql ="SELECT array_remove(f.art, 'urn:adv:fachdatenverbindung:AA_Antrag') AS art, f.name, f.flurnummer, f.zaehler, f.nenner, f.flurstueckskennzeichen, f.land, f.regierungsbezirk, f.kreis, f.gemeinde, f.amtlicheflaeche, f.realflaeche AS realflaeche, CASE WHEN round(f.realflaeche::numeric, 2)::text ~ '50$' AND round(f.realflaeche::numeric, 2) >= 1 THEN CASE WHEN (trunc(f.realflaeche)::int % 2) = 0 THEN trunc(f.realflaeche) ELSE round(round(f.realflaeche::numeric, 2)::numeric) END WHEN round(f.realflaeche::numeric, 2) < 1 THEN round(f.realflaeche::numeric, 2) ELSE round(f.realflaeche::numeric) END AS realflaeche_geodaetisch_gerundet, ST_Area(f.wkb_geometry) AS geomflaeche, f.zeitpunktderentstehung, f.stelle, f.kennungschluessel, f.angabenzumabschnittflurstueck, f.flaechedesabschnitts, ";
 $sql.="g.gemarkungsnummer, g.bezeichnung ";
 $sql.="FROM aaa_ogr.ax_flurstueck f ";
 $sql.="LEFT JOIN aaa_ogr.ax_gemarkung g ON f.gemarkungsnummer = g.gemarkungsnummer ";
@@ -166,7 +166,7 @@ echo "\n<table class='fs'>";
 echo "\n<tr>\n\t<td class='ll' title='Gebietszugehörigkeiten des Flurstücks'><img src='ico/Gemeinde.ico' width='16' height='16' alt=''> <b>Gebiet</b></td>";
 
 // Land
-$sql="SELECT bezeichnung FROM aaa_ogr.ax_bundesland WHERE schluessel_land = $1 AND endet IS NULL"; 
+$sql="SELECT bezeichnung FROM aaa_ogr.ax_bundesland WHERE land = $1 AND endet IS NULL"; 
 $v = array($land);
 $res = pg_prepare("", $sql);
 $res = pg_execute("", $v);
@@ -784,9 +784,8 @@ echo "\n</table>";
 
 // Entstehung:
 // Abfrage für die Antragsnummer (nach ALKIS)
-$sql ="SELECT DISTINCT a.kennzeichen AS antragsnummer ";
+$sql ="SELECT DISTINCT CASE WHEN f.zeigtaufexternes_name IS NOT NULL THEN f.zeigtaufexternes_name[1] ELSE NULL END AS antragsnummer ";
 $sql.="FROM aaa_ogr.ax_fortfuehrungsfall f ";
-$sql.="LEFT JOIN aaa_ogr.aa_antrag a ON a.identifier = fachdatenobjekt_uri[1] ";
 $sql.="WHERE $1 = ANY (f.zeigtaufneuesflurstueck)";
 $sql.="AND NOT ($1 = ANY (f.zeigtaufaltesflurstueck));";
 $v = array($flurstueckskennzeichen);
@@ -860,9 +859,8 @@ pg_free_result($res);
 
 // Fortführungen:
 // Abfrage für Daten und Antragsnummern (nach ALKIS)
-$sql ="SELECT DISTINCT f.gml_id, f.beginnt::date AS datum, a.kennzeichen AS antragsnummer ";
+$sql ="SELECT DISTINCT f.gml_id, f.beginnt::date AS datum, CASE WHEN f.zeigtaufexternes_name IS NOT NULL THEN f.zeigtaufexternes_name[1] ELSE NULL END AS antragsnummer ";
 $sql.="FROM aaa_ogr.ax_fortfuehrungsfall f ";
-$sql.="LEFT JOIN aaa_ogr.aa_antrag a ON a.identifier = fachdatenobjekt_uri[1] ";
 $sql.="WHERE $1 = ANY (f.zeigtaufneuesflurstueck) ";
 $sql.="AND $1 = ANY (f.zeigtaufaltesflurstueck) ";
 $sql.="ORDER BY datum;";
