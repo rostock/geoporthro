@@ -39,11 +39,10 @@ echo "<p class='nakennz'>Eigentümer&nbsp;</p>\n";
 echo "\n<h2><img src='ico/Eigentuemer.ico' width='16' height='16' alt=''> Eigentümer</h2>\n";
 if (!$con) "\n<p class='err'>Fehler beim Verbinden der DB</p>\n";
 
-$sql="SELECT to_char(p.beginnt::date, 'DD.MM.YYYY') AS datum, p.nachnameoderfirma, p.anrede, p.vorname, p.geburtsname, p.geburtsdatum, p.namensbestandteil, p.akademischergrad, a.value AS anlass_bezeichnung, a.id AS anlass_schluessel, pa.kennzeichen AS antrag, pq.qualitaetsangabe ";
+$sql="SELECT to_char(p.beginnt::date, 'DD.MM.YYYY') AS datum, p.nachnameoderfirma, p.anrede, p.vorname, p.geburtsname, p.geburtsdatum, p.namensbestandteil, p.akademischergrad, a.value AS anlass_bezeichnung, a.id AS anlass_schluessel, pa.kennzeichen AS antrag, CASE WHEN p.processstep_organisationname IS NOT NULL THEN p.processstep_organisationname[1] AS qualitaetsangabe ";
 $sql.="FROM aaa_ogr.ax_person p ";
 $sql.="LEFT JOIN aaa_ogr.aa_anlassart a ON lpad(p.anlass[1], 6, '0') = a.id ";
 $sql.="LEFT JOIN aaa_ogr.aa_antrag pa ON pa.identifier = p.uri[1] AND pa.endet = (SELECT max(endet) FROM aaa_ogr.aa_antrag WHERE identifier = p.uri[1]) ";
-$sql.="LEFT JOIN prozessiert.personen_qualitaetsangaben pq ON p.gml_id = pq.person_gml_id ";
 $sql.="WHERE p.gml_id = $1 AND p.endet IS NULL;";
 
 $v = array($gmlid);
@@ -91,12 +90,11 @@ if ($row = pg_fetch_array($res)) {
 
 	// A d r e s s e
 	echo "\n<h3><img src='ico/Strasse_mit_Haus.ico' width='16' height='16' alt=''> Adresse</h3>\n";
-	$sqla ="SELECT to_char(a.beginnt::date, 'DD.MM.YYYY') AS datum, a.gml_id, a.ortsteil, a.ort_post, a.postleitzahlpostzustellung AS plz, a.strasse, a.hausnummer, a.bestimmungsland, aaa.value AS anlass_bezeichnung, aaa.id AS anlass_schluessel, aa.kennzeichen AS antrag, aq.qualitaetsangabe ";
+	$sqla ="SELECT to_char(a.beginnt::date, 'DD.MM.YYYY') AS datum, a.gml_id, a.ortsteil, a.ort_post, a.postleitzahlpostzustellung AS plz, a.strasse, a.hausnummer, a.bestimmungsland, aaa.value AS anlass_bezeichnung, aaa.id AS anlass_schluessel, aa.kennzeichen AS antrag, CASE WHEN a.processstep_organisationname IS NOT NULL THEN a.processstep_organisationname[1] AS qualitaetsangabe ";
 	$sqla.="FROM aaa_ogr.ax_anschrift a ";
     $sqla.="LEFT JOIN aaa_ogr.ax_person p ON a.gml_id = ANY(p.hat) ";
     $sqla.="LEFT JOIN aaa_ogr.aa_anlassart aaa ON lpad(a.anlass[1], 6, '0') = aaa.id ";
     $sqla.="LEFT JOIN aaa_ogr.aa_antrag aa ON aa.identifier = a.uri[1] AND aa.endet = (SELECT max(endet) FROM aaa_ogr.aa_antrag WHERE identifier = a.uri[1]) ";
-    $sqla.="LEFT JOIN prozessiert.anschriften_qualitaetsangaben aq ON a.gml_id = aq.anschrift_gml_id ";
 	$sqla.="WHERE p.gml_id = $1 AND p.endet IS NULL AND a.endet IS NULL ";
     // Es können redundante Adressen vorhanden sein, z.B. aus Migration, temporär aus LBESAS. Die letzte davon anzeigen.
 	$sqla.="ORDER BY a.gml_id DESC ;";

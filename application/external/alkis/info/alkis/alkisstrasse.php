@@ -39,7 +39,7 @@ $sql.="FROM aaa_ogr.ax_lagebezeichnungkatalogeintrag s ";
 $sql.="JOIN aaa_ogr.ax_regierungsbezirk r ON s.regierungsbezirk=r.regierungsbezirk ";
 $sql.="JOIN aaa_ogr.ax_kreisregion k ON s.regierungsbezirk=k.regierungsbezirk AND s.kreis = k.kreis ";
 $sql.="JOIN aaa_ogr.ax_gemeinde g ON s.regierungsbezirk=g.regierungsbezirk AND s.kreis = g.kreis AND s.gemeinde = g.gemeinde ";
-$sql.="JOIN aaa_ogr.ax_bundesland b ON g.gemeindekennzeichen_land=b.schluessel_land ";
+$sql.="JOIN aaa_ogr.ax_bundesland b ON g.land=b.land ";
 $sql.="LEFT JOIN aaa_ogr.ax_lagebezeichnungohnehausnummer o ON s.regierungsbezirk = o.regierungsbezirk AND s.kreis = o.kreis AND s.gemeinde = o.gemeinde AND s.lage = o.lage ";
 $sql.="WHERE s.gml_id= $1 AND g.endet IS NULL AND k.endet IS NULL AND r.endet IS NULL AND b.endet IS NULL AND s.endet IS NULL AND o.endet IS NULL;";
 $v=array($gmlid);
