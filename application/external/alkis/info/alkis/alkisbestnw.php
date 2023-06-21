@@ -43,7 +43,7 @@ $sql.="b.gml_id, b.bezirk, b.bezeichnung AS beznam, "; // Bezirk
 $sql.="a.gml_id, a.land, a.bezeichnung, a.stelle, a.stellenart "; // Amtsgericht
 $sql.="FROM aaa_ogr.ax_buchungsblatt g ";
 $sql.="LEFT JOIN aaa_ogr.ax_buchungsblattbezirk b ON g.land=b.land AND g.bezirk=b.bezirk ";  // BBZ
-$sql.="LEFT JOIN aaa_ogr.ax_dienststelle a ON b.land = a.land AND b.stelle = a.stelle ";
+$sql.="LEFT JOIN aaa_ogr.ax_dienststelle a ON b.land = a.land AND b.gehoertzu_stelle = a.stelle ";
 $sql.="WHERE g.endet IS NULL AND b.endet IS NULL AND a.endet IS NULL AND g.gml_id= $1 ";
 $sql.="AND a.stellenart=1000;"; // Amtsgericht
 
@@ -355,7 +355,7 @@ if ($i == 0) {
     $sql.="JOIN aaa_ogr.ax_buchungsstelle sf ON sf.gml_id = ANY(sb.an) OR sf.gml_id = ANY(sb.zu) OR sf.gml_id = ANY(sb.durch) ";
     $sql.="JOIN aaa_ogr.ax_buchungsblatt bb ON sb.istbestandteilvon = bb.gml_id ";
     $sql.="LEFT JOIN aaa_ogr.ax_buchungsblattbezirk bz ON bz.bezirk = bb.bezirk ";
-    $sql.="LEFT JOIN aaa_ogr.ax_dienststelle ag ON bz.land = ag.land AND bz.stelle = ag.stelle ";
+    $sql.="LEFT JOIN aaa_ogr.ax_dienststelle ag ON bz.land = ag.land AND bz.gehoertzu_stelle = ag.stelle ";
     $sql.="LEFT JOIN aaa_ogr.ax_buchungsart_buchungsstelle ba ON ba.wert = sb.buchungsart ";
     $sql.="WHERE sb.endet IS NULL AND sf.endet IS NULL AND bb.endet IS NULL AND bz.endet IS NULL AND sf.istbestandteilvon = $1 ";
     $sql.="ORDER BY bb.land, bb.bezirk, bb.buchungsblattnummermitbuchstabenerweiterung;";

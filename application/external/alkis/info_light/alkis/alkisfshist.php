@@ -258,7 +258,7 @@ if ($gmlid != "") { // Ja, die GML wurde uebergeben
 
 if ($parmtyp != "") { // einer der beiden erlaubten Fälle
 	// UNION-Abfrage auf 3ähnliche Tabellen, darin aber immer nur 1 Treffer.
-	$felder="endet, array_remove(zeigtaufexternes_art, 'urn:mv:fdv:0901') AS art, zeigtaufexternes_name AS name, gml_id, land, flurnummer, zaehler, nenner, flurstueckskennzeichen, amtlicheflaeche, zeitpunktderentstehung, gemarkungsnummer, angabenzumabschnittflurstueck, ";
+	$felder="endet, zeigtaufexternes_art AS art, zeigtaufexternes_name AS name, gml_id, land, flurnummer, zaehler, nenner, flurstueckskennzeichen, amtlicheflaeche, zeitpunktderentstehung, gemarkungsnummer, angabenzumabschnittflurstueck, ";
 
 	$sqlu = "SELECT 'a' AS ftyp, ".$felder."null::text[] AS nach, null::text[] AS vor ";
 	$sqlu.="FROM aaa_ogr.ax_flurstueck f ".$whereclause." AND f.endet IS NULL ";
@@ -692,7 +692,7 @@ echo "\n<table class='outer'>";
 echo "\n</table>\n";
 
 // Zusatzangaben (Informationen ursprünglich aus ALB)
-if ($zusatzangaben[0] != '' || (!empty($alb_datenarten) && (in_array('http://www.lverma-mv.de/_fdv#5010', $alb_datenarten) || in_array('http://www.lverma-mv.de/_fdv#5040', $alb_datenarten)))) {
+if ($zusatzangaben[0] != '' || (!empty($alb_datenarten) && (in_array('urn:mv:fdv:5010', $alb_datenarten) || in_array('urn:mv:fdv:5040', $alb_datenarten)))) {
     echo "\n<br>";
     echo "\n<br>";
     echo "\n<h5><img src='ico/Hinweis.ico' width='16' height='16' alt=''> Zusatzangaben (Informationen ursprünglich aus ALB)</h5>";

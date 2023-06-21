@@ -211,7 +211,7 @@ if ($ltyp <> "p") { // Pseudonummer linkt nur Gebäude
     $sql="SELECT g.gemarkungsnummer, g.bezeichnung, ";
 	$sql.="f.gml_id, f.flurnummer, f.land, f.zaehler, f.nenner, f.amtlicheflaeche, CASE WHEN round(f.realflaeche::numeric, 2)::text ~ '50$' AND round(f.realflaeche::numeric, 2) >= 1 THEN CASE WHEN (trunc(f.realflaeche)::int % 2) = 0 THEN trunc(f.realflaeche) ELSE round(round(f.realflaeche::numeric, 2)::numeric) END WHEN round(f.realflaeche::numeric, 2) < 1 THEN round(f.realflaeche::numeric, 2) ELSE round(f.realflaeche::numeric) END AS realflaeche_geodaetisch_gerundet ";
 	$sql.="FROM aaa_ogr.ax_flurstueck f ";
-    $sql.="LEFT JOIN aaa_ogr.ax_gemarkung g ON f.land = g.gemeindezugehoerigkeit_land AND f.gemarkungsnummer = g.gemarkungsnummer ";
+    $sql.="LEFT JOIN aaa_ogr.ax_gemarkung g ON f.land = g.gemeindezugehoerigkeit_land[1] AND f.gemarkungsnummer = g.gemarkungsnummer ";
     $sql.="WHERE g.endet IS NULL AND f.endet IS NULL AND ($1 = ANY(f.weistauf) OR $1 = ANY(f.zeigtauf))";
 	$sql.="ORDER BY f.gemarkungsnummer, f.flurnummer, f.zaehler::int, f.nenner::int;";
 	$v = array($gmlid);
