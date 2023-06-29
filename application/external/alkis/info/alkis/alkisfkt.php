@@ -209,9 +209,13 @@ function eigentuemer($con, $gmlid, $mitadresse, $lnkclass) {
 
 			echo "\n\t<td>"; // Sp. 2
 			$rechtsg=$rown["adr"];
-			if ($rechtsg != "" ) {
+      $gesellschafter = false;
+			if ($rechtsg != "") {
 				if ($rechtsg == 9999) { // sonstiges
-					echo "\n\t\t<p class='zus' title='Beschreibung der Rechtsgemeinschaft'>".htmlentities($rown["beschr"], ENT_QUOTES, "UTF-8")."</p>";
+          if (strpos($rown["beschr"], ':') === false)
+            echo "\n\t\t<p class='zus' title='Beschreibung der Rechtsgemeinschaft'>".htmlentities($rown["beschr"], ENT_QUOTES, "UTF-8")."</p>";
+          else
+            $gesellschafter = true;
 				} else {
 					echo "\n\t\t<p class='zus' title='Art der Rechtsgemeinschaft'>".htmlentities(rechtsgemeinschaft($rown["adr"]), ENT_QUOTES, "UTF-8")."</p>";
 				}
@@ -330,6 +334,12 @@ function eigentuemer($con, $gmlid, $mitadresse, $lnkclass) {
 				}
 				pg_free_result($resa);
 			} // End if
+      
+      if ($i === 0 && $gesellschafter === true) {
+        echo "\n<tr>\n\t<td>&nbsp;</td>";
+        echo "\n\t<td><p class='zus' title='Beschreibung der Rechtsgemeinschaft'>bestehend aus den Gesellschaftern:</p></td>";
+        echo "\n\t<td></td>\n</tr>";
+      }
 
 			// 'keine Adresse' kann vorkommen, z.B. "Deutsche Telekom AG"
 			$i++; // cnt Person
