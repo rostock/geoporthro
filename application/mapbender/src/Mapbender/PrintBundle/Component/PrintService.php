@@ -1139,7 +1139,7 @@ class PrintService
             $arraySize = count($legendArray);
             foreach ($legendArray as $title => $legendUrl) {
 
-                if (preg_match('/request=GetLegendGraphic/i', $legendUrl) === 0) {
+                if (preg_match('/request=GetLegendGraphic/i', $legendUrl) === 0 || preg_match('/http/i', $legendUrl) === 0) {
                     continue;
                 }
 
