@@ -79,7 +79,7 @@ function bnw_fsdaten($con, $lfdnr, $gml_bs, $ba, $anteil, $bvnraus) {
 	$sql.="f.gml_id, f.flurnummer, f.zaehler, f.nenner, f.gemarkung_land AS land, f.regierungsbezirk, f.kreis, f.gemeinde, f.amtlicheflaeche, CASE WHEN round(f.realflaeche::numeric, 2)::text ~ '50$' AND round(f.realflaeche::numeric, 2) >= 1 THEN CASE WHEN (trunc(f.realflaeche)::int % 2) = 0 THEN trunc(f.realflaeche) ELSE round(round(f.realflaeche::numeric, 2)::numeric) END WHEN round(f.realflaeche::numeric, 2) < 1 THEN round(f.realflaeche::numeric, 2) ELSE round(f.realflaeche::numeric) END AS realflaeche_geodaetisch_gerundet ";
 	$sql.="FROM aaa_ogr.ax_flurstueck f ";
     $sql.="LEFT JOIN aaa_ogr.ax_gemarkung g ON f.gemarkung_land=g.schluessel_land AND f.gemarkungsnummer = g.gemarkungsnummer ";
-    $sql.="WHERE g.endet IS NULL AND f.endet IS NULL AND f.istgebucht = $1";
+    $sql.="WHERE g.endet IS NULL AND f.endet IS NULL AND f.istgebucht = $1 ";
 	$sql.="ORDER BY f.gemarkungsnummer, f.flurnummer, f.zaehler::int, f.nenner::int;";
 	$v = array($gml_bs);
 	$resf = pg_prepare("", $sql);

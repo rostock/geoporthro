@@ -194,7 +194,7 @@ $sql.="s.nummerimaufteilungsplan as nrpl, s.beschreibungdessondereigentums as so
 $sql.="FROM aaa_ogr.ax_buchungsstelle s ";
 $sql.="JOIN aaa_ogr.ax_flurstueck f ON f.istgebucht = s.gml_id ";
 $sql.="LEFT JOIN aaa_ogr.ax_buchungsart_buchungsstelle a ON a.wert = s.buchungsart ";
-$sql.="WHERE f.endet IS NULL AND s.endet IS NULL AND f.gml_id = $1";
+$sql.="WHERE f.endet IS NULL AND s.endet IS NULL AND f.gml_id = $1 ";
 $sql.="ORDER BY s.beginnt DESC LIMIT 1;";
 $v = array($gmlid);
 $ress = pg_prepare("", $sql);
@@ -214,7 +214,7 @@ while($rows = pg_fetch_array($ress)) {
     $sql.="FROM aaa_ogr.ax_buchungsblatt b ";
     $sql.="JOIN aaa_ogr.ax_buchungsstelle s ON s.istbestandteilvon = b.gml_id ";
     $sql.="LEFT JOIN aaa_ogr.ax_buchungsblattbezirk z ON z.bezirk = b.bezirk ";
-    $sql.="WHERE b.endet IS NULL AND s.endet IS NULL AND z.endet IS NULL AND s.gml_id = $1";
+    $sql.="WHERE b.endet IS NULL AND s.endet IS NULL AND z.endet IS NULL AND s.gml_id = $1 ";
     $sql.="ORDER BY b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung;";
 	$v = array($gmls);
 	$resg = pg_prepare("", $sql);
@@ -324,7 +324,7 @@ while($rows = pg_fetch_array($ress)) {
     $sql.="JOIN aaa_ogr.ax_buchungsblatt b ON b.gml_id = sf.istbestandteilvon ";
     $sql.="LEFT JOIN aaa_ogr.ax_buchungsblattbezirk z ON z.bezirk = b.bezirk ";
     $sql.="LEFT JOIN aaa_ogr.ax_buchungsart_buchungsstelle a ON a.wert = sf.buchungsart ";
-    $sql.="WHERE sb.endet IS NULL AND sf.endet IS NULL AND b.endet IS NULL AND z.endet IS NULL AND sb.gml_id = $1";
+    $sql.="WHERE sb.endet IS NULL AND sf.endet IS NULL AND b.endet IS NULL AND z.endet IS NULL AND sb.gml_id = $1 ";
     $sql.="ORDER BY b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung;";
     $v = array($gmls);
 	$resan = pg_prepare("", $sql);

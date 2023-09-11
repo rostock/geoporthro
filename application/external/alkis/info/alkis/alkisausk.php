@@ -163,7 +163,7 @@ $sql.="JOIN aaa_ogr.ax_buchungsstelle s ON s.istbestandteilvon = b.gml_id ";
 $sql.="JOIN aaa_ogr.ax_flurstueck f ON f.istgebucht = s.gml_id ";
 $sql.="LEFT JOIN aaa_ogr.ax_buchungsblattbezirk z ON z.bezirk = b.bezirk ";
 $sql.="LEFT JOIN aaa_ogr.ax_buchungsart_buchungsstelle a ON a.wert = s.buchungsart ";
-$sql.="WHERE f.endet IS NULL AND b.endet IS NULL AND s.endet IS NULL AND z.endet IS NULL AND f.gml_id = $1";
+$sql.="WHERE f.endet IS NULL AND b.endet IS NULL AND s.endet IS NULL AND z.endet IS NULL AND f.gml_id = $1 ";
 $sql.="ORDER BY b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung, s.laufendenummer;";
 $v = array($gmlid);
 $resg = pg_prepare("", $sql);
