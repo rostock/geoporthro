@@ -144,7 +144,7 @@ $sql.="s.zaehler, s.nenner, s.nummerimaufteilungsplan AS nrap, s.beschreibungdes
 $sql.="FROM aaa_ogr.ax_buchungsstelle s ";
 $sql.="JOIN aaa_ogr.ax_buchungsblatt b ON b.gml_id = s.istbestandteilvon ";
 $sql.="LEFT JOIN aaa_ogr.ax_buchungsart_buchungsstelle a ON a.wert = s.buchungsart ";
-$sql.="WHERE s.endet IS NULL AND b.endet IS NULL AND b.gml_id = $1";
+$sql.="WHERE s.endet IS NULL AND b.endet IS NULL AND b.gml_id = $1 ";
 $sql.="ORDER BY s.zaehler, ordering;";
 $v=array($gmlid);
 $res=pg_prepare("", $sql);
@@ -185,7 +185,7 @@ while($row = pg_fetch_array($res)) {
         $sql.="FROM aaa_ogr.ax_buchungsstelle sb ";
         $sql.="JOIN aaa_ogr.ax_buchungsstelle sf ON sb.gml_id = ANY(sf.an) OR sb.gml_id = ANY(sf.zu) OR sb.gml_id = ANY(sf.durch) ";
         $sql.="LEFT JOIN aaa_ogr.ax_buchungsart_buchungsstelle a ON a.wert = sb.buchungsart ";
-        $sql.="WHERE sb.endet IS NULL AND sf.endet IS NULL AND sf.gml_id = $1";
+        $sql.="WHERE sb.endet IS NULL AND sf.endet IS NULL AND sf.gml_id = $1 ";
         $sql.="ORDER BY lpad(sb.laufendenummer, 4, '0');";
         $v=array($gml_bs);
 		$resan=pg_prepare("", $sql);
@@ -208,7 +208,7 @@ while($row = pg_fetch_array($res)) {
             $sql.="FROM aaa_ogr.ax_buchungsblatt b ";
             $sql.="JOIN aaa_ogr.ax_buchungsstelle s ON s.istbestandteilvon = b.gml_id ";
             $sql.="LEFT JOIN aaa_ogr.ax_buchungsblattbezirk z ON z.bezirk = b.bezirk ";
-            $sql.="WHERE b.endet IS NULL AND s.endet IS NULL AND z.endet IS NULL AND s.gml_id = $1";
+            $sql.="WHERE b.endet IS NULL AND s.endet IS NULL AND z.endet IS NULL AND s.gml_id = $1 ";
             $sql.="ORDER BY b.land, b.bezirk, b.buchungsblattnummermitbuchstabenerweiterung;";
 			$v=array($gml_bsan);
 			$fbres=pg_prepare("", $sql);
