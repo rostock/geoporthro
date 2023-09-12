@@ -78,7 +78,7 @@ function vorgaenger($fskennz, $gmlid, $con) {
     // 13221800300004000603 (hier sind die korrekten Vorgänger angegeben)
     // => 13221800300004000603 statt 132218003000040006__ verwenden
     $temp_gmlid = $gmlid;
-    $temp_sql = "SELECT gml_id FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE flurstueckskennzeichen = (SELECT max(flurstueckskennzeichen) FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE flurstueckskennzeichen ~ (SELECT replace(flurstueckskennzeichen, '_', '') FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE gml_id = $1));";
+    $temp_sql = "SELECT DISTINCT gml_id FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE flurstueckskennzeichen = (SELECT max(flurstueckskennzeichen) FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE flurstueckskennzeichen ~ (SELECT DISTINCT replace(flurstueckskennzeichen, '_', '') FROM aaa_ogr.ax_historischesflurstueckohneraumbezug WHERE gml_id = $1));";
     pg_prepare($con, "", $temp_sql);
     $temp_res = pg_execute($con, "", array($gmlid));
     if ($temp_resultate = pg_fetch_array($temp_res)) {
@@ -115,7 +115,7 @@ function vorgaenger($fskennz, $gmlid, $con) {
          flurstueckskennzeichen
           FROM aaa_ogr.ax_historischesflurstueckohneraumbezug
            WHERE (
-            SELECT
+            SELECT DISTINCT
              flurstueckskennzeichen
               FROM aaa_ogr.ax_historischesflurstueckohneraumbezug
                WHERE gml_id = $1
