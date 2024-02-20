@@ -48,7 +48,7 @@ class IndexMietenpachtenCommand extends ContainerAwareCommand
 
         $conn = $this->getContainer()->get('doctrine.dbal.hro_search_data_connection');
 
-        $limit = 50;
+        $limit = 10;
         $offset = 0;
         $id = 0;
 
