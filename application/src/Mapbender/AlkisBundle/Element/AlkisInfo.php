@@ -188,34 +188,35 @@ class AlkisInfo extends Element
         $x = $this->container->get('request')->get('x', null);
         $y = $this->container->get('request')->get('y', null);
         $gmlid = $this->container->get('request')->get('gmlid', null);
-        
+
         // Suchtyp: geocodr-Suche
         if (is_null($gmlid)) {
 
             // Konfiguration einlesen
             $conf = $this->container->getParameter('geocodr');
-                
+
             // Suche durchführen mittels cURL
             $curl = curl_init();
             $term = curl_escape($curl, $term);
             $url = $conf['url'] . 'key=' . $conf['key'] . '&type=reverse&class=parcel&radius=0&in_epsg=25833&query='. $x . ',' . $y;
             curl_setopt($curl, CURLOPT_URL, $url); 
             curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            
+
             // Suchresultat verarbeiten
-            $json = json_decode(curl_exec($curl), true); 
+            $json = json_decode(curl_exec($curl), true);
             $features = $json['features'];
             curl_close($curl);
-                
+
             // alle Features des Suchresultats durchgehen…
             foreach ($features as $key=>$feature) {
-                // …und erstes passendes Feature als gewünschte Feature speichern
-                if ($feature['properties']['objektgruppe'] === 'Flurstück' && !$feature['properties']['historisch_seit'] && !$feature['properties']['gueltigkeit_bis']) {
+                $counter++;
+                // …und jedes passende Feature als gewünschtes Feature speichern
+                // (Damit bleibt automatisch am Ende das letzte passende Feature als gewünschtes Feature übrig,
+                //  was insbesondere bei sehr kleinen Flurstücken wichtig ist, die sonst nicht "erwischt" würden.)
+                if ($feature['properties']['objektgruppe'] === 'Flurstück' && !$feature['properties']['historisch_seit'] && !$feature['properties']['gueltigkeit_bis'])
                     $result = $feature;
-                    break;
-                }
             }
-            
+
             // Rückgabe des gewünschten Features
             return new Response(json_encode($result), 200, array('Content-Type' => 'application/json'));
 
@@ -225,17 +226,17 @@ class AlkisInfo extends Element
 
             // Konfiguration einlesen
             $conf = $this->container->getParameter('solr');
-            
+
             // Suchclient initialisieren
             $solr = new SolrClient($conf);
-            
+
             // Suche durchführen und Suchresultat verarbeiten
             $result = $solr
                 ->wildcardMinStrlen(1)
                 ->page(1)
                 ->where('gmlid', $gmlid)
                 ->find();
-            
+
             // Rückgabe des gewünschten Features
             return new Response(json_encode($result), 200, array('Content-Type' => 'application/json'));
 
