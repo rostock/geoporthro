@@ -129,15 +129,7 @@ class WmsMetadata extends SourceMetadata
                         $source_items[] = array("wmtsUrl" => $url['link']);
                     } elseif ($url['typ'] === 'opendata') {
                         $source_items[] = array("opendataUrl" => $url['link']);
-                    } /*elseif ($url['typ'] === '8metadata_dls') {
-                        $source_items[] = array("metadataDlsUrl" => $url['link']);
-                    } elseif ($url['typ'] === '6metadata_vs') {
-                        $source_items[] = array("metadataVsUrl" => $url['link']);
-                    } elseif ($url['typ'] === '4metadata_wfs') {
-                        $source_items[] = array("metadataWfsUrl" => $url['link']);
-                    } elseif ($url['typ'] === '2metadata_wms') {
-                        $source_items[] = array("metadataWmsUrl" => $url['link']);
-                    }*/
+                    }
                 }
             } else {
                 $source_items[] = array("wmsUrl" => $originUrl);
@@ -148,6 +140,7 @@ class WmsMetadata extends SourceMetadata
         if ($this->getUseUseConditions()) {
             $tou_items = array();
             $tou_items[] = array("accessconstraints" => SourceMetadata::getNotNull($src->getAccessConstraints()));
+            $tou_items[] = array("fees" => SourceMetadata::getNotNull($src->getFees()));
             $this->addMetadataSection(SourceMetadata::$SECTION_USECONDITIONS, $tou_items);
         }
 

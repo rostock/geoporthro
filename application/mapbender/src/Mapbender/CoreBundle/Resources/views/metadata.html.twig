@@ -45,7 +45,7 @@
                                 <br/>
                             {% endif %}
                         {% endfor %}
-                    {% elseif '@' in val and ',' in val %}
+                    {% elseif '@' in val and ',' in val and not ' ' in val %}
                         {% set val_splitted = val|split(',') %}
                         {% for key,value in val_splitted %}
                             <a href="mailto:{{ value }}">{{ value }}</a>
@@ -53,7 +53,7 @@
                                 <br/>
                             {% endif %}
                         {% endfor %}
-                    {% elseif '@' in val %}
+                    {% elseif '@' in val and not ' ' in val %}
                         <a href="mailto:{{ val }}">{{ val }}</a>
                     {% else %}
                         {{ val }}
@@ -97,7 +97,7 @@
                                                 <br/>
                                             {% endif %}
                                         {% endfor %}
-                                    {% elseif '@' in val and ',' in val %}
+                                    {% elseif '@' in val and ',' in val and not ' ' in val %}
                                         {% set val_splitted = val|split(',') %}
                                         {% for key,value in val_splitted %}
                                             <a href="mailto:{{ value }}">{{ value }}</a>
@@ -105,7 +105,7 @@
                                                 <br/>
                                             {% endif %}
                                         {% endfor %}
-                                    {% elseif '@' in val %}
+                                    {% elseif '@' in val and not ' ' in val %}
                                         <a href="mailto:{{ val }}">{{ val }}</a>
                                     {% else %}
                                         {{ val|replace({'Hansestadt Rostock': "Hanse- und Universitätsstadt Rostock"}) }}
@@ -144,7 +144,7 @@
                                 <br/>
                             {% endif %}
                         {% endfor %}
-                    {% elseif '@' in val and ',' in val %}
+                    {% elseif '@' in val and ',' in val and not ' ' in val %}
                         {% set val_splitted = val|split(',') %}
                         {% for key,value in val_splitted %}
                             <a href="mailto:{{ value }}">{{ value }}</a>
@@ -152,7 +152,7 @@
                                 <br/>
                             {% endif %}
                         {% endfor %}
-                    {% elseif '@' in val %}
+                    {% elseif '@' in val and not ' ' in val %}
                         <a href="mailto:{{ val }}">{{ val }}</a>
                     {% else %}
                         {{ val|replace({'Hansestadt Rostock': "Hanse- und Universitätsstadt Rostock"}) }}
