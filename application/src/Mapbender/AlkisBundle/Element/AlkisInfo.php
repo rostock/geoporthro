@@ -208,13 +208,13 @@ class AlkisInfo extends Element
             curl_close($curl);
 
             // alle Features des Suchresultats durchgehen…
-            $smallest_area = -1;
+            $smallest_area = -1; // Variable zur Zwischenspeicherung der kleinsten gefundenen Flurstücksfläche
             foreach ($features as $key=>$feature) {
                 // wenn das aktuelle Feature ein aktives Flurstück ist…
                 if ($feature['properties']['objektgruppe'] === 'Flurstück' && !$feature['properties']['historisch_seit'] && !$feature['properties']['gueltigkeit_bis']) {
                     // aktuelles Feature als gewünschtes Feature speichern, wenn es…
-                    // a) …das erste gefundene aktive Flurstück ist
-                    // b) …kleiner ist als das vorherige gefundene aktive Flurstück ist (damit auch sehr kleine Flurstücke "erwischt" werden)
+                    // a) …entweder das erste gefundene aktive Flurstück ist
+                    // b) …oder kleiner ist als das vorherige gefundene aktive Flurstück ist (damit auch sehr kleine Flurstücke "erwischt" werden)
                     if ($smallest_area === -1 || $feature['properties']['buchflaeche'] < $smallest_area) {
                         $result = $feature;
                         $smallest_area = $feature['properties']['buchflaeche'];
