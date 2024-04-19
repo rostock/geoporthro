@@ -15,6 +15,7 @@
             bebauungsplaene_nur_rk: true,
             betriebegewerblicherart: true,
             erbbaurechte: true,
+            freizeitsport: true,
             grundsteuerobjekte: true,
             grundvermoegen: true,
             gruenfriedhofsflaechen: true,
@@ -26,6 +27,7 @@
             lichtsignalanlagen: true,
             mietenpachten: true,
             spielgeraete: true,
+            spielplaetze: true,
             strassennetz: true,
             wirtschaftseinheiten_wiro: true
         },
@@ -38,6 +40,7 @@
             bebauungsplaene_nur_rk: '<li>→ Nummer [Beispiele: <span>16.w.43</span> oder <span>16w</span>]</li><li>→ Bezeichnung [Beispiel: <span>nienhag</span>]</li></ul>',
             betriebegewerblicherart: '<li>→ Flurstück in verschiedenen Kombinationen (Reihenfolge egal) [Beispiele: <span>2241 372</span> oder <span>2241 1 372</span> oder <span>2241 1 /3</span> oder <span>2241 /3</span> oder <span>flurbezirk ii 372</span> oder <span>flurbezirk ii 1 372</span> oder <span>flurbezirk ii 1 /3</span> oder <span>flurbezirk ii /3</span>]</li><li>→ Aktenzeichen [Beispiele: <span>00.06.-22201-bG-0011</span> oder <span>00.06.-22352</span> oder <span>223815</span>]</li><li>→ Status [Beispiel: <span>BgA 5</span>]</li><li>→ Bemerkungen [Beispiel: <span>Stadthafen</span>]</li></ul>',
             erbbaurechte: '<li>→ Flurstück in verschiedenen Kombinationen (Reihenfolge egal) [Beispiele: <span>2239 102</span> oder <span>2239 1 102</span> oder <span>2239 1 /79</span> oder <span>2239 /79</span> oder <span>warnem 102</span> oder <span>warnem 1 102</span> oder <span>warnem 1 /79</span> oder <span>warnem /79</span>]</li><li>→ Aktenzeichen [Beispiele: <span>2341E980075</span> oder <span>2341ET980015</span>]</li></ul>',
+            freizeitsport: '<li>→ Bezeichnung [Beispiele: <span>Löwenzahnweg</span> oder <span>Gehlsheimer Str.</span>]</li><li>→ Sportarten [Beispiel: <span>Tischtennis</span> oder <span>Fußball</span>]</li></ul>',
             grundsteuerobjekte: '<li>→ WE-Nummer [Beispiele: <span>110047</span> oder <span>230053</span>]</li><li>→ Steuernummer (Aktenzeichen der Finanzämter) [Beispiel: <span>079/001/953/1065/016/3</span>]</li><li>→ Lagebezeichnung [Beispiel: <span>neben Barnstorf-Ausbau 8</span>]</li></ul>',
             grundvermoegen: '<li>→ Aktenzeichen [Beispiele: <span>00.06.-22413-igb-0021</span> oder <span>00.06.-22352</span> oder <span>2235</span>]</li></ul>',
             gruenfriedhofsflaechen: '<li>→ Art [Beispiel: <span>rasen</span>]</li><li>→ Grünpflegebezirk [Beispiel: <span>24</span>]</li><li>→ Nummer des Grünpflegeobjektes [Beispiele: <span>1118/02</span> oder <span>1118</span>]</li><li>→ Bezeichnung des Grünpflegeobjektes [Beispiel: <span>kriegsgräb</span>]</li><li>→ Pflegebezeichnung [Beispiel: <span>1116 wiese</span>]</li><li>→ Teil als Kombination aus Grünpflegebezirk, Nummer des Grünpflegeobjektes und Teilnummer (Reihenfolge egal) [Beispiel: <span>21 1118 13</span>]</li><li>→ Teil als Kombination aus Grünpflegebezirk, Bezeichnung des Grünpflegeobjektes und Teilnummer (Reihenfolge egal) [Beispiel: <span>21 spiellandschaft 13</span>]</li></ul>',
@@ -49,6 +52,7 @@
             lichtsignalanlagen: '<li>→ Nummer [Beispiel: <span>LSA 303</span>]</li><li>→ Knoten-Nummer [Beispiel: <span>422</span>]</li><li>→ Bezeichnung [Beispiel: <span>goetheplatz</span>]</li></ul>',
             mietenpachten: '<li>→ Aktenzeichen [Beispiel: <span>2341l04</span>]</li></ul><br/>Es werden je Aktenzeichen immer sowohl die Teilflächen als auch die Gesamtfläche gelistet.',
             spielgeraete: '<li>→ Grünpflegebezirk [Beispiel: <span>19</span>]</li><li>→ Art des Grünpflegeobjektes [Beispiel: <span>ballspielan</span>]</li><li>→ Nummer des Grünpflegeobjektes [Beispiele: <span>1100/02</span> oder <span>1100</span>]</li><li>→ Bezeichnung des Grünpflegeobjektes [Beispiel: <span>park am fi</span>]</li><li>→ Pflegeeinheit [Beispiel: <span>8313</span>]</li><li>→ Nummer als Kombination aus Grünpflegebezirk, Nummer des Grünpflegeobjektes und Nummer (Reihenfolge egal) [Beispiel: <span>19 1100 10</span>]</li><li>→ Nummer als Kombination aus Grünpflegebezirk, Bezeichnung des Grünpflegeobjektes und Nummer (Reihenfolge egal) [Beispiel: <span>19 wallanlagen 10</span>]</li></ul>',
+            spielplaetze: '<li>→ Bezeichnung [Beispiele: <span>Kärntner Str.</span> oder <span>Die kleine Tonleiter</span>]</li><li>→ Beschreibung [Beispiel: <span>Sandspielbelag</span>]</li></ul>',
             strassennetz: '<li>→ Nummer [Beispiel: <span>0995071</span>]</li><li>→ SKEY [Beispiel: <span>0105005 0205301</span>]</li><li>→ Straßenname [Beispiele: <span>wagner</span> oder <span>SÖ 0204</span>]</li><li>→ Straßenschlüssel [Beispiele: <span>07920</span> oder <span>770020408</span>]</li></ul><br/>Resultate können Netzknoten sowie Netzabschnitte sein, jeweils gekennzeichnet durch ein vorangestelltes sprechendes Icon.',
             wirtschaftseinheiten_wiro: '<li>→ Nummer [Beispiel: <span>6433</span>]</li></ul>'
         },
@@ -121,6 +125,9 @@
             else if (search === 'erbbaurechte') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.erbbaurechte));
             }
+            else if (search === 'freizeitsport') {
+                $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.freizeitsport));
+            }
             else if (search === 'grundsteuerobjekte') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.grundsteuerobjekte));
             }
@@ -153,6 +160,9 @@
             }
             else if (search === 'spielgeraete') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.spielgeraete));
+            }
+            else if (search === 'spielplaetze') {
+                $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.spielplaetze));
             }
             else if (search === 'strassennetz') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.strassennetz));
@@ -192,6 +202,10 @@
             else if (search === 'erbbaurechte') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.erbbaurechte));
                 this.firstTimeSearch.erbbaurechte = true;
+            }
+            else if (search === 'freizeitsport') {
+                $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.freizeitsport));
+                this.firstTimeSearch.freizeitsport = true;
             }
             else if (search === 'grundsteuerobjekte') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.grundsteuerobjekte));
@@ -236,6 +250,10 @@
             else if (search === 'spielgeraete') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.spielgeraete));
                 this.firstTimeSearch.spielgeraete = true;
+            }
+            else if (search === 'spielplaetze') {
+                $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.spielplaetze));
+                this.firstTimeSearch.spielplaetze = true;
             }
             else if (search === 'strassennetz') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.strassennetz));
@@ -279,6 +297,10 @@
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.erbbaurechte));
                 this.firstTimeSearch.erbbaurechte = true;
             }
+            else if (search === 'freizeitsport') {
+                $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.freizeitsport));
+                this.firstTimeSearch.freizeitsport = true;
+            }
             else if (search === 'grundsteuerobjekte') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.grundsteuerobjekte));
                 this.firstTimeSearch.grundsteuerobjekte = true;
@@ -322,6 +344,10 @@
             else if (search === 'spielgeraete') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.spielgeraete));
                 this.firstTimeSearch.spielgeraete = true;
+            }
+            else if (search === 'spielplaetze') {
+                $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.spielplaetze));
+                this.firstTimeSearch.spielplaetze = true;
             }
             else if (search === 'strassennetz') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.strassennetz));
@@ -566,6 +592,15 @@
                     }
                     this.firstTimeSearch.erbbaurechte = false;
                     break;
+                case 'freizeitsport':
+                    if (this.firstTimeSearch.freizeitsport === true) {
+                        var layertreeLayerContainer = $('li[data-type="simple"][data-title="Freizeitsport"]');
+                        var layertreeLayerCheckbox = $('input[name="selected"]:first', layertreeLayerContainer);
+                        layertreeLayerCheckbox.prop('checked', true);
+                        layertreeLayerCheckbox.change();
+                    }
+                    this.firstTimeSearch.freizeitsport = false;
+                    break;
                 case 'grundsteuerobjekte':
                     if (this.firstTimeSearch.grundsteuerobjekte === true) {
                         var layertreeLayerContainer = $('li[data-type="root"][data-title="Grundsteuerobjekte"]');
@@ -670,6 +705,15 @@
                         layertreeLayerCheckbox.change();
                     }
                     this.firstTimeSearch.spielgeraete = false;
+                    break;
+                case 'spielplaetze':
+                    if (this.firstTimeSearch.spielplaetze === true) {
+                        var layertreeLayerContainer = $('li[data-type="simple"][data-title="Spielplätze"]');
+                        var layertreeLayerCheckbox = $('input[name="selected"]:first', layertreeLayerContainer);
+                        layertreeLayerCheckbox.prop('checked', true);
+                        layertreeLayerCheckbox.change();
+                    }
+                    this.firstTimeSearch.spielplaetze = false;
                     break;
                 case 'strassennetz':
                     if (this.firstTimeSearch.strassennetz === true) {

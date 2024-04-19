@@ -16,6 +16,8 @@
             <option value="betriebegewerblicherart"{% if loop.first %} selected="true" {% endif %}>{{ 'Betriebe gewerblicher Art' | trans }}</option>
           {% elseif opt == 'erbbaurechte' %}
             <option value="erbbaurechte"{% if loop.first %} selected="true" {% endif %}>{{ 'Erbbaurechte' | trans }}</option>
+          {% elseif opt == 'freizeitsport' %}
+            <option value="freizeitsport"{% if loop.first %} selected="true" {% endif %}>{{ 'Freizeitsport' | trans }}</option>
           {% elseif opt == 'grundsteuerobjekte' %}
             <option value="grundsteuerobjekte"{% if loop.first %} selected="true" {% endif %}>{{ 'Grundsteuerobjekte' | trans }}</option>
           {% elseif opt == 'grundvermoegen' %}
@@ -38,6 +40,8 @@
             <option value="mietenpachten"{% if loop.first %} selected="true" {% endif %}>{{ 'Mieten und Pachten' | trans }}</option>
           {% elseif opt == 'spielgeraete' %}
             <option value="spielgeraete"{% if loop.first %} selected="true" {% endif %}>{{ 'Spielgeräte' | trans }}</option>
+          {% elseif opt == 'spielplaetze' %}
+            <option value="spielplaetze"{% if loop.first %} selected="true" {% endif %}>{{ 'Spielplätze' | trans }}</option>
           {% elseif opt == 'strassennetz' %}
             <option value="strassennetz"{% if loop.first %} selected="true" {% endif %}>{{ 'Straßennetz' | trans }}</option>
           {% elseif opt == 'wirtschaftseinheiten_wiro' %}

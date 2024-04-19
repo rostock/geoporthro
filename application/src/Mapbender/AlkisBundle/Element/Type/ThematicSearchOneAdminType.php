@@ -51,6 +51,7 @@ class ThematicSearchOneAdminType extends AbstractType
                     "bebauungsplaene_nur_rk" => "Bebauungspläne",
                     "betriebegewerblicherart" => "Betriebe gewerblicher Art",
                     "erbbaurechte" => "Erbbaurechte",
+                    "freizeitsport" => "Freizeitsport",
                     "grundsteuerobjekte" => "Grundsteuerobjekte",
                     "grundvermoegen" => "Grundvermögen",
                     "gruenfriedhofsflaechen" => "Grünflächen und Friedhofsbegleitflächen",
@@ -62,6 +63,7 @@ class ThematicSearchOneAdminType extends AbstractType
                     "lichtsignalanlagen" => "Lichtsignalanlagen",
                     "mietenpachten" => "Mieten und Pachten",
                     "spielgeraete" => "Spielgeräte",
+                    "spielplaetze" => "Spielplätze",
                     "strassennetz" => "Straßennetz",
                     "wirtschaftseinheiten_wiro" => "WIRO-Wirtschaftseinheiten"))
             )
