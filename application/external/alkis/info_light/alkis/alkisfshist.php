@@ -258,7 +258,7 @@ if ($gmlid != "") { // Ja, die GML wurde uebergeben
 
 if ($parmtyp != "") { // einer der beiden erlaubten Fälle
 	// UNION-Abfrage auf 3ähnliche Tabellen, darin aber immer nur 1 Treffer.
-	$felder="endet, array_remove(art, 'urn:adv:fachdatenverbindung:AA_Antrag') AS art, name, gml_id, gemarkung_land AS land, flurnummer, zaehler, nenner, flurstueckskennzeichen, amtlicheflaeche, zeitpunktderentstehung, gemarkungsnummer, angabenzumabschnittflurstueck, ";
+	$felder="endet, zeigtaufexternes_art AS art, zeigtaufexternes_name AS name, gml_id, land, flurnummer, zaehler, nenner, flurstueckskennzeichen, amtlicheflaeche, zeitpunktderentstehung, gemarkungsnummer, angabenzumabschnittflurstueck, ";
 
 	$sqlu = "SELECT 'a' AS ftyp, ".$felder."null::text[] AS nach, null::text[] AS vor ";
 	$sqlu.="FROM aaa_ogr.ax_flurstueck f ".$whereclause." AND f.endet IS NULL ";
@@ -416,9 +416,8 @@ echo "\n</table>";
 
 // Entstehung:
 // Abfrage für die Antragsnummer (nach ALKIS)
-$sql ="SELECT DISTINCT a.kennzeichen AS antragsnummer ";
+$sql ="SELECT DISTINCT CASE WHEN f.zeigtaufexternes_name IS NOT NULL THEN f.zeigtaufexternes_name[1] ELSE NULL END AS antragsnummer ";
 $sql.="FROM aaa_ogr.ax_fortfuehrungsfall f ";
-$sql.="LEFT JOIN aaa_ogr.aa_antrag a ON a.identifier = fachdatenobjekt_uri[1] ";
 $sql.="WHERE $1 = ANY (f.zeigtaufneuesflurstueck)";
 $sql.="AND NOT ($1 = ANY (f.zeigtaufaltesflurstueck));";
 $v = array($fskenn);
@@ -491,9 +490,8 @@ pg_free_result($res);
 
 // Fortführungen:
 // Abfrage für Daten und Antragsnummern (nach ALKIS)
-$sql ="SELECT DISTINCT f.gml_id, f.beginnt::date AS datum, a.kennzeichen AS antragsnummer ";
+$sql ="SELECT DISTINCT f.gml_id, f.beginnt::date AS datum, CASE WHEN f.zeigtaufexternes_name IS NOT NULL THEN f.zeigtaufexternes_name[1] ELSE NULL END AS antragsnummer ";
 $sql.="FROM aaa_ogr.ax_fortfuehrungsfall f ";
-$sql.="LEFT JOIN aaa_ogr.aa_antrag a ON a.identifier = fachdatenobjekt_uri[1] ";
 $sql.="WHERE $1 = ANY (f.zeigtaufneuesflurstueck) ";
 $sql.="AND $1 = ANY (f.zeigtaufaltesflurstueck) ";
 $sql.="ORDER BY datum;";
@@ -694,7 +692,7 @@ echo "\n<table class='outer'>";
 echo "\n</table>\n";
 
 // Zusatzangaben (Informationen ursprünglich aus ALB)
-if ($zusatzangaben[0] != '' || (!empty($alb_datenarten) && (in_array('http://www.lverma-mv.de/_fdv#5010', $alb_datenarten) || in_array('http://www.lverma-mv.de/_fdv#5040', $alb_datenarten)))) {
+if ($zusatzangaben[0] != '' || (!empty($alb_datenarten) && (in_array('urn:mv:fdv:5010', $alb_datenarten) || in_array('urn:mv:fdv:5040', $alb_datenarten)))) {
     echo "\n<br>";
     echo "\n<br>";
     echo "\n<h5><img src='ico/Hinweis.ico' width='16' height='16' alt=''> Zusatzangaben (Informationen ursprünglich aus ALB)</h5>";

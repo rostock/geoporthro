@@ -33,7 +33,7 @@ $con = pg_connect("host=".$dbhost." port=".$dbport." dbname=".$dbname." user=".$
 if (!$con) {echo "<br>Fehler beim Verbinden der DB.\n<br>";}
 
 // *** F L U R S T U E C K ***
-$sql ="SELECT f.flurnummer, f.gemarkung_land AS land, f.flurstueckskennzeichen, f.zaehler, f.nenner, f.amtlicheflaeche, CASE WHEN round(f.realflaeche::numeric, 2)::text ~ '50$' AND round(f.realflaeche::numeric, 2) >= 1 THEN CASE WHEN (trunc(f.realflaeche)::int % 2) = 0 THEN trunc(f.realflaeche) ELSE round(round(f.realflaeche::numeric, 2)::numeric) END WHEN round(f.realflaeche::numeric, 2) < 1 THEN round(f.realflaeche::numeric, 2) ELSE round(f.realflaeche::numeric) END AS realflaeche_geodaetisch_gerundet, g.gemarkungsnummer, g.bezeichnung ";
+$sql ="SELECT f.flurnummer, f.land, f.flurstueckskennzeichen, f.zaehler, f.nenner, f.amtlicheflaeche, CASE WHEN round(f.realflaeche::numeric, 2)::text ~ '50$' AND round(f.realflaeche::numeric, 2) >= 1 THEN CASE WHEN (trunc(f.realflaeche)::int % 2) = 0 THEN trunc(f.realflaeche) ELSE round(round(f.realflaeche::numeric, 2)::numeric) END WHEN round(f.realflaeche::numeric, 2) < 1 THEN round(f.realflaeche::numeric, 2) ELSE round(f.realflaeche::numeric) END AS realflaeche_geodaetisch_gerundet, g.gemarkungsnummer, g.bezeichnung ";
 $sql.="FROM aaa_ogr.ax_flurstueck f ";
 $sql.="LEFT JOIN aaa_ogr.ax_gemarkung g ON f.gemarkungsnummer = g.gemarkungsnummer ";
 $sql.="WHERE f.endet IS NULL AND g.endet IS NULL AND f.gml_id = $1;";

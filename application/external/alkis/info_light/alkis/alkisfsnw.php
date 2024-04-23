@@ -82,7 +82,7 @@ if ($gmlid == "" AND $fskennz != "") {
 }
 
 // F L U R S T U E C K
-$sql ="SELECT array_remove(f.art, 'urn:adv:fachdatenverbindung:AA_Antrag') AS art, f.name, f.flurnummer, f.zaehler, f.nenner, f.flurstueckskennzeichen, f.gemarkung_land AS land, f.regierungsbezirk, f.kreis, f.gemeinde, f.amtlicheflaeche, f.realflaeche AS realflaeche, CASE WHEN round(f.realflaeche::numeric, 2)::text ~ '50$' AND round(f.realflaeche::numeric, 2) >= 1 THEN CASE WHEN (trunc(f.realflaeche)::int % 2) = 0 THEN trunc(f.realflaeche) ELSE round(round(f.realflaeche::numeric, 2)::numeric) END WHEN round(f.realflaeche::numeric, 2) < 1 THEN round(f.realflaeche::numeric, 2) ELSE round(f.realflaeche::numeric) END AS realflaeche_geodaetisch_gerundet, ST_Area(f.wkb_geometry) AS geomflaeche, f.zeitpunktderentstehung, f.stelle, f.kennungschluessel, f.angabenzumabschnittflurstueck, f.flaechedesabschnitts, ";
+$sql ="SELECT f.zeigtaufexternes_art AS art, f.zeigtaufexternes_name AS name, f.flurnummer, f.zaehler, f.nenner, f.flurstueckskennzeichen, f.land, f.gemeindezugehoerigkeit_regierungsbezirk AS regierungsbezirk, f.gemeindezugehoerigkeit_kreis AS kreis, f.gemeindezugehoerigkeit_gemeinde AS gemeinde, f.amtlicheflaeche, f.realflaeche AS realflaeche, CASE WHEN round(f.realflaeche::numeric, 2)::text ~ '50$' AND round(f.realflaeche::numeric, 2) >= 1 THEN CASE WHEN (trunc(f.realflaeche)::int % 2) = 0 THEN trunc(f.realflaeche) ELSE round(round(f.realflaeche::numeric, 2)::numeric) END WHEN round(f.realflaeche::numeric, 2) < 1 THEN round(f.realflaeche::numeric, 2) ELSE round(f.realflaeche::numeric) END AS realflaeche_geodaetisch_gerundet, ST_Area(f.wkb_geometry) AS geomflaeche, f.zeitpunktderentstehung, f.zustaendigestelle_stelle AS stelle, f.kennungschluessel, f.angabenzumabschnittflurstueck, f.flaechedesabschnitts, ";
 $sql.="g.gemarkungsnummer, g.bezeichnung ";
 $sql.="FROM aaa_ogr.ax_flurstueck f ";
 $sql.="LEFT JOIN aaa_ogr.ax_gemarkung g ON f.gemarkungsnummer = g.gemarkungsnummer ";
@@ -166,7 +166,7 @@ echo "\n<table class='fs'>";
 echo "\n<tr>\n\t<td class='ll' title='Gebietszugehörigkeiten des Flurstücks'><img src='ico/Gemeinde.ico' width='16' height='16' alt=''> <b>Gebiet</b></td>";
 
 // Land
-$sql="SELECT bezeichnung FROM aaa_ogr.ax_bundesland WHERE schluessel_land = $1 AND endet IS NULL"; 
+$sql="SELECT bezeichnung FROM aaa_ogr.ax_bundesland WHERE land = $1 AND endet IS NULL"; 
 $v = array($land);
 $res = pg_prepare("", $sql);
 $res = pg_execute("", $v);
@@ -452,16 +452,23 @@ echo "\n</tr>";
 // Tabelle "klas_3x" (norbit-ALB): Dort fehlen Bodenart und Zustandsstufe, es ist aber bereits auf Buchfläche umgerechnet.
 
 // Bodenschätzungs-Abschnitte mit Flurstücken verschneiden, Spalten entschlüsseln
-$sql="SELECT b.kulturart AS kulturartk, kulturart.beschreibung AS kulturartv,
- b.bodenart AS bodenartk, bodenart.beschreibung AS bodenartv, zustbod.beschreibung AS zustbodv,
- b.entstehungsartoderklimastufewasserverhaeltnisse AS entsteh, b.sonstigeangaben,
+$sql="SELECT b.nutzungsart AS kulturartk, na.beschreibung AS kulturartv,
+ b.bodenart AS bodenartk, ba.beschreibung AS bodenartv,
+ CASE WHEN bs.beschreibung IS NOT NULL THEN bs.beschreibung WHEN zs.beschreibung IS NOT NULL THEN zs.beschreibung END AS zustbodv,
+ CASE
+  WHEN b.entstehungsart IS NOT NULL AND b.klimastufe IS NOT NULL THEN array_append(array_append(b.entstehungsart, b.klimastufe), b.wasserverhaeltnisse)
+  WHEN b.entstehungsart IS NOT NULL THEN b.entstehungsart
+  WHEN b.klimastufe IS NOT NULL THEN array[b.klimastufe, b.wasserverhaeltnisse]::int[]
+ END AS entsteh,
+b.sonstigeangaben,
  b.bodenzahlodergruenlandgrundzahl as bodenzahl, b.ackerzahlodergruenlandzahl AS ackerzahl,
- b.jahreszahl, st_area(st_intersection(b.wkb_geometry, f.wkb_geometry)) AS schnittflae 
+ b.jahreszahl, st_area(st_intersection(b.wkb_geometry, f.wkb_geometry)) AS schnittflae
 FROM aaa_ogr.ax_flurstueck f
 JOIN aaa_ogr.ax_bodenschaetzung b ON st_intersects(b.wkb_geometry, f.wkb_geometry) AND st_area(st_intersection(b.wkb_geometry, f.wkb_geometry)) > 0.05
-LEFT JOIN aaa_ogr.ax_bodenart_bodenschaetzung bodenart ON b.bodenart = bodenart.wert
-LEFT JOIN aaa_ogr.ax_kulturart_bodenschaetzung kulturart ON b.kulturart = kulturart.wert
-LEFT JOIN aaa_ogr.ax_zustandsstufeoderbodenstufe_bodenschaetzung zustbod ON b.zustandsstufeoderbodenstufe = zustbod.wert
+LEFT JOIN aaa_ogr.ax_nutzungsart_bodenschaetzung na ON b.nutzungsart = na.wert
+LEFT JOIN aaa_ogr.ax_bodenart_bodenschaetzung ba ON b.bodenart = ba.wert
+LEFT JOIN aaa_ogr.ax_bodenstufe bs ON b.bodenstufe = bs.wert
+LEFT JOIN aaa_ogr.ax_zustandsstufe zs ON b.zustandsstufe = zs.wert
 WHERE f.gml_id = $1 AND f.endet IS NULL AND b.endet IS NULL ORDER BY schnittflae DESC";
 
 $v = array($gmlid);
@@ -784,9 +791,8 @@ echo "\n</table>";
 
 // Entstehung:
 // Abfrage für die Antragsnummer (nach ALKIS)
-$sql ="SELECT DISTINCT a.kennzeichen AS antragsnummer ";
+$sql ="SELECT DISTINCT CASE WHEN f.zeigtaufexternes_name IS NOT NULL THEN f.zeigtaufexternes_name[1] ELSE NULL END AS antragsnummer ";
 $sql.="FROM aaa_ogr.ax_fortfuehrungsfall f ";
-$sql.="LEFT JOIN aaa_ogr.aa_antrag a ON a.identifier = fachdatenobjekt_uri[1] ";
 $sql.="WHERE $1 = ANY (f.zeigtaufneuesflurstueck)";
 $sql.="AND NOT ($1 = ANY (f.zeigtaufaltesflurstueck));";
 $v = array($flurstueckskennzeichen);
@@ -860,9 +866,8 @@ pg_free_result($res);
 
 // Fortführungen:
 // Abfrage für Daten und Antragsnummern (nach ALKIS)
-$sql ="SELECT DISTINCT f.gml_id, f.beginnt::date AS datum, a.kennzeichen AS antragsnummer ";
+$sql ="SELECT DISTINCT f.gml_id, f.beginnt::date AS datum, CASE WHEN f.zeigtaufexternes_name IS NOT NULL THEN f.zeigtaufexternes_name[1] ELSE NULL END AS antragsnummer ";
 $sql.="FROM aaa_ogr.ax_fortfuehrungsfall f ";
-$sql.="LEFT JOIN aaa_ogr.aa_antrag a ON a.identifier = fachdatenobjekt_uri[1] ";
 $sql.="WHERE $1 = ANY (f.zeigtaufneuesflurstueck) ";
 $sql.="AND $1 = ANY (f.zeigtaufaltesflurstueck) ";
 $sql.="ORDER BY datum;";
@@ -1048,7 +1053,7 @@ echo "\n<table class='outer'>";
 echo "\n</table>\n";
 
 // Zusatzangaben (Informationen ursprünglich aus ALB)
-if ($zusatzangaben[0] != '' || (!empty($alb_datenarten) && (in_array('http://www.lverma-mv.de/_fdv#5010', $alb_datenarten) || in_array('http://www.lverma-mv.de/_fdv#5040', $alb_datenarten)))) {
+if ($zusatzangaben[0] != '' || (!empty($alb_datenarten) && (in_array('urn:mv:fdv:5010', $alb_datenarten) || in_array('urn:mv:fdv:5040', $alb_datenarten)))) {
     echo "\n<br>";
     echo "\n<br>";
     echo "\n<h5><img src='ico/Hinweis.ico' width='16' height='16' alt=''> Zusatzangaben (Informationen ursprünglich aus ALB)</h5>";
