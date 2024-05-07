@@ -487,7 +487,6 @@ function werteliste ($bez ,$sqlin) {
     $sql="SELECT wert, beschreibung FROM aaa_ogr.ax_sonstigeangaben_bodenschaetzung WHERE wert IN (".$sqlin.") ORDER BY wert LIMIT $1 ;";
   }
 
-	$sql="SELECT wert, beschreibung FROM aaa_ogr.".$tabelle." WHERE wert IN (".$sqlin.") ORDER BY wert LIMIT $1 ;";
 	$v = array('9');
 	$res = pg_prepare("", $sql);
 	$res = pg_execute("", $v);
