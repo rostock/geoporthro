@@ -70,7 +70,7 @@ class IndexGrundsteuerobjekteCommand extends ContainerAwareCommand
                  lpad(regexp_replace(we_nummer, '\D', '', 'g'), 6, '0') AS we_nummer_sort,
                  steuernummer,
                  regexp_replace(steuernummer, '\/', '', 'g') AS steuernummer_clean,
-                 lagebezeichnung,
+                 replace(lagebezeichnung, 'é', 'e') AS lagebezeichnung,
                  flaeche_im_flurstueck_formatiert AS flaeche,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
@@ -81,7 +81,7 @@ class IndexGrundsteuerobjekteCommand extends ContainerAwareCommand
                  lpad(regexp_replace(we_nummer, '\D', '', 'g'), 6, '0') AS we_nummer_sort,
                  steuernummer,
                  regexp_replace(steuernummer, '\/', '', 'g') AS steuernummer_clean,
-                 lagebezeichnung,
+                 replace(lagebezeichnung, 'é', 'e') AS lagebezeichnung,
                  flaeche_formatiert AS flaeche,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
