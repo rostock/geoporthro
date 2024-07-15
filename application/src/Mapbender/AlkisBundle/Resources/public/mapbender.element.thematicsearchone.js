@@ -41,7 +41,7 @@
             betriebegewerblicherart: '<li>→ Flurstück in verschiedenen Kombinationen (Reihenfolge egal) [Beispiele: <span>2241 372</span> oder <span>2241 1 372</span> oder <span>2241 1 /3</span> oder <span>2241 /3</span> oder <span>flurbezirk ii 372</span> oder <span>flurbezirk ii 1 372</span> oder <span>flurbezirk ii 1 /3</span> oder <span>flurbezirk ii /3</span>]</li><li>→ Aktenzeichen [Beispiele: <span>00.06.-22201-bG-0011</span> oder <span>00.06.-22352</span> oder <span>223815</span>]</li><li>→ Status [Beispiel: <span>BgA 5</span>]</li><li>→ Bemerkungen [Beispiel: <span>Stadthafen</span>]</li></ul>',
             erbbaurechte: '<li>→ Flurstück in verschiedenen Kombinationen (Reihenfolge egal) [Beispiele: <span>2239 102</span> oder <span>2239 1 102</span> oder <span>2239 1 /79</span> oder <span>2239 /79</span> oder <span>warnem 102</span> oder <span>warnem 1 102</span> oder <span>warnem 1 /79</span> oder <span>warnem /79</span>]</li><li>→ Aktenzeichen [Beispiele: <span>2341E980075</span> oder <span>2341ET980015</span>]</li></ul>',
             freizeitsport: '<li>→ Bezeichnung [Beispiele: <span>Löwenzahnweg</span> oder <span>Gehlsheimer Str.</span>]</li><li>→ Sportarten [Beispiel: <span>Tischtennis</span> oder <span>Fußball</span>]</li></ul>',
-            grundsteuerobjekte: '<li>→ WE-Nummer [Beispiele: <span>110047</span> oder <span>230053</span>]</li><li>→ Steuernummer (Aktenzeichen der Finanzämter) [Beispiel: <span>079/001/953/1065/016/3</span>]</li><li>→ Lagebezeichnung [Beispiel: <span>neben Barnstorf-Ausbau 8</span>]</li></ul>',
+            grundsteuerobjekte: '<li>→ WE-Nummer [Beispiele: <span>140202</span> oder <span>Gartenpacht</span>]</li><li>→ Aktenzeichen [Beispiel: <span>079/009/957/0281/006/4</span>]</li></ul>',
             grundvermoegen: '<li>→ Aktenzeichen [Beispiele: <span>00.06.-22413-igb-0021</span> oder <span>00.06.-22352</span> oder <span>2235</span>]</li></ul>',
             gruenfriedhofsflaechen: '<li>→ Art [Beispiel: <span>rasen</span>]</li><li>→ Grünpflegebezirk [Beispiel: <span>24</span>]</li><li>→ Nummer des Grünpflegeobjektes [Beispiele: <span>1118/02</span> oder <span>1118</span>]</li><li>→ Bezeichnung des Grünpflegeobjektes [Beispiel: <span>kriegsgräb</span>]</li><li>→ Pflegebezeichnung [Beispiel: <span>1116 wiese</span>]</li><li>→ Teil als Kombination aus Grünpflegebezirk, Nummer des Grünpflegeobjektes und Teilnummer (Reihenfolge egal) [Beispiel: <span>21 1118 13</span>]</li><li>→ Teil als Kombination aus Grünpflegebezirk, Bezeichnung des Grünpflegeobjektes und Teilnummer (Reihenfolge egal) [Beispiel: <span>21 spiellandschaft 13</span>]</li></ul>',
             gruenpflegeobjekte: '<li>→ Grünpflegebezirk [Beispiel: <span>25</span>]</li><li>→ Art [Beispiel: <span>ballspielan</span>]</li><li>→ Nummer [Beispiele: <span>3015/02</span> oder <span>3015</span>]</li><li>→ Bezeichnung [Beispiel: <span>langenorter hufe/haferweg</span>]</li></ul><br/>Resultate können Friedhöfe, Parks und Grünanlagen, Spielplätze sowie Straßenbegleitgrün sein.',
@@ -604,9 +604,11 @@
                 case 'grundsteuerobjekte':
                     if (this.firstTimeSearch.grundsteuerobjekte === true) {
                         var layertreeLayerContainer = $('li[data-type="root"][data-title="Grundsteuerobjekte"]');
-                        var layertreeLayerCheckbox = $('input[name="selected"]:first', layertreeLayerContainer);
-                        layertreeLayerCheckbox.prop('checked', true);
-                        layertreeLayerCheckbox.change();
+                        $('input[name="selected"]', layertreeLayerContainer).each(function(idx, item) {
+                            var layertreeLayerCheckbox = $(item);
+                            layertreeLayerCheckbox.prop('checked', true);
+                            layertreeLayerCheckbox.change();
+                        });
                     }
                     this.firstTimeSearch.grundsteuerobjekte = false;
                     break;

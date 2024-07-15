@@ -64,11 +64,7 @@
             {% elseif type == 'freizeitsport' and json.data.type == 'freizeitsport' %}
                 {{ json.data.bezeichnung }} ({{ json.data.sportarten|replace({';': ", "}) }})
             {% elseif type == 'grundsteuerobjekte' and json.data.type == 'grundsteuerobjekte' %}
-                {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != '' %}
-                    <i class="fa fa-circle-o" title="Teilfläche"></i> {{ json.data.we_nummer }}{% if json.data.steuernummer is defined and json.data.steuernummer != null%} | {{ json.data.steuernummer }}{% endif %}{% if json.data.lagebezeichnung is defined and json.data.lagebezeichnung != null%} | {{ json.data.lagebezeichnung }}{% endif %} – {{ json.data.flurstueckskennzeichen }} ({{ json.data.flaeche }})
-                {% else %}
-                  <i class="fa fa-circle" title="Gesamtfläche"></i> {{ json.data.we_nummer }}{% if json.data.steuernummer is defined and json.data.steuernummer != null%} | {{ json.data.steuernummer }}{% endif %}{% if json.data.lagebezeichnung is defined and json.data.lagebezeichnung != null%} | {{ json.data.lagebezeichnung }}{% endif %} – Gesamtfläche ({{ json.data.flaeche }})
-                {% endif %}
+                {% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}{% endif %}{% if json.data.we_nummer is defined and json.data.we_nummer != null%} | {{ json.data.we_nummer }}{% endif %}
             {% elseif type == 'grundvermoegen' and json.data.type == 'grundvermoegen' %}
                 {{ json.data.aktenzeichen }}
             {% elseif type == 'gruenfriedhofsflaechen' and json.data.type == 'gruenfriedhofsflaechen' %}

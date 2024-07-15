@@ -58,35 +58,17 @@ class IndexGrundsteuerobjekteCommand extends ContainerAwareCommand
         $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten.grundsteuerobjekte_regis_hro');
         $result = $stmt->fetch();
         $count = intval($result['count']);
-        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten.grundsteuerobjekte_teilflaechen_regis_hro');
-        $result = $stmt->fetch();
-        $count = $count + intval($result['count']);
 
         while ($offset < $count) {
             $stmt = $conn->query("
                 SELECT
-                 flurstueckskennzeichen,
+                 aktenzeichen,
+                 regexp_replace(aktenzeichen, '\/', '', 'g') AS aktenzeichen_clean,
                  we_nummer,
-                 lpad(regexp_replace(we_nummer, '\D', '', 'g'), 6, '0') AS we_nummer_sort,
-                 steuernummer,
-                 regexp_replace(steuernummer, '\/', '', 'g') AS steuernummer_clean,
-                 replace(lagebezeichnung, 'é', 'e') AS lagebezeichnung,
-                 flaeche_im_flurstueck_formatiert AS flaeche,
-                 ST_AsText(ST_Centroid(geometrie)) AS geom,
-                 ST_AsText(geometrie) AS wktgeom
-                  FROM fachdaten.grundsteuerobjekte_teilflaechen_regis_hro
-                UNION SELECT
-                 NULL AS flurstueckskennzeichen,
-                 we_nummer,
-                 lpad(regexp_replace(we_nummer, '\D', '', 'g'), 6, '0') AS we_nummer_sort,
-                 steuernummer,
-                 regexp_replace(steuernummer, '\/', '', 'g') AS steuernummer_clean,
-                 replace(lagebezeichnung, 'é', 'e') AS lagebezeichnung,
-                 flaeche_formatiert AS flaeche,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
                   FROM fachdaten.grundsteuerobjekte_regis_hro
-                   ORDER BY we_nummer_sort, flurstueckskennzeichen DESC
+                   ORDER BY aktenzeichen DESC
                     LIMIT " . $limit . " OFFSET " . $offset);
 
             while ($row = $stmt->fetch()) {
@@ -96,30 +78,25 @@ class IndexGrundsteuerobjekteCommand extends ContainerAwareCommand
                 $doc->id = $type . '_' . ++$id;
 
                 $doc->text = $this->concat(
-                    $row['we_nummer'],
-                    $row['steuernummer'],
-                    $row['steuernummer_clean'],
-                    $row['lagebezeichnung']
+                    $row['aktenzeichen'],
+                    $row['aktenzeichen_clean'],
+                    $row['we_nummer']
                 );
 
                 $doc->phonetic = $this->addPhonetic($this->concat(
-                    $row['we_nummer'],
-                    $row['steuernummer'],
-                    $row['steuernummer_clean'],
-                    $row['lagebezeichnung']
+                    $row['aktenzeichen'],
+                    $row['aktenzeichen_clean'],
+                    $row['we_nummer']
                 ));
 
-                $doc->label = $row['we_nummer_sort'].$row['flurstueckskennzeichen'];
+                $doc->label = $row['aktenzeichen'].$row['we_nummer'];
 
                 $doc->json = json_encode(array(
                     'data'   => array(
-                        'type'                    => $type,
-                        'flurstueckskennzeichen'  => $row['flurstueckskennzeichen'],
-                        'we_nummer'               => $row['we_nummer'],
-                        'steuernummer'            => $row['steuernummer'],
-                        'steuernummer_clean'      => $row['steuernummer_clean'],
-                        'lagebezeichnung'         => $row['lagebezeichnung'],
-                        'flaeche'                 => $row['flaeche']
+                        'type'                => $type,
+                        'aktenzeichen'        => $row['aktenzeichen'],
+                        'aktenzeichen_clean'  => $row['aktenzeichen_clean'],
+                        'we_nummer'           => $row['we_nummer']
                     ),
                     'x'      => $x,
                     'y'      => $y,
