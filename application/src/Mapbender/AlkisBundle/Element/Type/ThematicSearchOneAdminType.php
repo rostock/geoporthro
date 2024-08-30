@@ -51,6 +51,7 @@ class ThematicSearchOneAdminType extends AbstractType
                     "bebauungsplaene_nur_rk" => "Bebauungspläne",
                     "betriebegewerblicherart" => "Betriebe gewerblicher Art",
                     "erbbaurechte" => "Erbbaurechte",
+                    "flaecheninabstimmung" => "Flächen in Abstimmung",
                     "freizeitsport" => "Freizeitsport",
                     "grundsteuerobjekte" => "Grundsteuerobjekte",
                     "grundvermoegen" => "Grundvermögen",

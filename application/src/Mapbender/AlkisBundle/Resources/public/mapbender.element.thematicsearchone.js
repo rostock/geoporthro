@@ -15,6 +15,7 @@
             bebauungsplaene_nur_rk: true,
             betriebegewerblicherart: true,
             erbbaurechte: true,
+            flaecheninabstimmung: true,
             freizeitsport: true,
             grundsteuerobjekte: true,
             grundvermoegen: true,
@@ -40,6 +41,7 @@
             bebauungsplaene_nur_rk: '<li>→ Nummer [Beispiele: <span>16.w.43</span> oder <span>16w</span>]</li><li>→ Bezeichnung [Beispiel: <span>nienhag</span>]</li></ul>',
             betriebegewerblicherart: '<li>→ Flurstück in verschiedenen Kombinationen (Reihenfolge egal) [Beispiele: <span>2241 372</span> oder <span>2241 1 372</span> oder <span>2241 1 /3</span> oder <span>2241 /3</span> oder <span>flurbezirk ii 372</span> oder <span>flurbezirk ii 1 372</span> oder <span>flurbezirk ii 1 /3</span> oder <span>flurbezirk ii /3</span>]</li><li>→ Aktenzeichen [Beispiele: <span>00.06.-22201-bG-0011</span> oder <span>00.06.-22352</span> oder <span>223815</span>]</li><li>→ Status [Beispiel: <span>BgA 5</span>]</li><li>→ Bemerkungen [Beispiel: <span>Stadthafen</span>]</li></ul>',
             erbbaurechte: '<li>→ Flurstück in verschiedenen Kombinationen (Reihenfolge egal) [Beispiele: <span>2239 102</span> oder <span>2239 1 102</span> oder <span>2239 1 /79</span> oder <span>2239 /79</span> oder <span>warnem 102</span> oder <span>warnem 1 102</span> oder <span>warnem 1 /79</span> oder <span>warnem /79</span>]</li><li>→ Aktenzeichen [Beispiele: <span>2341E980075</span> oder <span>2341ET980015</span>]</li></ul>',
+            flaecheninabstimmung: '<li>→ Protokoll [Beispiele: <span>232103-21-032</span> oder <span>232102SE-alt-016</span>]</li></ul>',
             freizeitsport: '<li>→ Bezeichnung [Beispiele: <span>Löwenzahnweg</span> oder <span>Gehlsheimer Str.</span>]</li><li>→ Sportarten [Beispiel: <span>Tischtennis</span> oder <span>Fußball</span>]</li></ul>',
             grundsteuerobjekte: '<li>→ WE-Nummer [Beispiele: <span>140202</span> oder <span>Gartenpacht</span>]</li><li>→ Aktenzeichen [Beispiel: <span>079/009/957/0281/006/4</span>]</li></ul>',
             grundvermoegen: '<li>→ Aktenzeichen [Beispiele: <span>00.06.-22413-igb-0021</span> oder <span>00.06.-22352</span> oder <span>2235</span>]</li></ul>',
@@ -125,6 +127,9 @@
             else if (search === 'erbbaurechte') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.erbbaurechte));
             }
+            else if (search === 'flaecheninabstimmung') {
+                $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.flaecheninabstimmung));
+            }
             else if (search === 'freizeitsport') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.freizeitsport));
             }
@@ -202,6 +207,10 @@
             else if (search === 'erbbaurechte') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.erbbaurechte));
                 this.firstTimeSearch.erbbaurechte = true;
+            }
+            else if (search === 'flaecheninabstimmung') {
+                $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.flaecheninabstimmung));
+                this.firstTimeSearch.flaecheninabstimmung = true;
             }
             else if (search === 'freizeitsport') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.freizeitsport));
@@ -296,6 +305,10 @@
             else if (search === 'erbbaurechte') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.erbbaurechte));
                 this.firstTimeSearch.erbbaurechte = true;
+            }
+            else if (search === 'flaecheninabstimmung') {
+                $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.flaecheninabstimmung));
+                this.firstTimeSearch.flaecheninabstimmung = true;
             }
             else if (search === 'freizeitsport') {
                 $('.thematicsearchonecontent').html(this.hilfetexte.allgemein.concat(this.hilfetexte.freizeitsport));
@@ -591,6 +604,15 @@
                         layertreeLayerCheckbox.change();
                     }
                     this.firstTimeSearch.erbbaurechte = false;
+                    break;
+                case 'flaecheninabstimmung':
+                    if (this.firstTimeSearch.flaecheninabstimmung === true) {
+                        var layertreeLayerContainer = $('li[data-type="simple"][data-title="Flächen in Abstimmung"]');
+                        var layertreeLayerCheckbox = $('input[name="selected"]:first', layertreeLayerContainer);
+                        layertreeLayerCheckbox.prop('checked', true);
+                        layertreeLayerCheckbox.change();
+                    }
+                    this.firstTimeSearch.flaecheninabstimmung = false;
                     break;
                 case 'freizeitsport':
                     if (this.firstTimeSearch.freizeitsport === true) {

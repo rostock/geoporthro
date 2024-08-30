@@ -16,6 +16,8 @@
             <option value="betriebegewerblicherart"{% if loop.first %} selected="true" {% endif %}>{{ 'Betriebe gewerblicher Art' | trans }}</option>
           {% elseif opt == 'erbbaurechte' %}
             <option value="erbbaurechte"{% if loop.first %} selected="true" {% endif %}>{{ 'Erbbaurechte' | trans }}</option>
+          {% elseif opt == 'flaecheninabstimmung' %}
+            <option value="flaecheninabstimmung"{% if loop.first %} selected="true" {% endif %}>{{ 'Flächen in Abstimmung' | trans }}</option>
           {% elseif opt == 'freizeitsport' %}
             <option value="freizeitsport"{% if loop.first %} selected="true" {% endif %}>{{ 'Freizeitsport' | trans }}</option>
           {% elseif opt == 'grundsteuerobjekte' %}
