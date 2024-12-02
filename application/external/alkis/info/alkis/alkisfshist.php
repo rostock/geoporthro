@@ -437,6 +437,12 @@ if ($row = pg_fetch_array($res)) {
                     break;
                 }
             }
+            else if (strpos($alb_datenart, '0901') !== false) {
+                if (strpos($alb_daten[$key], '/ ') === false) {
+                    $entstehung_antragsnummer = $alb_daten[$key];
+                    break;
+                }
+            }
         }
     }
 }
@@ -457,11 +463,12 @@ if (!empty($alb_datenarten)) {
 
 // Entstehung:
 // Abfrage für die Anlässe (nach ALKIS)
+// zunächst via Flurstückskennzeichen...
 $sql ="SELECT f.anlass_id, a.value AS anlass_name ";
 $sql.="FROM (SELECT DISTINCT lpad(unnest(ueberschriftimfortfuehrungsnachweis), 6, '0') AS anlass_id FROM aaa_ogr.ax_fortfuehrungsfall WHERE $1 = ANY (zeigtaufneuesflurstueck) AND NOT ($1 = ANY (zeigtaufaltesflurstueck))) AS f ";
 $sql.="LEFT JOIN aaa_ogr.aa_anlassart a ON a.id = f.anlass_id ";
 $sql.="ORDER BY anlass_id;";
-$v = array($fskenn);
+$v = array($flurstueckskennzeichen);
 $res = pg_prepare("", $sql);
 $res = pg_execute("", $v);
 $entstehung_anlaesse = array();
@@ -471,6 +478,21 @@ if (pg_num_rows($res) != 0) {
     }
 }
 pg_free_result($res);
+// ...dann via Antragsnummer
+if (empty($entstehung_anlaesse)) {
+      $sql ="SELECT f.anlass_id, a.value AS anlass_name ";
+      $sql.="FROM (SELECT DISTINCT lpad(unnest(ueberschriftimfortfuehrungsnachweis), 6, '0') AS anlass_id FROM aaa_ogr.ax_fortfuehrungsfall WHERE zeigtaufexternes_name[1] = $1) AS f ";
+      $sql.="LEFT JOIN aaa_ogr.aa_anlassart a ON a.id = f.anlass_id ";
+      $sql.="ORDER BY anlass_id;";
+      $v = array($entstehung_antragsnummer);
+      $res = pg_prepare("", $sql);
+      $res = pg_execute("", $v);
+      if (pg_num_rows($res) != 0) {
+          while ($row = pg_fetch_array($res)) {
+              array_push($entstehung_anlaesse, array($row["anlass_id"], $row["anlass_name"]));
+          }
+      }
+}
 
 // Entstehung:
 // Abfrage für den Riss (nach ALKIS)
