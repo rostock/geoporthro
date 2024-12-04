@@ -235,7 +235,7 @@ function eigentuemer($con, $gmlid, $mitadresse, $lnkclass) {
 
 		// Schleife 2: P e r s o n
 		// Beziehung: ax_person  <benennt<  ax_namensnummer
-		$sqlp ="SELECT DISTINCT gml_id, nachnameoderfirma, vorname, geburtsname, geburtsdatum, namensbestandteil, akademischergrad ";
+		$sqlp ="SELECT DISTINCT gml_id, nachnameoderfirma, vorname, geburtsname, geburtsdatum, sterbedatum, namensbestandteil, akademischergrad ";
 		$sqlp.="FROM aaa_ogr.ax_person WHERE gml_id = $1 AND endet IS NULL;";
 
 		$v = array($benennt);
@@ -254,7 +254,13 @@ function eigentuemer($con, $gmlid, $mitadresse, $lnkclass) {
 			$diePerson.=$rowp["nachnameoderfirma"];
 			if ($rowp["vorname"] <> "") {$diePerson.=", ".$rowp["vorname"];}
 			if ($rowp["namensbestandteil"] <> "") {$diePerson.=" ".$rowp["namensbestandteil"];}
-			if ($rowp["geburtsdatum"] <> "") {$diePerson.=" (".strftime('%d.%m.%Y', strtotime($rowp["geburtsdatum"])).")";}
+			if ($rowp["geburtsdatum"] <> "" && $rowp["sterbedatum"] <> "") {
+        $diePerson.=" (geb. ".strftime('%d.%m.%Y', strtotime($rowp["geburtsdatum"])).", gest. ".strftime('%d.%m.%Y', strtotime($rowp["sterbedatum"])).")";
+      } else if ($rowp["geburtsdatum"] <> "") {
+        $diePerson.=" (geb. ".strftime('%d.%m.%Y', strtotime($rowp["geburtsdatum"])).")";
+      } else if ($rowp["sterbedatum"] <> "") {
+        $diePerson.=" (gest. ".strftime('%d.%m.%Y', strtotime($rowp["sterbedatum"])).")";
+      }
 			$diePerson=htmlentities($diePerson, ENT_QUOTES, "UTF-8"); // Umlaute
 
 			// Spalte 1 enthält die Namensnummer, nur in Zeile 0

@@ -39,7 +39,7 @@ echo "<p class='nakennz'>Eigentümer&nbsp;</p>\n";
 echo "\n<h2><img src='ico/Eigentuemer.ico' width='16' height='16' alt=''> Eigentümer</h2>\n";
 if (!$con) "\n<p class='err'>Fehler beim Verbinden der DB</p>\n";
 
-$sql="SELECT to_char(p.beginnt::date, 'DD.MM.YYYY') AS datum, p.nachnameoderfirma, p.anrede, p.vorname, p.geburtsname, p.geburtsdatum, p.namensbestandteil, p.akademischergrad, a.value AS anlass_bezeichnung, a.id AS anlass_schluessel, CASE WHEN p.zeigtaufexternes_name IS NOT NULL THEN p.zeigtaufexternes_name[1] ELSE NULL END AS antrag, CASE WHEN p.processstep_organisationname IS NOT NULL THEN p.processstep_organisationname[1] ELSE NULL END AS qualitaetsangabe ";
+$sql="SELECT to_char(p.beginnt::date, 'DD.MM.YYYY') AS datum, p.nachnameoderfirma, p.anrede, p.vorname, p.geburtsname, p.geburtsdatum, p.sterbedatum, p.namensbestandteil, p.akademischergrad, a.value AS anlass_bezeichnung, a.id AS anlass_schluessel, CASE WHEN p.zeigtaufexternes_name IS NOT NULL THEN p.zeigtaufexternes_name[1] ELSE NULL END AS antrag, CASE WHEN p.processstep_organisationname IS NOT NULL THEN p.processstep_organisationname[1] ELSE NULL END AS qualitaetsangabe ";
 $sql.="FROM aaa_ogr.ax_person p ";
 $sql.="LEFT JOIN aaa_ogr.aa_anlassart a ON lpad(p.anlass[1], 6, '0') = a.id ";
 $sql.="WHERE p.gml_id = $1 AND p.endet IS NULL;";
@@ -68,6 +68,11 @@ if ($row = pg_fetch_array($res)) {
         $geburtsdatum=strftime('%d.%m.%Y', strtotime($row["geburtsdatum"]));
     else
         $geburtsdatum='';
+    
+    if ($row["sterbedatum"] != '')
+        $sterbedatum=strftime('%d.%m.%Y', strtotime($row["sterbedatum"]));
+    else
+        $sterbedatum='';
 
 	echo "<table>\n";
 		echo "\t<tr><td class='nhd'>Anrede:</td><td class='nam'>".$anr."&nbsp;</td></tr>\n";
@@ -77,6 +82,7 @@ if ($row = pg_fetch_array($res)) {
 		echo "\t<tr><td class='nhd'>Vorname:</td><td class='nam'>".$vor."&nbsp;</td></tr>\n";
 		echo "\t<tr><td class='nhd'>Geburtsname:</td><td class='nam'>".$geb."&nbsp;</td></tr>\n";
 		echo "\t<tr><td class='nhd'>Geburtsdatum:</td><td class='nam'>".$geburtsdatum."&nbsp;</td></tr>\n";
+		echo "\t<tr><td class='nhd'>Sterbedatum:</td><td class='nam'>".$sterbedatum."&nbsp;</td></tr>\n";
         echo "\t<tr><td class='nhd'>Metadaten:</td>";
             echo "\t<td>Antrag:</td><td>".$antrag."&nbsp;</td></tr>\n";
             echo "\t<tr><td class='nhd'></td><td>Datum:</td><td>".$datum."&nbsp;</td></tr>\n";

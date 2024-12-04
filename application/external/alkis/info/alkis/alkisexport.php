@@ -40,7 +40,7 @@ require_once("alkis_conf_location.php");
 include("alkisfkt.php");
 
 // CSV-Ausgabe: Kopfzeile mit Feldnamen
-echo "Flurstückskennzeichen;Gemarkungsschlüssel;Gemarkungsname;Flurnummer;Flurstücksnummer;Buchfläche in m²;Adresse(n);Grundbuchbezirksschlüssel;Grundbuchbezirk;Grundbuchblattnummer;Bestandsverzeichnisnummer (laufende Nummer);Anteil am Flurstück;Buchungsart;Namensnummer;Anteil der Person;Rechtsgemeinschaft;Person;Geburtsdatum;Anschrift;Anteil (berechnet)";
+echo "Flurstückskennzeichen;Gemarkungsschlüssel;Gemarkungsname;Flurnummer;Flurstücksnummer;Buchfläche in m²;Adresse(n);Grundbuchbezirksschlüssel;Grundbuchbezirk;Grundbuchblattnummer;Bestandsverzeichnisnummer (laufende Nummer);Anteil am Flurstück;Buchungsart;Namensnummer;Anteil der Person;Rechtsgemeinschaft;Person;Geburtsdatum;Sterbedatum;Anschrift;Anteil (berechnet)";
 
 // Datenbank-Verbindung
 $con = pg_connect("host=".$dbhost." port=" .$dbport." dbname=".$dbname." user=".$dbuser." password=".$dbpass." sslmode=require");
@@ -136,6 +136,10 @@ while($row = pg_fetch_array($res)) {
         $gebdat=strftime('%d.%m.%Y', strtotime($row["geburtsdatum"]));
     else
         $gebdat='';
+    if ($row["sterbedatum"] != '')
+        $stbdat=strftime('%d.%m.%Y', strtotime($row["sterbedatum"]));
+    else
+        $stbdat='';
 
 	// Adresse der Person (Eigentuemer))
 	$ort=$row["ort"];
@@ -160,8 +164,8 @@ while($row = pg_fetch_array($res)) {
 	$fsteil=$fs_kennz.";".$gmkgnr.";".$gemkname.";".$flurnummer.";".$flstnummer.";".$fs_flae.";".$lage.";";
 	//      H              I              J             K           L           M
 	$gbteil=$gb_bezirk.";".$gb_beznam.";".$gb_blatt.";".$bu_lfd.";".$bu_ant.";".$bu_art.";";
-	//       N            O            P            Q         R           S
-	$namteil=$nam_lfd.";".$nam_ant.";".$rechtsg.";".$name.";".$gebdat.";".$adresse;
+	//       N            O            P            Q         R           S           T
+	$namteil=$nam_lfd.";".$nam_ant.";".$rechtsg.";".$name.";".$gebdat.";".$stbdat.";".$adresse;
 
 	// Anteile "GB am FS" und "Pers am GB" verrechnen
 	if ($rechnen) { // beide Anteile verwertbar
