@@ -60,7 +60,9 @@
                     {{ json.data.bezeichnung }}</div>
                 {% elseif type == 'eigen' %}
                     {{json.nachname}}{% if json.vorname is defined and json.vorname != null%}, {{json.vorname}}{% endif %}
-                    {% if json.geburtsdatum is defined and json.geburtsdatum != null%} ({{json.geburtsdatum | date('d.m.Y')}}){% endif %}</div>
+                    {% if json.geburtsdatum is defined and json.geburtsdatum != null and json.sterbedatum is defined and json.sterbedatum != null%} (geb. {{json.geburtsdatum | date('d.m.Y')}}, gest. {{json.sterbedatum | date('d.m.Y')}})
+                    {% elseif json.geburtsdatum is defined and json.geburtsdatum != null%} (geb. {{json.geburtsdatum | date('d.m.Y')}})
+                    {% elseif json.sterbedatum is defined and json.sterbedatum != null%} (gest. {{json.sterbedatum | date('d.m.Y')}}){% endif %}</div>
                 {% elseif type == 'grund' %}
                     {{ json.bezirkname}} ({{json.bezirk}}), {{json.grundbuchblatt}}</div>
                 {% elseif type == 'risse_fst' %}

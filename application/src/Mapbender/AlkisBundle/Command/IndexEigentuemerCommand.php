@@ -47,7 +47,9 @@ class IndexEigentuemerCommand extends ContainerAwareCommand
                  nachnameoderfirma AS nachname,
                  vorname,
                  geburtsdatum,
-                 to_char(geburtsdatum::date, 'DD.MM.YYYY') AS geburtsdatum_formatiert
+                 to_char(geburtsdatum::date, 'DD.MM.YYYY') AS geburtsdatum_formatiert,
+                 sterbedatum,
+                 to_char(sterbedatum::date, 'DD.MM.YYYY') AS sterbedatum_formatiert
                   FROM aaa_ogr.ax_person
                    WHERE endet IS NULL
                     ORDER BY ogc_fid
@@ -61,12 +63,21 @@ class IndexEigentuemerCommand extends ContainerAwareCommand
                     $row['vorname'],
                     $row['gml_id']
                 );
-                $doc->label = $row['nachname'] . ', ' . $row['vorname'] . ' (' . $row['geburtsdatum_formatiert'] . ')';
+                $label = $row['nachname'] . ', ' . $row['vorname'];
+                if ($row['geburtsdatum'] != '' && $row['sterbedatum'] != '') {
+                  $label = $label . ' (geb. ' . $row['geburtsdatum_formatiert'] . ', gest. ' . $row['sterbedatum_formatiert'] . ')';
+                } else if ($row['geburtsdatum']) {
+                  $label = $label . ' (geb. ' . $row['geburtsdatum_formatiert'] . ')';
+                } else if ($row['sterbedatum']) {
+                  $label = $label . ' (gest. ' . $row['sterbedatum_formatiert'] . ')';
+                }
+                $doc->label = $label;
                 $doc->json = json_encode(array(
-                    'label'        => $row['nachname'] . ', ' . $row['vorname'] . ' (' . $row['geburtsdatum_formatiert'] . ')',
+                    'label'        => $label,
                     'nachname'     => $row['nachname'],
                     'vorname'      => $row['vorname'],
                     'geburtsdatum' => $row['geburtsdatum'],
+                    'sterbedatum'  => $row['sterbedatum'],
                     'gml_id'       => $row['gml_id']
 
                 ));
