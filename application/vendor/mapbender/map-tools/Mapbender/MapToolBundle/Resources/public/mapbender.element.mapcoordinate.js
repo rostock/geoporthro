@@ -63,8 +63,13 @@
                 if (inputSrs.projCode !== mapProj.projCode) {
                     point = point.transform(mapProj, inputSrs);
                 }
-                var x = parseFloat(point.x);
-                var y = parseFloat(point.y);
+                if (inputSrs.projCode === 'EPSG:9999') {
+                  var x = parseFloat(point.y);
+                  var y = parseFloat(point.x);
+                } else {
+                  var x = parseFloat(point.x);
+                  var y = parseFloat(point.y);
+                }
                 if (inputSrs.proj.units === 'degrees') {
                     x = Math.round(x * 100000) / 100000.0;
                     y = Math.round(y * 100000) / 100000.0;
@@ -72,7 +77,11 @@
                     x = Math.round(x * 1000) / 1000.0;
                     y = Math.round(y * 1000) / 1000.0;
                 }
-                $inputCoords.val((x.toString()).replace('.', ',') + ' ' + (y.toString()).replace('.', ','));
+                if (inputSrs.projCode === 'EPSG:9999') {
+                  $inputCoords.val(x.toString() + ', ' + y.toString());
+                } else {
+                  $inputCoords.val((x.toString()).replace('.', ',') + ' ' + (y.toString()).replace('.', ','));
+                }
             }
         };
         this._handleClick = function(e){
@@ -166,7 +175,11 @@
                 var inputSrs = Mapbender.Model.getProj($('select.inputSrs option').filter(function () { return $(this).html() == selectedSrsName; }).val());
                 var mapProj = Mapbender.Model.getCurrentProj();
                 for (var i = 1; ordinates.length > 1 && i < ordinates.length; i = i + 2) { // 2D koordinates
-                    var point = new OpenLayers.Geometry.Point(parseFloat(ordinates[i - 1]), parseFloat(ordinates[i]));
+                    if (inputSrs.projCode === 'EPSG:9999') {
+                      var point = new OpenLayers.Geometry.Point(parseFloat(ordinates[i]), parseFloat(ordinates[i - 1]));
+                    } else {
+                      var point = new OpenLayers.Geometry.Point(parseFloat(ordinates[i - 1]), parseFloat(ordinates[i]));
+                    }
                     if (inputSrs.projCode !== mapProj.projCode) {
                         point = point.transform(inputSrs, mapProj);
                     }
