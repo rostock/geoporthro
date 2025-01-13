@@ -16,7 +16,6 @@
              {% elseif type == 'anlagevermoegendereigenbetriebe'%} anlagevermoegendereigenbetriebe document
              {% elseif type == 'baumkataster'%} baumkataster document
              {% elseif type == 'bebauungsplaene'%} bebauungsplaene document
-             {% elseif type == 'bebauungsplaene_nur_rk'%} bebauungsplaene_nur_rk document
              {% elseif type == 'betriebegewerblicherart'%} betriebegewerblicherart document
              {% elseif type == 'erbbaurechte'%} erbbaurechte document
              {% elseif type == 'flaecheninabstimmung'%} flaecheninabstimmung document
@@ -55,9 +54,7 @@
             {% elseif type == 'baumkataster' and json.data.type == 'baumreihe' %}
                 Baumgruppe (Grünpflegebezirk {{ json.data.bezirk }}, Grünpflegeobjekt {{ json.data.objektnummer }} {{ json.data.objektbezeichnung }}, Teilnummer {{ json.data.teil }})
             {% elseif type == 'bebauungsplaene' and json.data.type == 'bebauungsplaene' %}
-                {{ json.data.nummer }}, {{ json.data.bezeichnung }}{{ json.data.rechtskraeftig }}
-            {% elseif type == 'bebauungsplaene_nur_rk' and json.data.type == 'bebauungsplaene_nur_rk' %}
-                {{ json.data.nummer }}, {{ json.data.bezeichnung }}
+                {{ json.data.nummer }}, {{ json.data.bezeichnung }} (Status: {{ json.data.status }})
             {% elseif type == 'betriebegewerblicherart' and json.data.type == 'betriebegewerblicherart' %}
                 {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != null%}{{ json.data.flurstueckskennzeichen }}, {% endif %}{% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}, {% endif %}Status {{ json.data.realnutzungsarten }}{% if json.data.bemerkungen_bga is defined and json.data.bemerkungen_bga != null%}, {{ json.data.bemerkungen_bga }}{% endif %}
             {% elseif type == 'erbbaurechte' and json.data.type == 'erbbaurechte' %}

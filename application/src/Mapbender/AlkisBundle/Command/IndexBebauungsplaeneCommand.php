@@ -55,7 +55,7 @@ class IndexBebauungsplaeneCommand extends ContainerAwareCommand
         $output->writeln('Indiziere Bebauungsplaene fuer HRO-Bebauungsplaenesuche ... ');
 
 
-        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten.bebauungsplaene_geltungsbereiche_hro');
+        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten.bebauungsplaene_geltungsbereiche_regis_hro');
         $result = $stmt->fetch();
 
         while ($offset < $result['count']) {
@@ -65,13 +65,10 @@ class IndexBebauungsplaeneCommand extends ContainerAwareCommand
                  regexp_replace(nummer, '\.', '', 'g') AS nummer_ohne_punkte,
                  regexp_replace(nummer, '\.', ' ', 'g') AS nummer_mit_leerzeichen,
                  bezeichnung,
-                 CASE
-                  WHEN rechtskraeftig IS FALSE OR datum_bekanntmachung > now()::date THEN ' (im Verfahren)'
-                  ELSE NULL
-                 END AS rechtskraeftig,
+                 status,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
-                  FROM fachdaten.bebauungsplaene_geltungsbereiche_hro
+                  FROM fachdaten.bebauungsplaene_geltungsbereiche_regis_hro
                    ORDER BY uuid
                     LIMIT " . $limit . " OFFSET " . $offset);
 
@@ -98,10 +95,10 @@ class IndexBebauungsplaeneCommand extends ContainerAwareCommand
 
                 $doc->json = json_encode(array(
                     'data'   => array(
-                        'type'              => $type,
-                        'nummer'            => $row['nummer'],
-                        'bezeichnung'       => $row['bezeichnung'],
-                        'rechtskraeftig'    => $row['rechtskraeftig']
+                        'type'        => $type,
+                        'nummer'      => $row['nummer'],
+                        'bezeichnung' => $row['bezeichnung'],
+                        'status'      => $row['status']
                     ),
                     'x'      => $x,
                     'y'      => $y,

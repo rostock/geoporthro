@@ -48,7 +48,6 @@ class ThematicSearchOneAdminType extends AbstractType
                     "anlagevermoegendereigenbetriebe" => "Anlagevermögen der Eigenbetriebe",
                     "baumkataster" => "Baumkataster",
                     "bebauungsplaene" => "Bebauungspläne",
-                    "bebauungsplaene_nur_rk" => "Bebauungspläne",
                     "betriebegewerblicherart" => "Betriebe gewerblicher Art",
                     "erbbaurechte" => "Erbbaurechte",
                     "flaecheninabstimmung" => "Flächen in Abstimmung",
