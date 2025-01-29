@@ -49,7 +49,7 @@ class IndexBaumCommand extends ContainerAwareCommand
         $conn = $this->getContainer()->get('doctrine.dbal.hro_search_data_connection');
 
         // niedriges "Pagination"-Limit, da sonst Abfragen nicht vollständig durchlaufen und damit nicht alle Objekte aus der DB-Tabelle in den Index gelangen
-        $limit = 80;
+        $limit = 200;
         $offset = 0;
         $id = 0;
 
@@ -74,7 +74,7 @@ class IndexBaumCommand extends ContainerAwareCommand
                  nummer_gruenpflegeobjekt AS objektnummer,
                  regexp_replace(nummer_gruenpflegeobjekt, '\/', '', 'g') AS objektnummer_ohne_slashes,
                  regexp_replace(nummer_gruenpflegeobjekt, '\/', ' ', 'g') AS objektnummer_mit_leerzeichen,
-                 bezeichnung_gruenpflegeobjekt AS objektbezeichnung,
+                 replace(replace(bezeichnung_gruenpflegeobjekt, 'é', 'e'), 'è', 'e') AS objektbezeichnung,
                  nummer,
                  laufende_nummer,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
@@ -93,7 +93,7 @@ class IndexBaumCommand extends ContainerAwareCommand
                  nummer_gruenpflegeobjekt AS objektnummer,
                  regexp_replace(nummer_gruenpflegeobjekt, '\/', '', 'g') AS objektnummer_ohne_slashes,
                  regexp_replace(nummer_gruenpflegeobjekt, '\/', ' ', 'g') AS objektnummer_mit_leerzeichen,
-                 bezeichnung_gruenpflegeobjekt AS objektbezeichnung,
+                 replace(replace(bezeichnung_gruenpflegeobjekt, 'é', 'e'), 'è', 'e') AS objektbezeichnung,
                  nummer,
                  laufende_nummer,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,

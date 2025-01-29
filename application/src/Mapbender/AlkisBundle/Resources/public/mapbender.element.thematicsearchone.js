@@ -545,7 +545,7 @@
                     break;
                 case 'bebauungsplaene':
                     if (this.firstTimeSearch.bebauungsplaene === true) {
-                        var layertreeRootContainer = $('li[data-type="root"][data-title="Bebauungspläne"]');
+                        var layertreeRootContainer = $('li[data-type="root"][data-title="Bebauungspläne (Geltungsbereiche)"]');
                         $('li[data-type="simple"]', layertreeRootContainer).each(function(idx, item) {
                             var layertreeLayerContainer = $(item);
                             var layertreeLayerCheckbox = $('input[name="selected"]:first', layertreeLayerContainer);
