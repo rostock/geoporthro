@@ -48,8 +48,8 @@ class IndexEigentuemerCommand extends ContainerAwareCommand
                  vorname,
                  geburtsdatum,
                  to_char(geburtsdatum::date, 'DD.MM.YYYY') AS geburtsdatum_formatiert,
-                 sterbedatum,
-                 to_char(sterbedatum::date, 'DD.MM.YYYY') AS sterbedatum_formatiert
+                 CASE WHEN sterbedatum IS NOT NULL THEN sterbedatum WHEN sonstigeeigenschaften IS NOT NULL AND sonstigeeigenschaften = 'verstorben' THEN '1900-01-01'::date ELSE NULL::date END AS sterbedatum,
+                 CASE WHEN sterbedatum IS NOT NULL THEN to_char(sterbedatum::date, 'DD.MM.YYYY')::text WHEN sonstigeeigenschaften IS NOT NULL AND sonstigeeigenschaften = 'verstorben' THEN 'Datum unbekannt'::text ELSE NULL::text END AS sterbedatum_formatiert
                   FROM aaa_ogr.ax_person
                    WHERE endet IS NULL
                     ORDER BY ogc_fid

@@ -235,7 +235,7 @@ function eigentuemer($con, $gmlid, $mitadresse, $lnkclass) {
 
 		// Schleife 2: P e r s o n
 		// Beziehung: ax_person  <benennt<  ax_namensnummer
-		$sqlp ="SELECT DISTINCT gml_id, nachnameoderfirma, vorname, geburtsname, geburtsdatum, sterbedatum, namensbestandteil, akademischergrad ";
+		$sqlp ="SELECT DISTINCT gml_id, nachnameoderfirma, vorname, geburtsname, geburtsdatum, CASE WHEN sterbedatum IS NOT NULL THEN sterbedatum WHEN sonstigeeigenschaften IS NOT NULL AND sonstigeeigenschaften = 'verstorben' THEN '1900-01-01'::date ELSE NULL::date END AS sterbedatum, namensbestandteil, akademischergrad ";
 		$sqlp.="FROM aaa_ogr.ax_person WHERE gml_id = $1 AND endet IS NULL;";
 
 		$v = array($benennt);
@@ -255,11 +255,19 @@ function eigentuemer($con, $gmlid, $mitadresse, $lnkclass) {
 			if ($rowp["vorname"] <> "") {$diePerson.=", ".$rowp["vorname"];}
 			if ($rowp["namensbestandteil"] <> "") {$diePerson.=" ".$rowp["namensbestandteil"];}
 			if ($rowp["geburtsdatum"] <> "" && $rowp["sterbedatum"] <> "") {
-        $diePerson.=" (geb. ".strftime('%d.%m.%Y', strtotime($rowp["geburtsdatum"])).", gest. ".strftime('%d.%m.%Y', strtotime($rowp["sterbedatum"])).")";
+        if ($rowp["sterbedatum"] <> "1900-01-01") {
+            $diePerson.=" (geb. ".strftime('%d.%m.%Y', strtotime($rowp["geburtsdatum"])).", gest. ".strftime('%d.%m.%Y', strtotime($rowp["sterbedatum"])).")";
+        } else {
+            $diePerson.=" (geb. ".strftime('%d.%m.%Y', strtotime($rowp["geburtsdatum"])).", gest. Datum unbekannt)";
+        };
       } else if ($rowp["geburtsdatum"] <> "") {
         $diePerson.=" (geb. ".strftime('%d.%m.%Y', strtotime($rowp["geburtsdatum"])).")";
       } else if ($rowp["sterbedatum"] <> "") {
-        $diePerson.=" (gest. ".strftime('%d.%m.%Y', strtotime($rowp["sterbedatum"])).")";
+        if ($rowp["sterbedatum"] <> "1900-01-01") {
+            $diePerson.=" (gest. ".strftime('%d.%m.%Y', strtotime($rowp["sterbedatum"])).")";
+        } else {
+            $diePerson.=" (gest. Datum unbekannt)";
+        };
       }
 			$diePerson=htmlentities($diePerson, ENT_QUOTES, "UTF-8"); // Umlaute
 
