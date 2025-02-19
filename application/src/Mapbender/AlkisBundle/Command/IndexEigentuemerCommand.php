@@ -47,9 +47,9 @@ class IndexEigentuemerCommand extends ContainerAwareCommand
                  nachnameoderfirma AS nachname,
                  vorname,
                  geburtsdatum,
-                 to_char(geburtsdatum::date, 'DD.MM.YYYY') AS geburtsdatum_formatiert,
-                 CASE WHEN sterbedatum IS NOT NULL THEN sterbedatum WHEN sonstigeeigenschaften IS NOT NULL AND sonstigeeigenschaften = 'verstorben' THEN '1900-01-01'::date ELSE NULL::date END AS sterbedatum,
-                 CASE WHEN sterbedatum IS NOT NULL THEN to_char(sterbedatum::date, 'DD.MM.YYYY')::text WHEN sonstigeeigenschaften IS NOT NULL AND sonstigeeigenschaften = 'verstorben' THEN 'Datum unbekannt'::text ELSE NULL::text END AS sterbedatum_formatiert
+                 to_char(geburtsdatum::date, 'geb. DD.MM.YYYY') AS geburtsdatum_formatiert,
+                 sterbedatum,
+                 CASE WHEN sterbedatum IS NOT NULL THEN to_char(sterbedatum::date, 'verst. DD.MM.YYYY')::text WHEN sonstigeeigenschaften IS NOT NULL AND sonstigeeigenschaften ~ 'storb' THEN sonstigeeigenschaften::text ELSE NULL::text END AS sterbedatum_formatiert
                   FROM aaa_ogr.ax_person
                    WHERE endet IS NULL
                     ORDER BY ogc_fid
@@ -64,12 +64,12 @@ class IndexEigentuemerCommand extends ContainerAwareCommand
                     $row['gml_id']
                 );
                 $label = $row['nachname'] . ', ' . $row['vorname'];
-                if ($row['geburtsdatum'] != '' && $row['sterbedatum'] != '') {
-                  $label = $label . ' (geb. ' . $row['geburtsdatum_formatiert'] . ', gest. ' . $row['sterbedatum_formatiert'] . ')';
-                } else if ($row['geburtsdatum']) {
-                  $label = $label . ' (geb. ' . $row['geburtsdatum_formatiert'] . ')';
-                } else if ($row['sterbedatum']) {
-                  $label = $label . ' (gest. ' . $row['sterbedatum_formatiert'] . ')';
+                if ($row['geburtsdatum_formatiert'] != '' && $row['sterbedatum_formatiert'] != '') {
+                  $label = $label . ' (' . $row['geburtsdatum_formatiert'] . ', ' . $row['sterbedatum_formatiert'] . ')';
+                } else if ($row['geburtsdatum_formatiert']) {
+                  $label = $label . ' (' . $row['geburtsdatum_formatiert'] . ')';
+                } else if ($row['sterbedatum_formatiert']) {
+                  $label = $label . ' (' . $row['sterbedatum_formatiert'] . ')';
                 }
                 $doc->label = $label;
                 $doc->json = json_encode(array(

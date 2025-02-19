@@ -132,19 +132,8 @@ while($row = pg_fetch_array($res)) {
 	if ($namteil != "") {$name.=$namteil." ";} // von und zu
 	$name.=$nana;
 	if ($vnam != "") {$name.=", ".$vnam;} // Vorname nach hinten
-    if ($row["geburtsdatum"] != '')
-        $gebdat=strftime('%d.%m.%Y', strtotime($row["geburtsdatum"]));
-    else
-        $gebdat='';
-    if ($row["sterbedatum"] != '') {
-        if ($row["sterbedatum"] != '1900-01-01') {
-            $stbdat=strftime('%d.%m.%Y', strtotime($row["sterbedatum"]));
-        } else {
-            $stbdat='verstorben, Datum jedoch unbekannt';
-        };
-    } else {
-        $stbdat='';
-    };
+	$gebdat=$row["geburtsdatum_formatiert"];
+	$stbdat=$row["sterbedatum_formatiert"];
 
 	// Adresse der Person (Eigentuemer))
 	$ort=$row["ort"];

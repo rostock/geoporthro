@@ -39,7 +39,7 @@ echo "<p class='nakennz'>Eigentümer&nbsp;</p>\n";
 echo "\n<h2><img src='ico/Eigentuemer.ico' width='16' height='16' alt=''> Eigentümer</h2>\n";
 if (!$con) "\n<p class='err'>Fehler beim Verbinden der DB</p>\n";
 
-$sql="SELECT to_char(p.beginnt::date, 'DD.MM.YYYY') AS datum, p.nachnameoderfirma, p.anrede, p.vorname, p.geburtsname, p.geburtsdatum, CASE WHEN p.sterbedatum IS NOT NULL THEN p.sterbedatum WHEN p.sonstigeeigenschaften IS NOT NULL AND p.sonstigeeigenschaften = 'verstorben' THEN '1900-01-01'::date ELSE NULL::date END AS sterbedatum, p.namensbestandteil, p.akademischergrad, a.value AS anlass_bezeichnung, a.id AS anlass_schluessel, CASE WHEN p.zeigtaufexternes_name IS NOT NULL THEN p.zeigtaufexternes_name[1] ELSE NULL END AS antrag, CASE WHEN p.processstep_organisationname IS NOT NULL THEN p.processstep_organisationname[1] ELSE NULL END AS qualitaetsangabe ";
+$sql="SELECT to_char(p.beginnt::date, 'DD.MM.YYYY') AS datum, p.nachnameoderfirma, p.anrede, p.vorname, p.geburtsname, p.geburtsdatum, to_char(p.geburtsdatum::date, 'DD.MM.YYYY') AS geburtsdatum_formatiert, p.sterbedatum, CASE WHEN p.sterbedatum IS NOT NULL THEN to_char(p.sterbedatum::date, 'DD.MM.YYYY')::text WHEN p.sonstigeeigenschaften IS NOT NULL AND p.sonstigeeigenschaften ~ 'storb' THEN p.sonstigeeigenschaften::text ELSE NULL::text END AS sterbedatum_formatiert, p.namensbestandteil, p.akademischergrad, a.value AS anlass_bezeichnung, a.id AS anlass_schluessel, CASE WHEN p.zeigtaufexternes_name IS NOT NULL THEN p.zeigtaufexternes_name[1] ELSE NULL END AS antrag, CASE WHEN p.processstep_organisationname IS NOT NULL THEN p.processstep_organisationname[1] ELSE NULL END AS qualitaetsangabe ";
 $sql.="FROM aaa_ogr.ax_person p ";
 $sql.="LEFT JOIN aaa_ogr.aa_anlassart a ON lpad(p.anlass[1], 6, '0') = a.id ";
 $sql.="WHERE p.gml_id = $1 AND p.endet IS NULL;";
@@ -62,22 +62,8 @@ if ($row = pg_fetch_array($res)) {
 	$anlass_schluessel=$row["anlass_schluessel"];
 	$datum=$row["datum"];
 	$antrag=$row["antrag"];
-	$qualitaetsangabe=$row["qualitaetsangabe"];
-    
-    if ($row["geburtsdatum"] != '')
-        $geburtsdatum=strftime('%d.%m.%Y', strtotime($row["geburtsdatum"]));
-    else
-        $geburtsdatum='';
-    
-    if ($row["sterbedatum"] != '') {
-        if ($row["sterbedatum"] != '1900-01-01') {
-            $sterbedatum=strftime('%d.%m.%Y', strtotime($row["sterbedatum"]));
-        } else {
-            $sterbedatum='verstorben, Datum jedoch unbekannt';
-        };
-    } else {
-        $sterbedatum='';
-    };
+	$geburtsdatum=$row["geburtsdatum_formatiert"];
+	$sterbedatum=$row["sterbedatum_formatiert"];
 
 	echo "<table>\n";
 		echo "\t<tr><td class='nhd'>Anrede:</td><td class='nam'>".$anr."&nbsp;</td></tr>\n";
