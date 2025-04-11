@@ -129,7 +129,8 @@ Mapbender.Geo.WmsSourceHandler = Class({'extends': Mapbender.Geo.SourceHandler }
             X: x,
             Y: y,
             LAYERS: mqLayer.olLayer.queryLayers.join(','),
-            QUERY_LAYERS: mqLayer.olLayer.queryLayers.join(',')
+            QUERY_LAYERS: mqLayer.olLayer.queryLayers.join(','),
+            STYLES: 'default'
         };
         if(typeof (mqLayer.source.configuration.options.info_format) !== 'undefined') {
             param_tmp["INFO_FORMAT"] = mqLayer.source.configuration.options.info_format;
