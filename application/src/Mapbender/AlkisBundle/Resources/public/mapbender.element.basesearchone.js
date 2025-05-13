@@ -12,10 +12,11 @@
             allgemein_zwei: 'Die Suche startet automatisch während der Eingabe, und zwar ab dem <i>zweiten</i> eingegebenen Zeichen. Sie können Ihre Suche über folgende Arten von Eingaben gestalten:<br/><br/><ul class="hilfetexte-liste">',
             allgemein_drei: 'Die Suche startet automatisch während der Eingabe, und zwar ab dem <i>dritten</i> eingegebenen Zeichen. Sie können Ihre Suche über folgende Arten von Eingaben gestalten:<br/><br/><ul class="hilfetexte-liste">',
             addr: '<li>→ Ortsteilname [Beispiele: <span>schmarl</span> oder <span>brinckmans</span>]</li><li>→ Straßenname [Beispiele: <span>wagner</span> oder <span>holbei</span>]</li><li>→ Adresse (Straße mit Hausnummer und eventuellem Hausnummernzusatz) [Beispiele: <span>riga 19</span> oder <span>löns 14a</span>]</li></ul><br/>Resultate können Ortsteile, Straßen, Adressen (Straßen mit Hausnummer und eventuellem Hausnummernzusatz) und historische Adressen (Straßen mit Hausnummer und eventuellem Hausnummernzusatz sowie Angabe des Datums, an dem die Adresse historisiert wurde) sein, jeweils gekennzeichnet durch ein vorangestelltes sprechendes Icon.',
-            auftrag: '<li>→ Auftragsnummer im Georg.net-Format [Beispiele: <span>08K665</span> oder <span>15K0955</span>]</li><li>→ Auftragsnummer im „hybriden“ Format [Beispiele: <span>2008K665</span> oder <span>2015K0955</span>]</li><li>→ Auftragsnummer im ALKIS-/LAH-Format [Beispiele: <span>200800665</span> oder <span>201500955</span>]</li></ul><br/>Die Auftragsart ist jeweils gekennzeichnet durch ein vorangestelltes Icon, dessen Farbe die Auftragsart repräsentiert. Außerdem werden – sofern vorhanden – je Auftrag immer die verknüpften Dokumente gelistet.',
+            auftrag: '<li>→ Auftragsnummer im GEORG-Format [Beispiele: <span>08K665</span> oder <span>15K0955</span>]</li><li>→ Auftragsnummer im „hybriden“ Format [Beispiele: <span>2008K665</span> oder <span>2015K0955</span>]</li><li>→ Auftragsnummer im ALKIS-/LAH-Format [Beispiele: <span>200800665</span> oder <span>201500955</span>]</li></ul><br/>Die Auftragsart ist jeweils gekennzeichnet durch ein vorangestelltes Icon, dessen Farbe die Auftragsart repräsentiert. Außerdem werden – sofern vorhanden – je Auftrag immer die verknüpften Dokumente gelistet.',
             baulasten: '<li>→ Bezeichnung [Beispiele: <span>51197</span> oder <span>.0029</span>]</li></ul>',
             eigen: '<li>→ Vorname [Beispiel: <span>jürg</span>]</li><li>→ Nachname [Beispiel: <span>schmi</span>]</li><li>→ Kombination aus Vor- und Nachname (Reihenfolge egal) [Beispiel: <span>schmi jürg</span>]</li><li>→ Bezeichnung (bei Firmen, Organisationen etc.) [Beispiel: <span>carit</span>]</li></ul>',
             flur: '<li>→ Gemarkungsschlüssel [Beispiel: <span>2218</span>]</li><li>→ Gemarkungsname [Beispiel: <span>kasseb</span>]</li><li>→ Flur als Kombination aus Gemarkungsschlüssel und Flurnummer [Beispiel: <span>2222 flur 3</span>]</li><li>→ Flur als Kombination aus Gemarkungsname und Flurnummer [Beispiel: <span>evershagen 3</span>]</li><li>→ Flurstück als Kombination aus Gemarkungsschlüssel oder Gemarkungsname und Flurnummer, Zähler (und Nenner) [Beispiele: <span>2232 1 461</span> oder <span>2232 1 160/2</span> oder <span>krummen 1 461</span> oder <span>krummen 1 160/2</span>]</li><li>→ Flurstück als Kombination aus Gemarkungsschlüssel oder Gemarkungsname und Zähler (und Nenner) [Beispiele: <span>2232 461</span> oder <span>2232 160/2</span> oder <span>krummen 461</span> oder <span>krummen 160/2</span>]</li><li>→ Flurstück mittels Zähler und Nenner [Beispiele: <span>160/2</span> oder <span>12/20</span>]</li><li>→ Flurstück mittels Zähler [Beispiele: <span>160</span> oder <span>12</span>]</li></ul><br/><b>Achtung –</b> Sonderfall Flurnummer ≥ 10:<br/>Hier muss der Flurnummer <i>immer</i> eine Null vorangestellt werden und es darf <i>kein</i> Leerzeichen zwischen Gemarkungsname/-schlüssel und Flurnummer stehen bzw. es <i>muss</i> das Wort <i>Flur</i> zwischen Gemarkungsname und Flurnummer stehen [Beispiele: <span style="font-family:monospace">2238014,5</span> oder <span style="font-family:monospace">heide014, 5</span> oder <span style="font-family:monospace">2238 flur 014 5</span>].<br/><br/>Resultate können Gemarkungen, Fluren, Flurstücke und historische Flurstücke (teilweise mit Angabe des Datums, an dem das Flurstücke historisiert wurde) sein, jeweils gekennzeichnet durch ein vorangestelltes sprechendes Icon.',
+            geographischebezeichnungen: '<li>→ Bezeichnung [Beispiele: <span>hopfengrund</span> oder <span>friedrichshöhe</span>]</li><li>→ Art [Beispiel: <span>gewann</span>]</li><li>→ Kombination aus Bezeichnung und Art (Reihenfolge egal) [Beispiel: <span>gewann hopfengr</span>]</li></ul>',
             grund: '<li>→ Grundbuchbezirksname [Beispiel: <span>rosto</span>]</li><li>→ Grundbuchbezirksnummer [Beispiel: <span>2250</span>]</li><li>→ Grundbuchblattnummer [Beispiel: <span>18305</span>]</li><li>→ Kombination aus Grundbuchbezirks- und Grundbuchblattnummer (Reihenfolge egal) [Beispiel: <span>2250 18305</span>]</li></ul>',
             risse_fst: '<li>→ Flurstück mittels Flurstücksnummer [Beispiele: <span>132219001000280182</span> oder <span>132222003000240000</span> oder <span>132230002002330003</span> oder <span>132230002003600000</span>]</li><li>→ Flurstück mittels Flurstückskennzeichen [Beispiele: <span>132219-001-00028/0182</span> oder <span>132222-003-00024</span> oder <span>132230-002-00233/0003</span> oder <span>132230-002-00360</span>]</li></ul><br/>Es werden je Flurstück immer alle diejenigen Risse gelistet, die das Flurstück räumlich schneiden.',
             schiffe: '<li>→ Bezeichnung des Schiffes [Beispiele: <span>jantje</span> oder <span>PHOEN</span>]</li><li>→ Typ des Schiffes [Beispiele: <span>kutter</span> oder <span>Yacht</span>]</li><li>→ vollständiges Baujahr des Schiffes [Beispiel: <span>1980</span>]</li><li>→ Kurzbezeichnung des Schiffsliegeplatzes [Beispiele: <span>WMD</span> oder <span>rsc</span>]</li><li>→ Langbezeichnung des Schiffsliegeplatzes [Beispiel: <span>warnemü</span>]</li></ul>'
@@ -129,6 +130,8 @@
                 $('.basesearchonecontent').html(this.hilfetexte.allgemein_zwei.concat(this.hilfetexte.eigen));
             } else if (search === 'flur') {
                 $('.basesearchonecontent').html(this.hilfetexte.allgemein_zwei.concat(this.hilfetexte.flur));
+            } else if (search === 'geographischebezeichnungen') {
+                $('.basesearchonecontent').html(this.hilfetexte.allgemein_zwei.concat(this.hilfetexte.geographischebezeichnungen));
             } else if (search === 'grund') {
                 $('.basesearchonecontent').html(this.hilfetexte.allgemein_eins.concat(this.hilfetexte.grund));
             } else if (search === 'risse_fst') {
@@ -154,6 +157,8 @@
                 $('.basesearchonecontent').html(this.hilfetexte.allgemein_zwei.concat(this.hilfetexte.eigen));
             } else if (search === 'flur') {
                 $('.basesearchonecontent').html(this.hilfetexte.allgemein_zwei.concat(this.hilfetexte.flur));
+            } else if (search === 'geographischebezeichnungen') {
+                $('.basesearchonecontent').html(this.hilfetexte.allgemein_zwei.concat(this.hilfetexte.geographischebezeichnungen));
             } else if (search === 'grund') {
                 $('.basesearchonecontent').html(this.hilfetexte.allgemein_eins.concat(this.hilfetexte.grund));
             } else if (search === 'risse_fst') {
@@ -178,6 +183,8 @@
                 $('.basesearchonecontent').html(this.hilfetexte.allgemein_zwei.concat(this.hilfetexte.eigen));
             } else if (search === 'flur') {
                 $('.basesearchonecontent').html(this.hilfetexte.allgemein_zwei.concat(this.hilfetexte.flur));
+            } else if (search === 'geographischebezeichnungen') {
+                $('.basesearchonecontent').html(this.hilfetexte.allgemein_zwei.concat(this.hilfetexte.geographischebezeichnungen));
             } else if (search === 'grund') {
                 $('.basesearchonecontent').html(this.hilfetexte.allgemein_eins.concat(this.hilfetexte.grund));
             } else if (search === 'risse_fst') {
@@ -249,7 +256,7 @@
             var self = this;
             
             var search = $('#search-select', this.element).val();
-            if (((search === 'addr' || search === 'risse_fst') && $('#search', self.element).val().length > 2) || ((search === 'auftrag' || search === 'baulasten' || search === 'eigen' || search === 'flur') && $('#search', self.element).val().length > 1) || (search !== 'addr' && search !== 'baulasten' && search !== 'auftrag' && search !== 'eigen' && search !== 'flur' && search !== 'risse_fst')) {
+            if (((search === 'addr' || search === 'risse_fst') && $('#search', self.element).val().length > 2) || ((search === 'auftrag' || search === 'baulasten' || search === 'eigen' || search === 'flur' || search === 'geographischebezeichnungen') && $('#search', self.element).val().length > 1) || (search !== 'addr' && search !== 'baulasten' && search !== 'auftrag' && search !== 'eigen' && search !== 'geographischebezeichnungen' && search !== 'flur' && search !== 'risse_fst')) {
 
                 if (typeof self.options.timeoutId !== 'undefined') {
                     window.clearTimeout(self.options.timeoutId);

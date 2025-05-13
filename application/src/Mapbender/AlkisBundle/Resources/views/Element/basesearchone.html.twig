@@ -1,5 +1,5 @@
 <div id="{{ id }}" class="mb-element mb-element-basesearchone" data-title="{{ title }}">
-    <div id="opr-search-select" style="width:180px" class="dropdown" title="Basissuche auswählen">
+    <div id="opr-search-select" style="width:200px" class="dropdown" title="Basissuche auswählen">
         <select id="search-select" class="hiddenDropdown">
         {% for opt in configuration.options %}
           {% if opt == 'addr' %}
@@ -12,6 +12,8 @@
             <option value="eigen"{% if loop.first %} selected="true" {% endif %}>{{ 'Eigentümer' | trans }}</option>
           {% elseif opt == 'flur' %}
             <option value="flur"{% if loop.first %} selected="true" {% endif %}>{{ 'Flurstücke' | trans }}</option>
+          {% elseif opt == 'geographischebezeichnungen' %}
+            <option value="geographischebezeichnungen"{% if loop.first %} selected="true" {% endif %}>{{ 'Geographische Bezeichnungen' | trans }}</option>
           {% elseif opt == 'grund' %}
             <option value="grund"{% if loop.first %} selected="true" {% endif %}>{{ 'Grundbuchblätter' | trans }}</option>
           {% elseif opt == 'schiffe' %}

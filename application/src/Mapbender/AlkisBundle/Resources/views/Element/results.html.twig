@@ -47,6 +47,7 @@
                 {% if type == 'auftrag' %} auftrag document
                 {% elseif type == 'baulasten'%} baulasten document
                 {% elseif type == 'eigen'%} eigen
+                {% elseif type == 'geographischebezeichnungen'%} geographischebezeichnungen document
                 {% elseif type == 'grund'%} grund
                 {% elseif type == 'risse_fst'%} risse_fst document
                 {% elseif type == 'schiffe' %} schiffe document{% endif %}"
@@ -60,6 +61,8 @@
                     {{ json.data.bezeichnung }}</div>
                 {% elseif type == 'eigen' %}
                     {{json.label}}</div>
+                {% elseif type == 'geographischebezeichnungen' %}
+                    {{ json.data.bezeichnung }} ({{ json.data.art }})</div>
                 {% elseif type == 'grund' %}
                     {{ json.bezirkname}} ({{json.bezirk}}), {{json.grundbuchblatt}}</div>
                 {% elseif type == 'risse_fst' %}

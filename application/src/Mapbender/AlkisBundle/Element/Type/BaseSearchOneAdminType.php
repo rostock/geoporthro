@@ -49,6 +49,7 @@ class BaseSearchOneAdminType extends AbstractType
                     "baulasten" => "Baulasten",
                     "eigen" => "Eigentümer",
                     "flur" => "Flurstücke",
+                    "geographischebezeichnungen" => "Geographische Bezeichnungen",
                     "grund" => "Grundbuchblätter",
                     "risse_fst" => "Risse zu Flurstücken",
                     "schiffe" => "Schiffssuche Hanse Sail"))
