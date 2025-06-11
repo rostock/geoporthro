@@ -116,8 +116,8 @@
                 id: this.element.attr('id')
             });
             var self = this;
-            var x = e.xy.x;
-            var y = e.xy.y;
+            var x = Math.round(e.xy.x);
+            var y = Math.round(e.xy.y);
             var called = false;
             this.queries = {};
             $('#js-error-featureinfo').addClass('hidden');
@@ -125,6 +125,7 @@
                 var mqLayer = self.target.getModel().map.layersList[src.mqlid];
                 if (Mapbender.source[src.type]) {
                     var url = Mapbender.source[src.type].featureInfoUrl(mqLayer, x, y, $.proxy(self._setInfo, self));
+                    console.log(url);
                     if (url) {
                         self.queries[mqLayer.id] = url;
                         if (!self.options.onlyValid) {
