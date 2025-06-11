@@ -125,7 +125,6 @@
                 var mqLayer = self.target.getModel().map.layersList[src.mqlid];
                 if (Mapbender.source[src.type]) {
                     var url = Mapbender.source[src.type].featureInfoUrl(mqLayer, x, y, $.proxy(self._setInfo, self));
-                    console.log(url);
                     if (url) {
                         self.queries[mqLayer.id] = url;
                         if (!self.options.onlyValid) {
