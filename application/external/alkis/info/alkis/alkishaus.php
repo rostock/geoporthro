@@ -32,7 +32,7 @@ if (!$con) echo "<p class='err'>Fehler beim Verbinden der DB</p>\n";
 
 // // G e b a e u d e
 $sqlg ="SELECT g.gml_id, g.name[1] AS name, g.bauweise, g.gebaeudefunktion, g.anzahlderoberirdischengeschosse AS aog, g.anzahlderunterirdischengeschosse AS aug, ";
-$sqlg.="g.lagezurerdoberflaeche, g.dachgeschossausbau, g.zustand, g.weiteregebaeudefunktion, g.dachform, g.hochhaus, g.objekthoehe, g.geschossflaeche, g.grundflaeche, g.umbauterraum, g.baujahr[1] AS baujahr, g.dachart, ";
+$sqlg.="g.lagezurerdoberflaeche, g.dachgeschossausbau, g.zustand, g.weiteregebaeudefunktion, g.dachform, g.hochhaus, g.hoehe, g.geschossflaeche, g.grundflaeche, g.umbauterraum, g.baujahr[1] AS baujahr, g.dachart, ";
 $sqlg.="bg.beschreibung AS bauweise_beschreibung, gf.beschreibung AS bfunk, zg.beschreibung AS bzustand, ";
 $sqlg.="df.beschreibung AS bdach, round(st_area(g.wkb_geometry)::numeric,2) AS gebflae ";
 $sqlg.="FROM aaa_ogr.ax_gebaeude g ";
@@ -88,7 +88,7 @@ while($rowg = pg_fetch_array($resg)) { // Als Schleife, kann aber nur EIN Haus s
 	$wgf=$rowg["weiteregebaeudefunktion"];
 	$daf=$rowg["dachform"];
 	$dach=$rowg["bdach"];
-	$hho=$rowg["objekthoehe"];
+	$hho=$rowg["hoehe"];
 	$gfl=$rowg["geschossflaeche"];
   $gfld=($gfl < 1 ? rtrim(number_format($gfl,2,",","."),"0") : number_format($gfl,0,",",".")); // Display-Format dazu
 	$grf=$rowg["grundflaeche"];
