@@ -188,13 +188,62 @@ class WmsMetadata extends SourceMetadata
         $connection_password = $yaml['parameters']['more_metadata_password'];
         $connection = pg_connect("host=" . $connection_host . " dbname=" . $connection_dbname . " user=" . $connection_user . " password=" . $connection_password);
         $src = $this->instance->getSource();
-        $title = SourceMetadata::getNotNull($src->getTitle());
-        $title = str_replace("Hansestadt Rostock", "Hanse- und Universitätsstadt Rostock", $title);
-        pg_prepare("", "SELECT rf, currentness_data, source_place_data, source_data, source_mail_data FROM (SELECT 1 AS rf, CASE WHEN aktualisierung_datenquelle IS TRUE AND aktualisierung_datenquelle_intervall IS NULL THEN to_char(now(), 'DD.MM.YYYY') ELSE to_char(stand_datenquelle, 'DD.MM.YYYY') END AS currentness_data, CASE WHEN autorenschaft_stelle IS NOT NULL THEN array_to_string(string_to_array(autorenschaft_stelle, '~'), '~') WHEN ckan_autor_stelle IS NOT NULL THEN ckan_autor_stelle ELSE 'Hanse- und Universitätsstadt Rostock' END AS source_place_data, regexp_replace(autoren, '\,', '~', 'g') AS source_data, autoren_email AS source_mail_data FROM metadatenpflege.metadaten WHERE mapfile_layer = '$name' OR titel_lang = '$title' OR 'ALKIS-' || regexp_replace(titel_lang, ' aus dem Amtlichen Liegenschaftskatasterinformationssystem \(ALKIS\)', '') = '$title' OR 'ALKIS' || regexp_replace(titel_lang, '^Amtliches Liegenschaftskatasterinformationssystem \(ALKIS\)', '') = '$title' UNION SELECT 2 AS rf, CASE WHEN aktualisierung_datenquelle IS TRUE AND aktualisierung_datenquelle_intervall IS NULL THEN to_char(now(), 'DD.MM.YYYY') ELSE to_char(stand_datenquelle, 'DD.MM.YYYY') END AS currentness_data, CASE WHEN autorenschaft_stelle IS NOT NULL THEN array_to_string(string_to_array(autorenschaft_stelle, '~'), '~') WHEN ckan_autor_stelle IS NOT NULL THEN ckan_autor_stelle ELSE 'Hanse- und Universitätsstadt Rostock' END AS source_place_data, regexp_replace(autoren, '\,', '~', 'g') AS source_data, autoren_email AS source_mail_data FROM metadatenpflege.metadaten WHERE mapfile_name = regexp_replace(substring('$name', '\..*\.'), '\.', '', 'g') OR datenquelle ~ regexp_replace(substring('$name', '\..*\.'), '\.', '', 'g')) AS tabelle ORDER BY rf LIMIT 1");
+        $originUrl = SourceMetadata::getNotNull($src->getOriginUrl());
+        pg_prepare("", "
+        SELECT
+         rf,
+         currentness_data,
+         source_place_data,
+         source_data,
+         source_mail_data
+          FROM (
+           SELECT
+            rf, currentness_data, array_to_string(array_agg(source_place_data), '~') AS source_place_data, array_to_string(array_agg(source_data), '~') AS source_data, array_to_string(array_agg(source_mail_data), '~') AS source_mail_data
+             FROM (
+              SELECT DISTINCT
+               2 AS rf,
+               to_char(r.last_update, 'DD.MM.YYYY') AS currentness_data,
+               o.title AS source_place_data,
+               c.first_name || ' ' || c.last_name AS source_data,
+               c.email AS source_mail_data
+                FROM gdihrometadata_service s
+                JOIN gdihrometadata_service_repositories s_r ON s.id = s_r.service_id
+                JOIN gdihrometadata_repository r ON s_r.repository_id = r.id AND r.connection_info ~ regexp_replace('$name', '.*\.', '')
+                JOIN gdihrometadata_repository_authors r_a ON r.id = r_a.repository_id
+                JOIN gdihrometadata_contact c ON r_a.contact_id = c.id
+                LEFT JOIN gdihrometadata_organization o ON c.organization_id = o.id
+                 WHERE s.link = '$originUrl'
+             ) AS x
+              GROUP BY rf, currentness_data
+           UNION SELECT
+            rf, currentness_data, array_to_string(array_agg(source_place_data), '~') AS source_place_data, array_to_string(array_agg(source_data), '~') AS source_data, array_to_string(array_agg(source_mail_data), '~') AS source_mail_data
+             FROM (
+              SELECT DISTINCT
+               2 AS rf,
+               to_char(r.last_update, 'DD.MM.YYYY') AS currentness_data,
+               o.title AS source_place_data,
+               c.first_name || ' ' || c.last_name AS source_data,
+               c.email AS source_mail_data
+                FROM gdihrometadata_service s
+                JOIN gdihrometadata_service_repositories s_r ON s.id = s_r.service_id
+                JOIN gdihrometadata_repository r ON s_r.repository_id = r.id
+                JOIN gdihrometadata_repository_authors r_a ON r.id = r_a.repository_id
+                JOIN gdihrometadata_contact c ON r_a.contact_id = c.id
+                LEFT JOIN gdihrometadata_organization o ON c.organization_id = o.id
+                 WHERE s.link = '$originUrl'
+             ) AS y
+              GROUP BY rf, currentness_data
+          ) AS tabelle
+           ORDER BY rf
+           LIMIT 1
+        ");
         $result = pg_execute("", array());
         while ($row = pg_fetch_assoc($result)) {
             $currentnessData = $row["currentness_data"];
             $sourcePlaceData = $row["source_place_data"];
+            $parts = explode('~', $sourcePlaceData);
+            $uniqueParts = array_unique($parts);
+            $sourcePlaceData = implode('~', $uniqueParts);
             if ($row["source_data"] && $row["source_mail_data"] && strpos($row["source_data"], "Draheim") === false) {
                 $sourceData = $row["source_data"];
                 $sourceMailData = $row["source_mail_data"];
