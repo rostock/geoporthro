@@ -55,10 +55,10 @@ class IndexMietenpachtenCommand extends ContainerAwareCommand
         $output->writeln('Indiziere Mietenpachten fuer HRO-Mietenpachtensuche ... ');
 
 
-        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.mieten_und_pachten_regis_hro WHERE flaeche_im_flurstueck > 1');
+        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.mieten_und_pachten_regis_hro');
         $result = $stmt->fetch();
         $count = intval($result['count']);
-        $stmt = $conn->query('SELECT count(*) AS count FROM (SELECT aktenzeichen FROM fachdaten_flurstuecksbezug.mieten_und_pachten_regis_hro WHERE flaeche > 1 GROUP BY aktenzeichen, flaeche_formatiert) AS tabelle');
+        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.mieten_und_pachten_hro');
         $result = $stmt->fetch();
         $count = $count + intval($result['count']);
 
@@ -71,18 +71,15 @@ class IndexMietenpachtenCommand extends ContainerAwareCommand
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
                   FROM fachdaten_flurstuecksbezug.mieten_und_pachten_regis_hro
-                   WHERE flaeche_im_flurstueck > 1
                 UNION SELECT
                  NULL AS flurstueckskennzeichen,
                  aktenzeichen,
-                 flaeche_formatiert AS flaeche,
-                 ST_AsText(ST_Centroid(ST_Union(ST_MakeValid(geometrie)))) AS geom,
-                 ST_AsText(ST_Union(ST_MakeValid(geometrie))) AS wktgeom
-                  FROM fachdaten_flurstuecksbezug.mieten_und_pachten_regis_hro
-                   WHERE flaeche > 1
-                    GROUP BY aktenzeichen, flaeche_formatiert
-                     ORDER BY aktenzeichen, flurstueckskennzeichen DESC
-                      LIMIT " . $limit . " OFFSET " . $offset);
+                 to_char(flaeche, 'FM999G999G999 m²'::text) AS flaeche,
+                 ST_AsText(ST_Centroid(geometrie)) AS geom,
+                 ST_AsText(geometrie) AS wktgeom
+                  FROM fachdaten_flurstuecksbezug.mieten_und_pachten_hro
+                   ORDER BY aktenzeichen, flurstueckskennzeichen DESC
+                    LIMIT " . $limit . " OFFSET " . $offset);
 
             while ($row = $stmt->fetch()) {
                 list($x, $y) = $this->prepairPoint($row['geom']);
