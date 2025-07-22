@@ -58,7 +58,7 @@ class IndexMietenpachtenCommand extends ContainerAwareCommand
         $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.mieten_und_pachten_regis_hro');
         $result = $stmt->fetch();
         $count = intval($result['count']);
-        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.mieten_und_pachten_hro');
+        $stmt = $conn->query('SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.mieten_und_pachten_hro WHERE vertragsstatus IS NOT NULL');
         $result = $stmt->fetch();
         $count = $count + intval($result['count']);
 
@@ -78,6 +78,7 @@ class IndexMietenpachtenCommand extends ContainerAwareCommand
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
                   FROM fachdaten_flurstuecksbezug.mieten_und_pachten_hro
+                   WHERE vertragsstatus IS NOT NULL
                    ORDER BY aktenzeichen, flurstueckskennzeichen DESC
                     LIMIT " . $limit . " OFFSET " . $offset);
 
