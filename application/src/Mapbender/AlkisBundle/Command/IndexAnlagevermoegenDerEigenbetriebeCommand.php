@@ -55,7 +55,7 @@ class IndexAnlagevermoegenDerEigenbetriebeCommand extends ContainerAwareCommand
         $output->writeln('Indiziere Anlagevermögen der Eigenbetriebe fuer HRO-Suche nach Anlagevermögen der Eigenbetriebe ... ');
 
 
-        $stmt = $conn->query("SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.realnutzungsarten_regis_hro WHERE realnutzungsarten ~ 'BV'");
+        $stmt = $conn->query("SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.realnutzungsarten_regis_hro WHERE realnutzungsart_kuerzel ~ 'BV'");
         $result = $stmt->fetch();
 
         while ($offset < $result['count']) {
@@ -73,12 +73,12 @@ class IndexAnlagevermoegenDerEigenbetriebeCommand extends ContainerAwareCommand
                  aktenzeichen_vermoegensbewertung AS aktenzeichen,
                  regexp_replace(aktenzeichen_vermoegensbewertung, '(\.|-)', '', 'g') AS aktenzeichen_ohne_sonderzeichen,
                  regexp_replace(aktenzeichen_vermoegensbewertung, '(\.|-)', ' ', 'g') AS aktenzeichen_mit_leerzeichen,
-                 realnutzungsarten,
+                 realnutzungsart_kuerzel AS realnutzungsarten,
                  wirtschaftseinheit_betriebsvermoegen,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
                   FROM fachdaten_flurstuecksbezug.realnutzungsarten_regis_hro
-                   WHERE realnutzungsarten ~ 'BV'
+                   WHERE realnutzungsart_kuerzel ~ 'BV'
                     ORDER BY uuid
                      LIMIT " . $limit . " OFFSET " . $offset);
 

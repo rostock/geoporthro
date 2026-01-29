@@ -55,7 +55,7 @@ class IndexBetriebeGewerblicherArtCommand extends ContainerAwareCommand
         $output->writeln('Indiziere Betriebe gewerblicher Art fuer HRO-Suche nach Betrieben gewerblicher Art ... ');
 
 
-        $stmt = $conn->query("SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.realnutzungsarten_regis_hro WHERE realnutzungsarten ~ 'BgA'");
+        $stmt = $conn->query("SELECT count(*) AS count FROM fachdaten_flurstuecksbezug.realnutzungsarten_regis_hro WHERE realnutzungsart_bezeichnung ~ 'BgA'");
         $result = $stmt->fetch();
 
         while ($offset < $result['count']) {
@@ -74,11 +74,11 @@ class IndexBetriebeGewerblicherArtCommand extends ContainerAwareCommand
                  regexp_replace(aktenzeichen_vermoegensbewertung, '(\.|-)', '', 'g') AS aktenzeichen_ohne_sonderzeichen,
                  regexp_replace(aktenzeichen_vermoegensbewertung, '(\.|-)', ' ', 'g') AS aktenzeichen_mit_leerzeichen,
                  bemerkungen_bga,
-                 realnutzungsarten,
+                 realnutzungsart_kuerzel AS realnutzungsarten,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
                   FROM fachdaten_flurstuecksbezug.realnutzungsarten_regis_hro
-                   WHERE realnutzungsarten ~ 'BgA'
+                   WHERE realnutzungsart_bezeichnung ~ 'BgA'
                     ORDER BY uuid
                      LIMIT " . $limit . " OFFSET " . $offset);
 

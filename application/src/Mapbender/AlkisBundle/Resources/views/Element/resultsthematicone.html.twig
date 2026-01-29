@@ -46,7 +46,7 @@
                     <i class="fa fa-circle" title="Gesamtfläche"></i> {{ json.data.aktenzeichen }} – Gesamtfläche ({{ json.data.flaeche }})
                 {% endif %}
             {% elseif type == 'anlagevermoegendereigenbetriebe' and json.data.type == 'anlagevermoegendereigenbetriebe' %}
-                {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != null%}{{ json.data.flurstueckskennzeichen }}, {% endif %}{% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}, {% endif %}Status {{ json.data.realnutzungsarten }}{% if json.data.wirtschaftseinheit_betriebsvermoegen is defined and json.data.wirtschaftseinheit_betriebsvermoegen != null%}, {{ json.data.wirtschaftseinheit_betriebsvermoegen }}{% endif %}
+                {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != null%}{{ json.data.flurstueckskennzeichen }}, {% endif %}{% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}, {% endif %}Kürzel {{ json.data.realnutzungsarten }}{% if json.data.wirtschaftseinheit_betriebsvermoegen is defined and json.data.wirtschaftseinheit_betriebsvermoegen != null%}, {{ json.data.wirtschaftseinheit_betriebsvermoegen }}{% endif %}
             {% elseif type == 'baumkataster' and json.data.type == 'baum' %}
                 Baum{% if json.data.gefaellt is defined and json.data.gefaellt != null and json.data.gefaellt == 'ja'%} (gefällt){% endif %} (Bewirtschafter {{ json.data.bewirtschafter }}, Grünpflegebezirk {{ json.data.bezirk }}, Grünpflegeobjekt {{ json.data.objektnummer }} {{ json.data.objektbezeichnung }}, Nummer {{ json.data.nummer }}, laufende Nummer {{ json.data.laufende_nummer }})
             {% elseif type == 'baumkataster' and json.data.type == 'baumgruppe' %}
@@ -56,7 +56,7 @@
             {% elseif type == 'bebauungsplaene' and json.data.type == 'bebauungsplaene' %}
                 {{ json.data.nummer }}, {{ json.data.bezeichnung }} (Status: {{ json.data.status }})
             {% elseif type == 'betriebegewerblicherart' and json.data.type == 'betriebegewerblicherart' %}
-                {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != null%}{{ json.data.flurstueckskennzeichen }}, {% endif %}{% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}, {% endif %}Status {{ json.data.realnutzungsarten }}{% if json.data.bemerkungen_bga is defined and json.data.bemerkungen_bga != null%}, {{ json.data.bemerkungen_bga }}{% endif %}
+                {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != null%}{{ json.data.flurstueckskennzeichen }}, {% endif %}{% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}, {% endif %}Kürzel {{ json.data.realnutzungsarten }}{% if json.data.bemerkungen_bga is defined and json.data.bemerkungen_bga != null%}, {{ json.data.bemerkungen_bga }}{% endif %}
             {% elseif type == 'erbbaurechte' and json.data.type == 'erbbaurechte' %}
                 {% if json.data.flurstueckskennzeichen is defined and json.data.flurstueckskennzeichen != null%}{{ json.data.flurstueckskennzeichen }} – {% endif %}{% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}{% endif %}
             {% elseif type == 'flaecheninabstimmung' and json.data.type == 'flaecheninabstimmung' %}
