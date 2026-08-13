@@ -419,9 +419,7 @@
             $('span.layer-state:first', $li).remove();
             $('div.featureInfoWrapper', $li).remove();
             $('div.selectedWrapper', $li).remove();
-            if (!theme.allSelected) {
-                $('div.selectAll', $li).remove();
-            }
+            $('div.selectAll', $li).remove();
             if (!theme.sourceVisibility) {
                 $('div.sourceVisibilityWrapper', $li).remove();
             } else {
@@ -487,6 +485,9 @@
             }
             $li.find('.layer-title:first').attr('title', sourceEl.options.title).text(this._subStringText(
                 sourceEl.options.title));
+            if (sourceEl.options.title === 'ALKIS') {
+              $li.find('div.selectAll').remove();
+            }
             if (this.options.menu.length === 0) {
                 $li.find('.layer-menu-btn').remove();
             }
