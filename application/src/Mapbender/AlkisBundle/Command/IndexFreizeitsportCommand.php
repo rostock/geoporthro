@@ -61,8 +61,8 @@ class IndexFreizeitsportCommand extends ContainerAwareCommand
         while ($offset < $result['count']) {
             $stmt = $conn->query("
                 SELECT
+                 art,
                  bezeichnung,
-                 sportarten,
                  ST_AsText(ST_Centroid(geometrie)) AS geom,
                  ST_AsText(geometrie) AS wktgeom
                   FROM fachdaten.freizeitsport_regis_hro
@@ -75,22 +75,22 @@ class IndexFreizeitsportCommand extends ContainerAwareCommand
                 $doc = $solr->newDocument();
                 $doc->id = $type . '_' . ++$id;
                 $doc->text = $this->concat(
-                    $row['bezeichnung'],
-                    $row['sportarten']
+                    $row['art'],
+                    $row['bezeichnung']
                 );
                 
                 $doc->phonetic = $this->addPhonetic($this->concat(
-                    $row['bezeichnung'],
-                    $row['sportarten']
+                    $row['art'],
+                    $row['bezeichnung']
                 ));
 
-                $doc->label = "1".$row['bezeichnung'].$row['sportarten'];
+                $doc->label = "1".$row['art'].$row['bezeichnung'];
 
                 $doc->json = json_encode(array(
                     'data'   => array(
-                        'type'         => $type,
-                        'bezeichnung'  => $row['bezeichnung'],
-                        'sportarten' => $row['sportarten']
+                        'type'        => $type,
+                        'art'         => $row['art'],
+                        'bezeichnung' => $row['bezeichnung']
                     ),
                     'x'      => $x,
                     'y'      => $y,

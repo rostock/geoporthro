@@ -62,7 +62,7 @@
             {% elseif type == 'flaecheninabstimmung' and json.data.type == 'flaecheninabstimmung' %}
                 {{ json.data.protokoll }}
             {% elseif type == 'freizeitsport' and json.data.type == 'freizeitsport' %}
-                {{ json.data.bezeichnung }} ({{ json.data.sportarten|replace({';': ", "}) }})
+                {{ json.data.bezeichnung }} ({{ json.data.art }})
             {% elseif type == 'grundsteuerobjekte' and json.data.type == 'grundsteuerobjekte' %}
                 {% if json.data.aktenzeichen is defined and json.data.aktenzeichen != null%}{{ json.data.aktenzeichen }}{% endif %}{% if json.data.we_nummer is defined and json.data.we_nummer != null%} | {{ json.data.we_nummer }}{% endif %}
             {% elseif type == 'grundvermoegen' and json.data.type == 'grundvermoegen' %}
